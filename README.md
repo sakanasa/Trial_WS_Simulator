@@ -1,4 +1,4 @@
-# Dark_Reef
+# Trial_WS_Simulator
 A simulator for some climax combos and related card effects in trading card game Weiß Schwarz.
 
 Python version: 3.11.4
