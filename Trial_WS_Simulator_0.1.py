@@ -1,3 +1,7 @@
+# Copyright (c) 2026 Sillyslark
+# Released under the MIT License.
+# See LICENSE file in the project root for full license information.
+
 import tkinter as tk
 from tkinter import ttk
 import random
