@@ -170,7 +170,7 @@ class MiddleColumnView(ctk.CTkFrame):
         )
         self.cond_tab.pack(fill=tk.BOTH, expand=True)
 
-        self.select_mode("常規")
+        self.select_mode("高級")
 
     def select_mode(self, mode_name: str):
         self.multi_mode_var.set(mode_name)

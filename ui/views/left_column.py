@@ -55,6 +55,13 @@ class LeftColumnView(ctk.CTkFrame):
         title_lbl.pack(anchor="w", padx=10, pady=(8, 4))
         return card
 
+    def _move_control_to_deck(self):
+        """把控制室的非名場/名場面張數全部併入牌組，控制室歸零"""
+        self.deck_normal.set(self.deck_normal.get() + self.control_normal.get())
+        self.deck_climax.set(self.deck_climax.get() + self.control_climax.get())
+        self.control_normal.set(0)
+        self.control_climax.set(0)
+
     def toggle_theme(self):
         current_resolved_mode = ctk.get_appearance_mode()
         new_mode = "Light" if current_resolved_mode == "Dark" else "Dark"
@@ -103,38 +110,58 @@ class LeftColumnView(ctk.CTkFrame):
         scroll_content = ctk.CTkScrollableFrame(self, fg_color="transparent")
         scroll_content.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=6, pady=(6, 0))
 
+        # 2.0 🌟 明確標示：以下局勢設置全部屬於「對方」（被攻擊方）
+        ctk.CTkLabel(
+            scroll_content,
+            text="▼ 對方（被攻擊方）局勢設置 ▼",
+            font=FONT_GLOBAL_BOLD,
+            text_color=PALETTE.get("primary", PALETTE["text_main"])
+        ).pack(anchor="w", padx=8, pady=(0, 2))
+
         # 2.1 牌組設置
-        deck_card = self._create_card_frame(scroll_content, "牌組設置")
+        deck_card = self._create_card_frame(scroll_content, "對方牌組設置")
         d_grid = ctk.CTkFrame(deck_card, fg_color="transparent")
         d_grid.pack(fill=tk.X, padx=10, pady=(0, 8))
 
-        ctk.CTkLabel(d_grid, text="肉數量:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=0, column=0, sticky="w", padx=2)
+        ctk.CTkLabel(d_grid, text="非名場張數:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=0, column=0, sticky="w", padx=2)
         ctk.CTkEntry(d_grid, textvariable=self.deck_normal, **entry_opts).grid(row=0, column=1, padx=6, pady=2)
-        ctk.CTkLabel(d_grid, text="潮數量:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=1, column=0, sticky="w", padx=2)
+        ctk.CTkLabel(d_grid, text="名場面張數:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=1, column=0, sticky="w", padx=2)
         ctk.CTkEntry(d_grid, textvariable=self.deck_climax, **entry_opts).grid(row=1, column=1, padx=6, pady=2)
 
         # 2.2 控制室設置
-        control_card = self._create_card_frame(scroll_content, "控制室設置")
+        control_card = self._create_card_frame(scroll_content, "對方控制室設置")
         c_grid = ctk.CTkFrame(control_card, fg_color="transparent")
         c_grid.pack(fill=tk.X, padx=10, pady=(0, 8))
 
-        ctk.CTkLabel(c_grid, text="肉數量:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=0, column=0, sticky="w", padx=2)
+        ctk.CTkLabel(c_grid, text="非名場張數:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=0, column=0, sticky="w", padx=2)
         ctk.CTkEntry(c_grid, textvariable=self.control_normal, **entry_opts).grid(row=0, column=1, padx=6, pady=2)
-        ctk.CTkLabel(c_grid, text="潮數量:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=1, column=0, sticky="w", padx=2)
+        ctk.CTkLabel(c_grid, text="名場面張數:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=1, column=0, sticky="w", padx=2)
         ctk.CTkEntry(c_grid, textvariable=self.control_climax, **entry_opts).grid(row=1, column=1, padx=6, pady=2)
 
+        ctk.CTkButton(
+            c_grid,
+            text="全部移回牌組",
+            command=self._move_control_to_deck,
+            fg_color=PALETTE["secondary"],
+            hover_color=PALETTE["secondary_hover"],
+            text_color=PALETTE["text_main"],
+            font=FONT_GLOBAL,
+            width=100,
+            height=26
+        ).grid(row=0, column=2, rowspan=2, padx=(10, 2), pady=2)
+
         # 2.3 能量區設置
-        stock_card = self._create_card_frame(scroll_content, "能量區設置")
+        stock_card = self._create_card_frame(scroll_content, "對方能量區設置")
         s_grid = ctk.CTkFrame(stock_card, fg_color="transparent")
         s_grid.pack(fill=tk.X, padx=10, pady=(0, 8))
 
-        ctk.CTkLabel(s_grid, text="肉數量:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=0, column=0, sticky="w", padx=2)
+        ctk.CTkLabel(s_grid, text="非名場張數:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=0, column=0, sticky="w", padx=2)
         ctk.CTkEntry(s_grid, textvariable=self.stock_normal, **entry_opts).grid(row=0, column=1, padx=6, pady=2)
-        ctk.CTkLabel(s_grid, text="潮數量:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=1, column=0, sticky="w", padx=2)
+        ctk.CTkLabel(s_grid, text="名場面張數:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=1, column=0, sticky="w", padx=2)
         ctk.CTkEntry(s_grid, textvariable=self.stock_climax, **entry_opts).grid(row=1, column=1, padx=6, pady=2)
 
         # 2.4 等級區與傷害區
-        lc_card = self._create_card_frame(scroll_content, "等級區與傷害區設置")
+        lc_card = self._create_card_frame(scroll_content, "對方等級區與傷害區設置")
         grid_frame = ctk.CTkFrame(lc_card, fg_color="transparent")
         grid_frame.pack(fill=tk.X, padx=10, pady=(0, 8))
 

@@ -105,7 +105,10 @@ class CharSimCard(ctk.CTkFrame):
 
     def refresh_ops_ui(self):
         """刷新操作列表組件"""
-        OpsListBuilder.create_ops_list_ui(self.char_ops, self.char_ops_frame, mode="char", app_controller=self.app)
+        OpsListBuilder.create_ops_list_ui(
+            self.char_ops, self.char_ops_frame, mode="char",
+            role={"soul_var": self.init_soul_var}, app_controller=self.app
+        )
 
     def get_soul(self) -> int:
         """獲取當前輸入的魂點"""

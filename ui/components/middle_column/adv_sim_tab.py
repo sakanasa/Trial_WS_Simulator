@@ -10,6 +10,8 @@ from typing import Any, Optional, Callable
 
 from ui.components.common.collapsible_card import CollapsibleCard
 from ui.components.common.sim_bottom_bar import SimBottomBar
+from ui.components.common.preset_toolbar import PresetToolbar
+from ui.components.common.confirm_button import ConfirmButton
 from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
 
 
@@ -69,7 +71,28 @@ class AdvSimTab(ctk.CTkFrame):
         # 3. 角色定義卡片
         self.roles_card = CollapsibleCard(self.adv_scroll_frame, title="角色定義")
         self.roles_card.pack(side=tk.TOP, fill=tk.X, anchor="n", padx=2, pady=4)
-        self.adv_roles_container = self.roles_card.content_frame
+
+        # 3.0 🌟 清空角色定義（二次確認按鈕，避免誤按清掉整組角色設定）
+        ConfirmButton(
+            self.roles_card.actions_frame, text="清空角色", confirm_text="確定清空？",
+            on_confirm=self._handle_clear_roles, width=70, height=24,
+            font=FONT_GLOBAL, text_color=PALETTE["text_main"]
+        ).pack(side=tk.RIGHT, padx=2)
+
+        # 3.1 具名存檔／匯入工具列（內嵌控件，不使用彈窗）
+        if self.app:
+            self.preset_toolbar = PresetToolbar(
+                self.roles_card.content_frame,
+                get_names=self.app.get_advanced_roles_preset_names,
+                on_save=self.app.save_advanced_roles_preset_as,
+                on_import=self.app.import_advanced_roles_preset,
+                on_delete=self.app.delete_advanced_roles_preset,
+            )
+            self.preset_toolbar.pack(side=tk.TOP, fill=tk.X, anchor="w", padx=4, pady=(0, 6))
+
+        # 3.2 角色卡片實際掛載的子容器（與工具列分開，避免刷新角色列表時把工具列也清掉）
+        self.adv_roles_container = ctk.CTkFrame(self.roles_card.content_frame, fg_color="transparent")
+        self.adv_roles_container.pack(side=tk.TOP, fill=tk.X)
 
         # 4. 執行計劃卡片
         self.plan_card = CollapsibleCard(self.adv_scroll_frame, title="執行計劃（可選）")
@@ -101,6 +124,10 @@ class AdvSimTab(ctk.CTkFrame):
             self.on_clear_plan()
         elif hasattr(self.app, "clear_plan"):
             self.app.clear_plan()
+
+    def _handle_clear_roles(self):
+        if hasattr(self.app, "clear_advanced_roles"):
+            self.app.clear_advanced_roles()
 
     @property
     def adv_sim_times(self): return self.bottom_bar.sim_times

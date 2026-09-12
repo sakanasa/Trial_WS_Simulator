@@ -19,6 +19,9 @@ from simulator.runner import SimulationRunner
 from simulator.statistics import format_elapsed_time, calc_winrate, calc_avg_damage
 from utils.registry import registry
 from ui.components.app_dropdown import AppDropdown
+from ui.components.common.preset_toolbar import PresetToolbar
+from ui.dialogs.kill_rate_chart_dialog import KillRateChartDialog
+from services.batch_matrix_service import batch_matrix_service
 
 # 統一自中央主題庫引入配色與字體規範
 from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
@@ -54,6 +57,9 @@ class BatchStatisticsDialog(ctk.CTkToplevel):
         self.batch_var2 = tk.StringVar(value="傷害區肉數")
         self.batch_from2 = tk.IntVar(value=0)
         self.batch_to2 = tk.IntVar(value=6)
+
+        # 🌟 最近一次計算出的矩陣結果，供命名存檔使用
+        self.last_result: dict = None
 
     def _build_ui(self):
         """🌟 三級色彩結構重構：消除多餘嵌套，對齊 left_column 統一樣式"""
@@ -182,12 +188,31 @@ class BatchStatisticsDialog(ctk.CTkToplevel):
         )
         right_card.pack(fill=tk.BOTH, expand=True, padx=6, pady=6)
 
+        result_header = ctk.CTkFrame(right_card, fg_color="transparent")
+        result_header.pack(fill=tk.X, padx=10, pady=(8, 4))
+
         ctk.CTkLabel(
-            right_card, 
-            text="=== 矩陣統計分析結果 ===", 
-            font=FONT_GLOBAL_BOLD, 
+            result_header,
+            text="=== 矩陣統計分析結果 ===",
+            font=FONT_GLOBAL_BOLD,
             text_color=PALETTE["text_main"]
-        ).pack(anchor="w", padx=10, pady=(8, 4))
+        ).pack(side=tk.LEFT)
+
+        ctk.CTkButton(
+            result_header, text="斬殺率比較圖", command=self._open_kill_rate_chart,
+            fg_color=PALETTE["secondary"], hover_color=PALETTE["secondary_hover"],
+            text_color=PALETTE["text_main"], font=FONT_GLOBAL, width=100, height=26
+        ).pack(side=tk.RIGHT)
+
+        # 🌟 斬殺率矩陣具名存檔／匯入工具列（內嵌控件，不使用彈窗）
+        self.matrix_preset_toolbar = PresetToolbar(
+            right_card,
+            get_names=batch_matrix_service.get_names,
+            on_save=self._save_batch_matrix_as,
+            on_import=self._import_batch_matrix,
+            on_delete=lambda name: batch_matrix_service.delete_preset(name),
+        )
+        self.matrix_preset_toolbar.pack(fill=tk.X, padx=10, pady=(0, 6), anchor="w")
 
         # 結果輸出框（保持原有的 secondary 配色與等寬字體，不影響功能）
         self.result_text = ctk.CTkTextbox(
@@ -362,3 +387,28 @@ class BatchStatisticsDialog(ctk.CTkToplevel):
         txt += f"\n\n總計算耗時: {format_elapsed_time(elapsed)}"
 
         self.result_text.insert("1.0", txt)
+
+        # 🌟 記錄最近一次結果，供下方工具列命名存檔使用
+        self.last_result = {
+            "var1": var1, "var2": var2,
+            "range1": range1, "range2": range2,
+            "winrate_matrix": winrate_matrix, "avg_dmg_matrix": avg_dmg_matrix,
+        }
+
+    def _save_batch_matrix_as(self, name: str):
+        if not self.last_result:
+            return
+        batch_matrix_service.set_preset(name, self.last_result)
+
+    def _import_batch_matrix(self, name: str):
+        data = batch_matrix_service.get_preset(name)
+        if not data:
+            return
+        self.last_result = data
+        self._render_results(
+            data["winrate_matrix"], data["avg_dmg_matrix"],
+            data["range1"], data["range2"], data["var1"], data["var2"], 0.0
+        )
+
+    def _open_kill_rate_chart(self):
+        KillRateChartDialog(self, app_controller=self.app)

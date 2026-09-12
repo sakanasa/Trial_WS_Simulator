@@ -10,6 +10,7 @@ from typing import Any, Optional, Callable
 
 from ui.components.common.collapsible_card import CollapsibleCard
 from ui.components.common.sim_bottom_bar import SimBottomBar
+from ui.components.common.preset_toolbar import PresetToolbar
 
 
 class RegSimTab(ctk.CTkFrame):
@@ -45,7 +46,21 @@ class RegSimTab(ctk.CTkFrame):
         # 3. 🌟 使用 CollapsibleCard 自動構建卡片與摺疊功能
         self.ops_card = CollapsibleCard(self.reg_ops_scroll, title="常規操作列表")
         self.ops_card.pack(side=tk.TOP, fill=tk.X, anchor="n", padx=2, pady=2)
-        self.reg_ops_frame = self.ops_card.content_frame
+
+        # 4. 具名存檔／匯入工具列（內嵌控件，不使用彈窗）
+        if self.app:
+            self.preset_toolbar = PresetToolbar(
+                self.ops_card.content_frame,
+                get_names=self.app.get_regular_ops_preset_names,
+                on_save=self.app.save_regular_ops_preset_as,
+                on_import=self.app.import_regular_ops_preset,
+                on_delete=self.app.delete_regular_ops_preset,
+            )
+            self.preset_toolbar.pack(side=tk.TOP, fill=tk.X, anchor="w", padx=4, pady=(0, 6))
+
+        # 5. 操作列表實際掛載的子容器（與工具列分開，避免刷新列表時把工具列也清掉）
+        self.reg_ops_frame = ctk.CTkFrame(self.ops_card.content_frame, fg_color="transparent")
+        self.reg_ops_frame.pack(side=tk.TOP, fill=tk.X)
 
     def _handle_run_sim(self):
         if self.on_run_sim:

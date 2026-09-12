@@ -16,6 +16,8 @@ from typing import List, Dict, Any, Optional
 # 1. 導入服務層與工廠
 from services.custom_cards_service import custom_cards_service
 from services.condition_state_service import condition_state_service
+from services.regular_ops_service import regular_ops_service
+from services.advanced_roles_service import advanced_roles_service
 from simulator.environment_factory import GameEnvironmentFactory
 from simulator.plan_parser import PlanParser
 from simulator.runner import SimulationRunner, TrialConditionHelper
@@ -269,12 +271,91 @@ class App:
     def add_character_operation(self): self.left_col.char_sim_card.add_operation()
     def add_regular_operation(self): self._add_op(self.reg_ops, len(self.reg_ops) - 1, "regular")
 
-    def add_advanced_role(self, insert_index: Optional[int] = None):
-        idx = len(self.adv_roles) if insert_index is None else insert_index + 1
+    # --- 常規操作列表：具名存檔／匯入（內嵌工具列，無彈窗） ---
+    def get_regular_ops_preset_names(self) -> List[str]:
+        return regular_ops_service.get_names()
+
+    def save_regular_ops_preset_as(self, name: str):
+        ops_data = [registry.extract_params(op) for op in self.reg_ops]
+        regular_ops_service.set_preset(name, ops_data)
+
+    def import_regular_ops_preset(self, name: str):
+        ops_data = regular_ops_service.get_preset(name)
+        if not ops_data:
+            return
+        new_ops = [self._hydrate_op(op) for op in ops_data]
+        if not new_ops:
+            return
+        self.reg_ops.clear()
+        self.reg_ops.extend(new_ops)
+        OpsListBuilder.refresh_ops_ui(self.reg_ops, "regular", app_controller=self)
+
+    def delete_regular_ops_preset(self, name: str):
+        regular_ops_service.delete_preset(name)
+
+    # --- 高級模式角色定義：具名存檔／匯入（內嵌工具列，無彈窗） ---
+    def get_advanced_roles_preset_names(self) -> List[str]:
+        return advanced_roles_service.get_names()
+
+    def save_advanced_roles_preset_as(self, name: str):
+        roles_data = [
+            {"soul": role["soul_var"].get(), "ops": [registry.extract_params(op) for op in role["ops"]]}
+            for role in self.adv_roles
+        ]
+        advanced_roles_service.set_preset(name, roles_data)
+
+    def import_advanced_roles_preset(self, name: str):
+        roles_data = advanced_roles_service.get_preset(name)
+        if not roles_data:
+            return
+
+        new_roles = []
+        for item in roles_data:
+            ops = [self._hydrate_op(op) for op in item.get("ops", [])]
+            if not ops:
+                ops = [self._hydrate_op({"type": "普通傷害"})]
+            new_roles.append({
+                "soul_var": tk.IntVar(value=item.get("soul", 3)),
+                "ops": ops, "frame": None, "ops_frame": None
+            })
+        if not new_roles:
+            return
+
+        self.adv_roles.clear()
+        self.adv_roles.extend(new_roles)
+        self.refresh_roles_ui("advanced")
+        self.update_plan_role_options()
+
+    def delete_advanced_roles_preset(self, name: str):
+        advanced_roles_service.delete_preset(name)
+
+    def clear_advanced_roles(self):
+        """清空所有已定義的角色，還原成單一個空白角色"""
+        self.adv_roles.clear()
         role_data = {"soul_var": tk.IntVar(value=3), "ops": [], "frame": None, "ops_frame": None}
-        self.adv_roles.insert(idx, role_data)
+        self.adv_roles.append(role_data)
         self.refresh_roles_ui("advanced")
         self._add_op(role_data["ops"], -1, "advanced", role=role_data)
+        self.update_plan_role_options()
+
+    def add_advanced_role(self, insert_index: Optional[int] = None):
+        if insert_index is not None and 0 <= insert_index < len(self.adv_roles):
+            # 🌟 「+」是在複製該角色：連同它目前的初始魂點與已配置的操作效果一起複製
+            source_role = self.adv_roles[insert_index]
+            role_data = {
+                "soul_var": tk.IntVar(value=source_role["soul_var"].get()),
+                "ops": [OpsListBuilder.clone_op(op) for op in source_role["ops"]],
+                "frame": None, "ops_frame": None
+            }
+            idx = insert_index + 1
+        else:
+            role_data = {"soul_var": tk.IntVar(value=3), "ops": [], "frame": None, "ops_frame": None}
+            idx = len(self.adv_roles)
+
+        self.adv_roles.insert(idx, role_data)
+        self.refresh_roles_ui("advanced")
+        if not role_data["ops"]:
+            self._add_op(role_data["ops"], -1, "advanced", role=role_data)
         self.update_plan_role_options()
 
     def remove_advanced_role(self, index: int):

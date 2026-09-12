@@ -1,0 +1,97 @@
+{
+  "三路燒三打三": [
+    {
+      "type": "普通傷害",
+      "damage": 3,
+      "trigger_rate": 0.0
+    },
+    {
+      "type": "普通傷害",
+      "damage": 3,
+      "trigger_rate": 30.0
+    },
+    {
+      "type": "普通傷害",
+      "damage": 3,
+      "trigger_rate": 0.0
+    },
+    {
+      "type": "普通傷害",
+      "damage": 3,
+      "trigger_rate": 30.0
+    },
+    {
+      "type": "普通傷害",
+      "damage": 3,
+      "trigger_rate": 0.0
+    },
+    {
+      "type": "普通傷害",
+      "damage": 3,
+      "trigger_rate": 30.0
+    }
+  ],
+  "兩千束一瀧奈": [
+    {
+      "type": "推牌",
+      "push_count": 1
+    },
+    {
+      "type": "普通傷害",
+      "damage": 0,
+      "trigger_rate": 50.0
+    },
+    {
+      "type": "普通傷害",
+      "damage": 3,
+      "trigger_rate": 30.0
+    },
+    {
+      "type": "推牌",
+      "push_count": 1
+    },
+    {
+      "type": "普通傷害",
+      "damage": 0,
+      "trigger_rate": 50.0
+    },
+    {
+      "type": "普通傷害",
+      "damage": 3,
+      "trigger_rate": 30.0
+    },
+    {
+      "type": "普通傷害",
+      "damage": 3,
+      "trigger_rate": 30.0
+    },
+    {
+      "type": "推牌",
+      "push_count": 1
+    },
+    {
+      "type": "普通傷害",
+      "damage": 0,
+      "trigger_rate": 50.0
+    },
+    {
+      "type": "普通傷害",
+      "damage": 3,
+      "trigger_rate": 30.0
+    },
+    {
+      "type": "推牌",
+      "push_count": 1
+    },
+    {
+      "type": "普通傷害",
+      "damage": 0,
+      "trigger_rate": 50.0
+    },
+    {
+      "type": "普通傷害",
+      "damage": 3,
+      "trigger_rate": 30.0
+    }
+  ]
+}

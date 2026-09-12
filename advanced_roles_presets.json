@@ -1,0 +1,280 @@
+{
+  "三路燒3打3": [
+    {
+      "soul": 3,
+      "ops": [
+        {
+          "type": "普通傷害",
+          "damage": 3,
+          "trigger_rate": 0.0
+        },
+        {
+          "type": "角色傷害",
+          "role_damage_base": 3,
+          "role_bonus_type": "魂點",
+          "trigger_rate": 30.0
+        }
+      ]
+    },
+    {
+      "soul": 3,
+      "ops": [
+        {
+          "type": "普通傷害",
+          "damage": 3,
+          "trigger_rate": 0.0
+        },
+        {
+          "type": "角色傷害",
+          "role_damage_base": 3,
+          "role_bonus_type": "魂點",
+          "trigger_rate": 30.0
+        }
+      ]
+    },
+    {
+      "soul": 3,
+      "ops": [
+        {
+          "type": "普通傷害",
+          "damage": 3,
+          "trigger_rate": 0.0
+        },
+        {
+          "type": "角色傷害",
+          "role_damage_base": 3,
+          "role_bonus_type": "魂點",
+          "trigger_rate": 30.0
+        }
+      ]
+    }
+  ],
+  "2千束1瀧奈": [
+    {
+      "soul": 3,
+      "ops": [
+        {
+          "type": "推牌",
+          "push_count": 1
+        },
+        {
+          "type": "普通傷害",
+          "damage": 0,
+          "trigger_rate": 50.0
+        },
+        {
+          "type": "角色傷害",
+          "role_damage_base": 3,
+          "role_bonus_type": "魂點",
+          "trigger_rate": 30.0
+        },
+        {
+          "type": "推牌",
+          "push_count": 1
+        },
+        {
+          "type": "普通傷害",
+          "damage": 0,
+          "trigger_rate": 30.0
+        },
+        {
+          "type": "角色傷害",
+          "role_damage_base": 3,
+          "role_bonus_type": "魂點",
+          "trigger_rate": 30.0
+        }
+      ]
+    },
+    {
+      "soul": 3,
+      "ops": [
+        {
+          "type": "角色傷害",
+          "role_damage_base": 3,
+          "role_bonus_type": "魂點",
+          "trigger_rate": 30.0
+        }
+      ]
+    },
+    {
+      "soul": 3,
+      "ops": [
+        {
+          "type": "推牌",
+          "push_count": 1
+        },
+        {
+          "type": "普通傷害",
+          "damage": 0,
+          "trigger_rate": 50.0
+        },
+        {
+          "type": "角色傷害",
+          "role_damage_base": 3,
+          "role_bonus_type": "魂點",
+          "trigger_rate": 30.0
+        },
+        {
+          "type": "推牌",
+          "push_count": 1
+        },
+        {
+          "type": "普通傷害",
+          "damage": 0,
+          "trigger_rate": 50.0
+        },
+        {
+          "type": "角色傷害",
+          "role_damage_base": 3,
+          "role_bonus_type": "魂點",
+          "trigger_rate": 30.0
+        }
+      ]
+    }
+  ],
+  "1千束2瀧奈": [
+    {
+      "soul": 3,
+      "ops": [
+        {
+          "type": "推牌",
+          "push_count": 1
+        },
+        {
+          "type": "普通傷害",
+          "damage": 0,
+          "trigger_rate": 50.0
+        },
+        {
+          "type": "角色傷害",
+          "role_damage_base": 3,
+          "role_bonus_type": "魂點",
+          "trigger_rate": 30.0
+        }
+      ]
+    },
+    {
+      "soul": 3,
+      "ops": [
+        {
+          "type": "推牌",
+          "push_count": 1
+        },
+        {
+          "type": "普通傷害",
+          "damage": 0,
+          "trigger_rate": 50.0
+        },
+        {
+          "type": "角色傷害",
+          "role_damage_base": 3,
+          "role_bonus_type": "魂點",
+          "trigger_rate": 30.0
+        }
+      ]
+    },
+    {
+      "soul": 3,
+      "ops": [
+        {
+          "type": "推牌",
+          "push_count": 1
+        },
+        {
+          "type": "普通傷害",
+          "damage": 0,
+          "trigger_rate": 50.0
+        },
+        {
+          "type": "推牌",
+          "push_count": 1
+        },
+        {
+          "type": "普通傷害",
+          "damage": 0,
+          "trigger_rate": 50.0
+        },
+        {
+          "type": "角色傷害",
+          "role_damage_base": 3,
+          "role_bonus_type": "魂點",
+          "trigger_rate": 30.0
+        },
+        {
+          "type": "推牌",
+          "push_count": 1
+        },
+        {
+          "type": "普通傷害",
+          "damage": 0,
+          "trigger_rate": 50.0
+        },
+        {
+          "type": "推牌",
+          "push_count": 1
+        },
+        {
+          "type": "普通傷害",
+          "damage": 0,
+          "trigger_rate": 50.0
+        },
+        {
+          "type": "角色傷害",
+          "role_damage_base": 3,
+          "role_bonus_type": "魂點",
+          "trigger_rate": 30.0
+        }
+      ]
+    }
+  ],
+  "三路早出千瀧": [
+    {
+      "soul": 2,
+      "ops": [
+        {
+          "type": "普通傷害",
+          "damage": 2,
+          "trigger_rate": 0.0
+        },
+        {
+          "type": "角色傷害",
+          "role_damage_base": 2,
+          "role_bonus_type": "魂點",
+          "trigger_rate": 30.0
+        }
+      ]
+    },
+    {
+      "soul": 2,
+      "ops": [
+        {
+          "type": "普通傷害",
+          "damage": 2,
+          "trigger_rate": 0.0
+        },
+        {
+          "type": "角色傷害",
+          "role_damage_base": 2,
+          "role_bonus_type": "魂點",
+          "trigger_rate": 30.0
+        }
+      ]
+    },
+    {
+      "soul": 2,
+      "ops": [
+        {
+          "type": "普通傷害",
+          "damage": 2,
+          "trigger_rate": 0.0
+        },
+        {
+          "type": "角色傷害",
+          "role_damage_base": 2,
+          "role_bonus_type": "魂點",
+          "trigger_rate": 30.0
+        }
+      ]
+    }
+  ]
+}
