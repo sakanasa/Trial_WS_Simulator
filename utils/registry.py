@@ -12,14 +12,22 @@ from ui.components.app_dropdown import AppDropdown
 from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
 
 
+_TRACE_MODE_MAP = {"w": "write", "r": "read", "u": "unset"}
+
+
 def safe_trace(var: tk.Variable, mode: str, callback: Callable, store_dict: dict, key: str) -> str:
-    """安全 Trace 綁定函數，防止頻繁重繪 UI 時回調函數不斷疊加導致的內存洩漏"""
+    """安全 Trace 綁定函數，防止頻繁重繪 UI 時回調函數不斷疊加導致的內存洩漏
+
+    使用 trace_add/trace_remove（Tk 8.6、9.0 皆可用），取代已在 Tcl/Tk 9.0
+    被移除的舊版 trace/trace_vdelete API。
+    """
+    mode = _TRACE_MODE_MAP.get(mode, mode)
     if key in store_dict and store_dict[key]:
         try:
-            var.trace_vdelete(mode, store_dict[key])
+            var.trace_remove(mode, store_dict[key])
         except Exception:
             pass
-    tid = var.trace(mode, callback)
+    tid = var.trace_add(mode, callback)
     store_dict[key] = tid
     return tid
 

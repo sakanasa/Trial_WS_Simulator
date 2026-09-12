@@ -196,10 +196,10 @@ class TriggerQueueManager:
             elif task_type == "ice_armor":
                 hits = task.get("hits", 0)
                 ice_idx = task.get("ice_idx", 1)
-                ice_title = f"角色{role_no}冰甲{ice_idx}(由操作{triggered_by_op}觸發)"
+                ice_title = f"角色{role_no}吃傷看頂{ice_idx}(由操作{triggered_by_op}觸發)"
 
                 Y, ice_over = execute_ice_armor(deck, control, clock, level, hits, stabilize_func)
-                desc_ice = f"冰甲{ice_idx}: 受到{hits}次命中傷害，冰甲響應從牌組頂推入{Y}張肉牌到控制室"
+                desc_ice = f"吃傷看頂{ice_idx}: 受到{hits}次命中傷害，吃傷看頂響應從牌組頂推入{Y}張肉牌到控制室"
 
                 if ice_over or (cond_helper and cond_helper.stabilize_condition()):
                     game_over = True
@@ -226,7 +226,8 @@ class SimulationRunner:
         pending_pass: dict, role_idx: int, num_roles: int,
         collect_steps: bool = False, global_ice_armors: list = None,
         condition_deck: list = None, condition_stock: list = None, app: Any = None,
-        front_slot: str = None, enemy_front_roles: dict = None
+        front_slot: str = None, enemy_front_roles: dict = None,
+        card_data: dict = None, is_rerun: bool = False
     ) -> Tuple[bool, int, list]:
         """單角色/階段操作模擬核心引擎"""
         soul_points = role_state.get("soul", 3)
@@ -300,7 +301,8 @@ class SimulationRunner:
                         sub_opt, deck, control, stock, level, clock, step_op, stabilize_func,
                         soul_points=soul_points, ice_armors=ice_armors,
                         condition_deck=condition_deck, condition_stock=condition_stock, app=app,
-                        front_slot=front_slot, enemy_front_roles=enemy_front_roles
+                        front_slot=front_slot, enemy_front_roles=enemy_front_roles,
+                        card_data=card_data, pending_pass=pending_pass, collect_steps=collect_steps, is_rerun=is_rerun
                     )
                     sub_dmg = s_extra.get("total_damage", 0)
                     m_dmg += sub_dmg
@@ -365,7 +367,7 @@ class SimulationRunner:
                                     task={"task_type": "cancel_trigger", "nested_op": nested_op_to_run, "cancelled_damage": s_cancelled_dmg}
                                 )
 
-                    if ice_armors and sub_opt != "冰甲":
+                    if ice_armors and sub_opt != "吃傷看頂":
                         total_hits = hit_count + role_state.get("ice_armor_hits", 0)
                         if total_hits > 0:
                             for idx, ice in enumerate(ice_armors):
@@ -399,7 +401,11 @@ class SimulationRunner:
                     "condition_control": getattr(app, "cond_control", None),
                     "app": app,
                     "front_slot": front_slot,
-                    "enemy_front_roles": enemy_front_roles
+                    "enemy_front_roles": enemy_front_roles,
+                    "card_data": card_data,
+                    "pending_pass": pending_pass,
+                    "collect_steps": collect_steps,
+                    "is_rerun": is_rerun
                 }
                 over, desc, extra = registry.execute(
                     opt, deck, control, stock, level, clock, op, stabilize_func, **kwargs
@@ -466,7 +472,7 @@ class SimulationRunner:
                                 task={"task_type": "cancel_trigger", "nested_op": nested_op_to_run, "cancelled_damage": cancelled_dmg}
                             )
 
-                if ice_armors and opt != "冰甲":
+                if ice_armors and opt != "吃傷看頂":
                     total_hits = hit_count + role_state.get("ice_armor_hits", 0)
                     if total_hits > 0:
                         for idx, ice in enumerate(ice_armors):
@@ -499,7 +505,7 @@ class SimulationRunner:
         deck: list, control: list, stock: list, level: list, clock: list,
         card_data: dict, front_slot: str, enemy_front_roles: dict,
         pending_pass: dict, collect_steps: bool = False, global_ice_armors: list = None,
-        cond_helper: Any = None
+        cond_helper: Any = None, is_rerun: bool = False
     ) -> Tuple[bool, int, list]:
         """
         對單個導入的自定義卡牌依次展開 (1)~(7) 攻擊流水線：
@@ -557,7 +563,9 @@ class SimulationRunner:
                 condition_stock=getattr(cond_helper, "condition_stock", None),
                 app=cond_helper,
                 front_slot=front_slot,
-                enemy_front_roles=enemy_front_roles
+                enemy_front_roles=enemy_front_roles,
+                card_data=card_data,
+                is_rerun=is_rerun
             )
 
             total_damage += phase_dmg

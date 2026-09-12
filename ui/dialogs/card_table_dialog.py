@@ -201,37 +201,37 @@ class CardTableDialog(ctk.CTkToplevel):
         card["pos_label"] = pos_label
 
         kind_var = tk.StringVar(value=card.get("kind", "角色"))
-        kind_var.trace("w", lambda *a, c=card, v=kind_var: (c.update({"kind": v.get()}), self._notify_canvas_refresh()))
+        kind_var.trace_add("write", lambda *a, c=card, v=kind_var: (c.update({"kind": v.get()}), self._notify_canvas_refresh()))
         AppDropdown(row_frame, variable=kind_var, values=["角色", "事件", "名場面"], width=75).pack(side=tk.LEFT, padx=1)
         card["kind_var"] = kind_var
 
         level_var = tk.StringVar(value=str(card.get("level", "0")))
-        level_var.trace("w", lambda *a, c=card, v=level_var: (c.update({"level": v.get()}), self._notify_canvas_refresh()))
+        level_var.trace_add("write", lambda *a, c=card, v=level_var: (c.update({"level": v.get()}), self._notify_canvas_refresh()))
         AppDropdown(row_frame, variable=level_var, values=["0", "1", "2", "3"], width=55).pack(side=tk.LEFT, padx=1)
         card["level_var"] = level_var
 
         cost_var = tk.StringVar(value=str(card.get("cost", "0")))
-        cost_var.trace("w", lambda *a, c=card, v=cost_var: (c.update({"cost": v.get()}), self._notify_canvas_refresh()))
+        cost_var.trace_add("write", lambda *a, c=card, v=cost_var: (c.update({"cost": v.get()}), self._notify_canvas_refresh()))
         AppDropdown(row_frame, variable=cost_var, values=[str(i) for i in range(10)], width=55).pack(side=tk.LEFT, padx=1)
         card["cost_var"] = cost_var
 
         trigger_soul_var = tk.StringVar(value=str(card.get("trigger_soul", "0")))
-        trigger_soul_var.trace("w", lambda *a, c=card, v=trigger_soul_var: (c.update({"trigger_soul": v.get()}), self._notify_canvas_refresh()))
+        trigger_soul_var.trace_add("write", lambda *a, c=card, v=trigger_soul_var: (c.update({"trigger_soul": v.get()}), self._notify_canvas_refresh()))
         AppDropdown(row_frame, variable=trigger_soul_var, values=["0", "1", "2"], width=55).pack(side=tk.LEFT, padx=1)
         card["trigger_soul_var"] = trigger_soul_var
 
         trigger_var = tk.StringVar(value=str(card.get("trigger", "無")))
-        trigger_var.trace("w", lambda *a, c=card, v=trigger_var: (c.update({"trigger": v.get()}), self._notify_canvas_refresh()))
+        trigger_var.trace_add("write", lambda *a, c=card, v=trigger_var: (c.update({"trigger": v.get()}), self._notify_canvas_refresh()))
         AppDropdown(row_frame, variable=trigger_var, values=["無", "魂", "門", "褲", "風", "電"], width=55).pack(side=tk.LEFT, padx=1)
         card["trigger_var"] = trigger_var
 
         base_soul_var = tk.StringVar(value=str(card.get("soul", card.get("base_soul", "1"))))
-        base_soul_var.trace("w", lambda *a, c=card, v=base_soul_var: (c.update({"soul": v.get(), "base_soul": v.get()}), self._notify_canvas_refresh()))
+        base_soul_var.trace_add("write", lambda *a, c=card, v=base_soul_var: (c.update({"soul": v.get(), "base_soul": v.get()}), self._notify_canvas_refresh()))
         AppDropdown(row_frame, variable=base_soul_var, values=["1", "2", "3", "4", "5"], width=55).pack(side=tk.LEFT, padx=1)
         card["base_soul_var"] = base_soul_var
 
         power_var = tk.StringVar(value=str(card.get("power", "500")))
-        power_var.trace("w", lambda *a, c=card, v=power_var: (c.update({"power": v.get()}), self._notify_canvas_refresh()))
+        power_var.trace_add("write", lambda *a, c=card, v=power_var: (c.update({"power": v.get()}), self._notify_canvas_refresh()))
         ctk.CTkEntry(row_frame, textvariable=power_var, width=55, height=28, font=label_font, fg_color=PALETTE["secondary"], border_color=PALETTE["input_border"], border_width=1.5, text_color=PALETTE["text_main"]).pack(side=tk.LEFT, padx=1)
         card["power_var"] = power_var
 

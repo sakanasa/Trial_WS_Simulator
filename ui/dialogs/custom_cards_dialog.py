@@ -124,7 +124,7 @@ class CustomCardsDialog(ctk.CTkToplevel):
         self.var_trigger_soul = tk.IntVar(value=0)
 
         for var in (self.var_name, self.var_type, self.var_level, self.var_cost, self.var_power, self.var_soul, self.var_trigger, self.var_trigger_soul):
-            var.trace("w", lambda *a: self._update_card_preview())
+            var.trace_add("write", lambda *a: self._update_card_preview())
 
     def _build_ui(self):
         """🌟 全量 CTk 統一組件與自適應配色重構（已修復佈局擠壓問題）"""
@@ -578,7 +578,7 @@ class CustomCardsDialog(ctk.CTkToplevel):
                     var_name = f"{key}_var"
                     if var_name in op["params"]:
                         try:
-                            op["params"][var_name].trace_vdelete("w", tid)
+                            op["params"][var_name].trace_remove("write", tid)
                         except Exception:
                             pass
                 op["_trace_ids"].clear()

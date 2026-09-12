@@ -2,7 +2,7 @@
 """
 核心結算引擎 (Core Combat Engine)
 包含了 Weiss Schwarz 核心規則結算：
-傷害結算、牌組刷新與刷新傷害、等級區升級溢出、多潮取消、拔底聯動、摩卡、龍星、冰甲等。
+傷害結算、牌組刷新與刷新傷害、等級區升級溢出、多潮取消、拔底聯動、摩卡、龍星、吃傷看頂等。
 """
 
 import random
@@ -181,7 +181,7 @@ def execute_ice_armor(
     X: int,
     stabilize_func: Callable[[], bool]
 ) -> Tuple[int, bool]:
-    """冰甲能力觸發：命中 X 次時，從牌組頂端翻開最多 X 張肉牌推入控制室"""
+    """吃傷看頂能力觸發：命中 X 次時，從牌組頂端翻開最多 X 張肉牌推入控制室"""
     Y = 0
     for _ in range(X):
         if not deck:

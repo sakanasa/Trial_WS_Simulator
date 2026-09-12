@@ -63,7 +63,7 @@ def _fmt_push(p: dict) -> str:
 
 def _fmt_drain_climax(p: dict) -> str:
     count = p.get("count", 1)
-    return f"按潮反洗: 按{count}潮"
+    return f"洗控: 留{count}潮"
 
 
 def _fmt_normal_wash(p: dict) -> str:
@@ -72,11 +72,11 @@ def _fmt_normal_wash(p: dict) -> str:
 
 
 def _fmt_shake(p: dict) -> str:
-    return "搖勻"
+    return "假洗能"
 
 
 def _fmt_wash_stock(p: dict) -> str:
-    return "洗費"
+    return "真洗能"
 
 
 def _fmt_bottom_drain(p: dict) -> str:
@@ -138,7 +138,7 @@ def _fmt_reduce_soul(p: dict) -> str:
 
 
 def _fmt_ice_armor(p: dict) -> str:
-    return "冰甲"
+    return "吃傷看頂"
 
 
 def _fmt_condition_check(p: dict) -> str:
@@ -218,10 +218,10 @@ FORMATTERS = {
     "角色傷害": _fmt_role_damage,
     "攻擊方式": _fmt_attack_type,
     "推牌": _fmt_push,
-    "按潮反洗": _fmt_drain_climax,
+    "洗控": _fmt_drain_climax,
     "普通反洗": _fmt_normal_wash,
-    "搖勻": _fmt_shake,
-    "洗費": _fmt_wash_stock,
+    "假洗能": _fmt_shake,
+    "真洗能": _fmt_wash_stock,
     "拔底聯動": _fmt_bottom_drain,
     "龍星擴散爆": _fmt_dragon_star,
     "摩卡": _fmt_mocha,
@@ -230,7 +230,7 @@ FORMATTERS = {
     "多潮取消": _fmt_multi_climax_cancel,
     "特殊聯動": _fmt_special_linkage,
     "減魂": _fmt_reduce_soul,
-    "冰甲": _fmt_ice_armor,
+    "吃傷看頂": _fmt_ice_armor,
     "工況判定": _fmt_condition_check,
     "翻頂燒": _fmt_top_check_burn,
     "推頂燒": _fmt_top_push_burn,

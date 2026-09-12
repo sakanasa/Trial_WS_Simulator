@@ -65,10 +65,10 @@ def _build_special_linkage_extra(op, params_frame, linkage_frame, cancel_detail_
 
     if combo and hasattr(combo, "configure"):
         if mode == "condition":
-            combo.configure(values=["早川秋", "源櫻", "藍頭盔"])
+            combo.configure(values=["早川秋", "源櫻", "藍頭盔", "泳裝千束", "泳裝瀧奈"])
         else:
             combo.configure(values=["早川秋", "源櫻"])
-            if char_var.get() == "藍頭盔":
+            if char_var.get() in ("藍頭盔", "泳裝千束", "泳裝瀧奈"):
                 char_var.set("早川秋")
 
     def update_visibility(*args):

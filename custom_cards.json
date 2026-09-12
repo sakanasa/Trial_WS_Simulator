@@ -45,5 +45,46 @@
       ],
       "post_attack": []
     }
+  },
+  {
+    "name": "千束",
+    "type": "角色",
+    "level": 3,
+    "cost": 2,
+    "power": 10000,
+    "soul": 2,
+    "trigger": "魂",
+    "trigger_soul": 1,
+    "effects": {
+      "pre_attack": [],
+      "attack_type": [
+        {
+          "type": "攻擊方式",
+          "attack_type": "正面"
+        }
+      ],
+      "on_attack": [
+        {
+          "type": "特殊聯動",
+          "special_char": "泳裝瀧奈",
+          "hayakawa_count": 0
+        }
+      ],
+      "trigger_step": [],
+      "deal_damage": [],
+      "on_reverse": [],
+      "post_attack": [
+        {
+          "type": "普通傷害",
+          "damage": 3,
+          "trigger_rate": 0.0
+        },
+        {
+          "type": "特殊聯動",
+          "special_char": "泳裝千束",
+          "hayakawa_count": 0
+        }
+      ]
+    }
   }
 ]

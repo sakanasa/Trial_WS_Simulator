@@ -147,7 +147,7 @@ def _exec_drain_climax(deck, control, op, stabilize_func):
     count = op["count"]
     drain_climax(control, deck, count)
     over = stabilize_func()
-    return over, f"按潮反洗: 按{count}潮", {"total_damage": 0}
+    return over, f"洗控: 留{count}潮", {"total_damage": 0}
 
 
 def _exec_normal_wash(deck, control, op, stabilize_func):
@@ -160,13 +160,13 @@ def _exec_normal_wash(deck, control, op, stabilize_func):
 def _exec_shake(deck, stock, stabilize_func):
     shake_stock(deck, stock)
     over = stabilize_func()
-    return over, "搖勻完成", {"total_damage": 0}
+    return over, "假洗能完成", {"total_damage": 0}
 
 
 def _exec_wash_stock(deck, control, stock, stabilize_func):
     wash_stock(deck, control, stock, stabilize_func)
     over = stabilize_func()
-    return over, "洗費完成", {"total_damage": 0}
+    return over, "真洗能完成", {"total_damage": 0}
 
 
 def _exec_bottom_drain(deck, control, stock, level, clock, op, stabilize_func):
@@ -396,7 +396,7 @@ def _exec_special_linkage(deck, control, stock, level, clock, op, stabilize_func
         over = stabilize_func()
         return over, "源櫻: 兩次取消，置3張牌到傷害區", {"total_damage": total_damage}
 
-    else:
+    elif char == "藍頭盔":
         condition_deck = kwargs.get("condition_deck")
         if condition_deck is None or not condition_deck:
             return False, "藍頭盔: 缺少工況數據", {"total_damage": 0}
@@ -424,6 +424,69 @@ def _exec_special_linkage(deck, control, stock, level, clock, op, stabilize_func
         desc = f"藍頭盔: 頂牌{'是' if is_r0 else '非'}0級角色，造成{damage_per_hit}點傷害2次（取消{cancel_count}次，命中{hit_count}次）"
         return game_over, desc, {"total_damage": total_damage}
 
+    elif char == "泳裝瀧奈":
+        # 簡化規則：推自己工況牌組頂1張（工具無敵方牌組資料），
+        # 該牌等級<=0（含名場面，因名場面預設視為0級）則造成1點傷害，否則無事發生。
+        condition_deck = kwargs.get("condition_deck")
+        app = kwargs.get("app")
+
+        if condition_deck is None:
+            return False, "泳裝瀧奈: 缺少工況數據", {"total_damage": 0}
+
+        if not condition_deck and app:
+            app._refresh_condition_deck()
+        if not condition_deck:
+            return False, "泳裝瀧奈: 工況牌組已空，跳過推牌", {"total_damage": 0}
+
+        top_card = condition_deck.pop()
+        card_kind = get_card_kind(top_card)
+        card_lvl = get_card_level(top_card)
+        is_low_level = card_lvl <= 0
+
+        total_damage = 0
+        game_over = False
+
+        if is_low_level:
+            added, cancelled, win, _ = resolve_damage(deck, control, clock, 1, stabilize_func)
+            total_damage += added
+            if win:
+                game_over = True
+
+        if not condition_deck and app:
+            app._refresh_condition_deck()
+
+        if app and app.stabilize_condition():
+            game_over = True
+
+        desc = f"泳裝瀧奈: 推工況牌組頂1張[{card_kind} Lv.{card_lvl}]，" + \
+            ("等級<=0，造成1點傷害" if is_low_level else "等級>0，無事發生")
+        return game_over, desc, {"total_damage": total_damage}
+
+    elif char == "泳裝千束":
+        # 簡化規則：攻擊結束後，重跑一次同一張卡的完整7階段攻擊流水線；
+        # 用 is_rerun 旗標避免重跑出來的攻擊再次觸發本效果造成無限遞迴。
+        if kwargs.get("is_rerun"):
+            return False, "泳裝千束: 重跑攻擊中，不再觸發二次攻擊判定", {"total_damage": 0}
+
+        card_data = kwargs.get("card_data")
+        if not card_data:
+            return False, "泳裝千束: 缺少卡牌資料，無法重新執行攻擊判定", {"total_damage": 0}
+
+        from simulator.runner import SimulationRunner
+
+        over, extra_damage, _ = SimulationRunner.simulate_custom_card_attack_pipeline(
+            deck, control, stock, level, clock, card_data,
+            kwargs.get("front_slot"), kwargs.get("enemy_front_roles"),
+            kwargs.get("pending_pass") or {}, collect_steps=kwargs.get("collect_steps", False),
+            global_ice_armors=kwargs.get("ice_armors"), cond_helper=kwargs.get("app"),
+            is_rerun=True
+        )
+        desc = f"泳裝千束: 攻擊結束後再執行一次攻擊判定，追加造成{extra_damage}點傷害"
+        return over, desc, {"total_damage": extra_damage}
+
+    else:
+        return False, f"特殊聯動: 未知角色 {char}", {"total_damage": 0}
+
 
 def _exec_reduce_soul(deck, control, stock, level, clock, op, stabilize_func, **kwargs):
     reduce_amount = op.get("reduce_amount", 0)
@@ -436,7 +499,7 @@ def _exec_reduce_soul(deck, control, stock, level, clock, op, stabilize_func, **
 def _exec_ice_armor(ice_armors):
     ice_id = len(ice_armors) + 1
     ice_armors.append({"id": ice_id})
-    return False, f"冰甲{ice_id} 能力已激活", {"total_damage": 0}
+    return False, f"吃傷看頂{ice_id} 能力已激活", {"total_damage": 0}
 
 
 def _exec_multi_step_operation(deck, control, stock, level, clock, op, stabilize_func, **kwargs):
@@ -544,9 +607,9 @@ def register_all_operations():
     )
 
     registry.register(
-        "按潮反洗",
+        "洗控",
         params_def=[
-            {"name": "count", "default": 1, "label": "按", "widget": "entry", "width": 4, "suffix": "潮"},
+            {"name": "count", "default": 1, "label": "留", "widget": "entry", "width": 4, "suffix": "潮"},
         ],
         modes=ALL_MODES,
         execute=lambda deck, control, stock, level, clock, op, stab, **kw: _exec_drain_climax(deck, control, op, stab),
@@ -562,14 +625,14 @@ def register_all_operations():
     )
 
     registry.register(
-        "搖勻",
+        "假洗能",
         params_def=[],
         modes=ALL_MODES,
         execute=lambda deck, control, stock, level, clock, op, stab, **kw: _exec_shake(deck, stock, stab),
     )
 
     registry.register(
-        "洗費",
+        "真洗能",
         params_def=[],
         modes=ALL_MODES,
         execute=lambda deck, control, stock, level, clock, op, stab, **kw: _exec_wash_stock(deck, control, stock, stab),
@@ -660,7 +723,7 @@ def register_all_operations():
     )
 
     registry.register(
-        "冰甲",
+        "吃傷看頂",
         params_def=[],
         modes=["char", "advanced", "condition"],
         execute=lambda deck, control, stock, level, clock, op, stab, **kw: _exec_ice_armor(kw.get("ice_armors", [])),
