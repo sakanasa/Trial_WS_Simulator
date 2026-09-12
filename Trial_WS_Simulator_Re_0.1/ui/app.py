@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-主程序控制器 (Main App Controller) - 彻底重构纯净版
-负责整体 GUI 布局调度、事件路由派发、模拟引擎接入与状态服务桥接。
+主程序控制器 (Main App Controller) - 徹底重構純淨版
+負責整體 GUI 佈局調度、事件路由派發、模擬引擎接入與狀態服務橋接。
 """
 
 import json
@@ -13,14 +13,14 @@ from tkinter import ttk, filedialog, messagebox
 import customtkinter as ctk
 from typing import List, Dict, Any, Optional
 
-# 1. 导入服务层与工厂
+# 1. 導入服務層與工廠
 from services.custom_cards_service import custom_cards_service
 from services.condition_state_service import condition_state_service
 from simulator.environment_factory import GameEnvironmentFactory
 from simulator.plan_parser import PlanParser
 from simulator.runner import SimulationRunner, TrialConditionHelper
 
-# 2. 核心算法模型与操作注册
+# 2. 核心算法模型與操作註冊
 from core.models import card_is_climax, card_is_normal, get_card_trigger_soul, get_card_level, clone_card_list
 from core.engine import stabilize
 from core.operations import register_all_operations
@@ -29,7 +29,7 @@ from simulator.statistics import (
     calc_wilson_score_interval, calc_significant_difference_threshold, format_elapsed_time
 )
 
-# 3. 视图层与组件
+# 3. 視圖層與組件
 from ui.views.left_column import LeftColumnView
 from ui.views.middle_column import MiddleColumnView
 from ui.views.right_column import RightColumnView
@@ -46,11 +46,11 @@ from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
 
 
 class App:
-    """主程序控制器类"""
+    """主程序控制器類"""
 
     def __init__(self, root: ctk.CTk):
         self.root = root
-        self.root.title("试制 二六式黑白双翼模拟器 ver.0.3 (重构完备版)")
+        self.root.title("試製 二六式黑白雙翼模擬器 ver.0.3 (重構完備版)")
         self.root.geometry("1500x820+0+0")
 
         register_all_operations()
@@ -60,7 +60,7 @@ class App:
         self.refresh_field_canvas_stats()
 
     # =========================================================================
-    # 1. 属性代理与服务接入 (Proxies to Services & Components)
+    # 1. 屬性代理與服務接入 (Proxies to Services & Components)
     # =========================================================================
 
     @property
@@ -116,10 +116,10 @@ class App:
 
     @property
     def enemy_front_roles(self) -> dict:
-        """动态提取敌方前列 1~3 的 Level 和 Power"""
+        """動態提取敵方前列 1~3 的 Level 和 Power"""
         result = {}
         for i in range(1, 4):
-            key_enemy = f"敌前列{i}"
+            key_enemy = f"敵前列{i}"
             key_short = f"前列{i}"
             cards = self.condition_zones.get(key_enemy, [])
             if cards:
@@ -136,14 +136,14 @@ class App:
         return result
 
     # =========================================================================
-    # 2. 布局初始化与主题同步 (Layout & Theme)
+    # 2. 佈局初始化與主題同步 (Layout & Theme)
     # =========================================================================
 
     def _init_condition_state(self):
         condition_state_service.init_state()
 
     def _build_layout(self):
-        """重构分栏布局：TPanedWindow + 三大独立组件面板"""
+        """重構分欄佈局：TPanedWindow + 三大獨立組件面板"""
         style = ttk.Style()
         style.theme_use("clam")
         
@@ -196,7 +196,7 @@ class App:
             self.add_condition_role()
 
     # =========================================================================
-    # 3. UI 委托助手 (Ops, Roles, Plans UI Delegates)
+    # 3. UI 委託助手 (Ops, Roles, Plans UI Delegates)
     # =========================================================================
 
     def refresh_advanced_roles_ui(self):
@@ -398,7 +398,7 @@ class App:
         PlanStepManager.update_role_options(self.condition_plan_steps, self.condition_roles)
 
     # =========================================================================
-    # 4. 战局与画布实时更新 (Canvas & State Formatting)
+    # 4. 戰局與畫布實時更新 (Canvas & State Formatting)
     # =========================================================================
 
     def refresh_field_canvas_stats(self):
@@ -406,7 +406,7 @@ class App:
             return
 
         stats = {}
-        for zone_name in ["卡组", "控制室", "库存", "思出"]:
+        for zone_name in ["牌組", "控制室", "能量", "思出"]:
             cards = self.condition_zones.get(zone_name, [])
             normal = sum(1 for c in cards if card_is_normal(c))
             climax = sum(1 for c in cards if card_is_climax(c))
@@ -419,10 +419,10 @@ class App:
 
         single_zone_cards = {}
         single_zones = [
-            "前列1", "前列2", "前列3", "后列1", "后列2",
-            "计时1", "计时2", "计时3", "计时4", "计时5", "计时6",
-            "等级1", "等级2", "等级3", "等级4", "CX",
-            "敌前列1", "敌前列2", "敌前列3"
+            "前列1", "前列2", "前列3", "後列1", "後列2",
+            "傷害1", "傷害2", "傷害3", "傷害4", "傷害5", "傷害6",
+            "等級1", "等級2", "等級3", "等級4", "CX",
+            "敵前列1", "敵前列2", "敵前列3"
         ]
         for zn in single_zones:
             cards = self.condition_zones.get(zn, [])
@@ -449,18 +449,18 @@ class App:
             return " → ".join(["潮" if card_is_climax(c) else "肉" for c in cards]) if cards else "空"
 
         return [
-            f"卡组: 潮{deck_cx}张，肉{deck_normal}张，共{len(deck)}张",
-            f"卡组潮位置(底起): {', '.join(map(str, deck_pos)) if deck_pos else '无'}",
-            f"库存区: 潮{stock_cx}张，肉{stock_normal}张，共{len(stock)}张",
-            f"库存区潮位置(底起): {', '.join(map(str, stock_pos)) if stock_pos else '无'}",
-            f"控制室: 潮{control_cx}张，肉{control_normal}张，共{len(control)}张",
-            f"等级区(底→顶): {format_cards_display(level)}",
-            f"计时区(底→顶): {format_cards_display(clock)}",
+            f"牌組: 潮{deck_cx}張，肉{deck_normal}張，共{len(deck)}張",
+            f"牌組潮位置(底起): {', '.join(map(str, deck_pos)) if deck_pos else '無'}",
+            f"能量區: 潮{stock_cx}張，肉{stock_normal}張，共{len(stock)}張",
+            f"能量區潮位置(底起): {', '.join(map(str, stock_pos)) if stock_pos else '無'}",
+            f"控制室: 潮{control_cx}張，肉{control_normal}張，共{len(control)}張",
+            f"等級區(底→頂): {format_cards_display(level)}",
+            f"傷害區(底→頂): {format_cards_display(clock)}",
         ]
 
     def show_condition_overview(self):
         win = ctk.CTkToplevel(self.root)
-        win.title("场上情况概览")
+        win.title("場上情況概覽")
         win.geometry("520x600")
         win.configure(fg_color=PALETTE["bg_main"])
 
@@ -488,47 +488,47 @@ class App:
         lines = []
         n, c, t = count_cards(self.condition_deck_cards)
         pos = climax_positions_top(self.condition_deck_cards)
-        pos_str = ", ".join(map(str, pos)) if pos else "无"
-        lines.append(f"卡组：潮{c}张，肉{n}张，共{t}张，潮位置(顶起)：{pos_str}")
+        pos_str = ", ".join(map(str, pos)) if pos else "無"
+        lines.append(f"牌組：潮{c}張，肉{n}張，共{t}張，潮位置(頂起)：{pos_str}")
 
         n, c, t = count_cards(self.condition_control_cards)
-        lines.append(f"控制室：潮{c}张，肉{n}张，共{t}张")
+        lines.append(f"控制室：潮{c}張，肉{n}張，共{t}張")
 
         n, c, t = count_cards(self.condition_stock_cards)
         pos = climax_positions_top(self.condition_stock_cards)
-        pos_str = ", ".join(map(str, pos)) if pos else "无"
-        lines.append(f"库存区：潮{c}张，肉{n}张，共{t}张，潮位置(顶起)：{pos_str}")
+        pos_str = ", ".join(map(str, pos)) if pos else "無"
+        lines.append(f"能量區：潮{c}張，肉{n}張，共{t}張，潮位置(頂起)：{pos_str}")
 
         n, c, t = count_cards(self.condition_memory_cards)
-        lines.append(f"思出区：潮{c}张，肉{n}张，共{t}张\n")
+        lines.append(f"思出區：潮{c}張，肉{n}張，共{t}張\n")
 
         for i in range(1, 4):
             cards = self.condition_front_cards[f"前列{i}"]
-            detail = f"卡名:{cards[0].get('name','无')} 等级:{cards[0].get('level','0')} 力量:{cards[0].get('power','500')}" if cards else "空"
+            detail = f"卡名:{cards[0].get('name','無')} 等級:{cards[0].get('level','0')} 力量:{cards[0].get('power','500')}" if cards else "空"
             lines.append(f"前列{i}：{detail}")
 
         for i in range(1, 3):
-            cards = self.condition_back_cards[f"后列{i}"]
-            detail = f"卡名:{cards[0].get('name','无')} 等级:{cards[0].get('level','0')} 力量:{cards[0].get('power','500')}" if cards else "空"
-            lines.append(f"后列{i}：{detail}")
+            cards = self.condition_back_cards[f"後列{i}"]
+            detail = f"卡名:{cards[0].get('name','無')} 等級:{cards[0].get('level','0')} 力量:{cards[0].get('power','500')}" if cards else "空"
+            lines.append(f"後列{i}：{detail}")
 
         cx_cards = self.condition_cx_cards
-        detail = f"种类:{cx_cards[0].get('kind','无')} 触发:{cx_cards[0].get('trigger','无')}" if cx_cards else "空"
-        lines.append(f"CX区：{detail}\n")
+        detail = f"種類:{cx_cards[0].get('kind','無')} 觸發:{cx_cards[0].get('trigger','無')}" if cx_cards else "空"
+        lines.append(f"CX區：{detail}\n")
 
-        level_order = ["等级1", "等级2", "等级3", "等级4"]
-        level_display = [self.condition_level_cards[k][0].get("kind", "无") for k in level_order if self.condition_level_cards[k]]
-        lines.append(f"等级区(底→顶)：{' → '.join(level_display) if level_display else '空'}")
+        level_order = ["等級1", "等級2", "等級3", "等級4"]
+        level_display = [self.condition_level_cards[k][0].get("kind", "無") for k in level_order if self.condition_level_cards[k]]
+        lines.append(f"等級區(底→頂)：{' → '.join(level_display) if level_display else '空'}")
 
-        clock_order = [f"计时{i}" for i in range(1, 8)]
-        clock_display = [self.condition_clock_cards[k][0].get("kind", "无") for k in clock_order if self.condition_clock_cards[k]]
-        lines.append(f"计时区(底→顶)：{' → '.join(clock_display) if clock_display else '空'}")
+        clock_order = [f"傷害{i}" for i in range(1, 8)]
+        clock_display = [self.condition_clock_cards[k][0].get("kind", "無") for k in clock_order if self.condition_clock_cards[k]]
+        lines.append(f"傷害區(底→頂)：{' → '.join(clock_display) if clock_display else '空'}")
 
         text.insert(tk.END, "\n".join(lines))
         text.configure(state="disabled")
 
     # =========================================================================
-    # 5. 模拟引擎调度与解析入口 (Simulation Runners)
+    # 5. 模擬引擎調度與解析入口 (Simulation Runners)
     # =========================================================================
 
     def _get_fixed_state_params(self) -> dict:
@@ -609,7 +609,7 @@ class App:
                 0, lambda: self._on_sim_done(winrate, avg_dmg, elapsed, sim_times)
             ),
             on_error=lambda err: self.root.after(
-                0, lambda: messagebox.showerror("模拟异常", f"多次模拟中途发生错误:\n{err}")
+                0, lambda: messagebox.showerror("模擬異常", f"多次模擬中途發生錯誤:\n{err}")
             )
         )
 
@@ -636,7 +636,7 @@ class App:
                 0, lambda: self._on_sim_done(winrate, avg_dmg, elapsed, sim_times)
             ),
             on_error=lambda err: self.root.after(
-                0, lambda: messagebox.showerror("模拟异常", f"高级模式模拟错误:\n{err}")
+                0, lambda: messagebox.showerror("模擬異常", f"高級模式模擬錯誤:\n{err}")
             )
         )
 
@@ -670,7 +670,7 @@ class App:
                 0, lambda: self._on_sim_done(winrate, avg_dmg, elapsed, sim_times)
             ),
             on_error=lambda err: self.root.after(
-                0, lambda: messagebox.showerror("模拟异常", f"工况模式模拟错误:\n{err}")
+                0, lambda: messagebox.showerror("模擬異常", f"工況模式模擬錯誤:\n{err}")
             )
         )
 
@@ -697,7 +697,7 @@ class App:
             all_steps.extend(steps)
             if over: game_over = True
 
-        self._show_single_test_log_window("高级模式单次测试日志", all_steps, game_over)
+        self._show_single_test_log_window("高級模式單次測試日誌", all_steps, game_over)
 
     def run_condition_single_test(self):
         fixed = self._get_fixed_state_params()
@@ -714,7 +714,7 @@ class App:
         cond_helper = TrialConditionHelper(cond_deck, cond_control, cond_stock, cond_level, cond_clock)
 
         if cond_helper.stabilize_condition():
-            self._show_single_test_log_window("工况模式单次测试日志", [], game_over=False, our_failed=True)
+            self._show_single_test_log_window("工況模式單次測試日誌", [], game_over=False, our_failed=True)
             return
 
         execution_plan, roles_params = self._get_condition_execution_plan()
@@ -762,10 +762,10 @@ class App:
                     all_steps.extend(c_steps)
                     if c_over: game_over = True
 
-        self._show_single_test_log_window("工况模式单次测试日志", all_steps, game_over, our_failed=cond_helper.failed)
+        self._show_single_test_log_window("工況模式單次測試日誌", all_steps, game_over, our_failed=cond_helper.failed)
 
     def _show_single_test_log_window(self, title: str, steps_info: list, game_over: bool, our_failed: bool = False):
-        test_type = "高级" if "高级" in title else ("工况" if "工况" in title else "常规")
+        test_type = "高級" if "高級" in title else ("工況" if "工況" in title else "常規")
         fixed = self._get_fixed_state_params()
         deck, control, stock, level, clock = self._build_initial_state(fixed)
         b_lines = self._format_zone_state(deck, control, stock, level, clock)
@@ -783,18 +783,18 @@ class App:
         else: progress_label.config(text=f"{pct}%")
 
     def _on_sim_done(self, winrate: float, avg_dmg: float, elapsed: float, sim_times: int):
-        self.right_col.multi_winrate_label.configure(text=f"斩杀率: {winrate:.2f}%")
-        self.right_col.multi_avg_damage_label.configure(text=f"平均伤害: {avg_dmg:.2f}")
+        self.right_col.multi_winrate_label.configure(text=f"斬殺率: {winrate:.2f}%")
+        self.right_col.multi_avg_damage_label.configure(text=f"平均傷害: {avg_dmg:.2f}")
 
         lower, upper = calc_wilson_score_interval(winrate, sim_times)
         diff_threshold = calc_significant_difference_threshold(winrate, sim_times)
 
-        self.right_col.multi_ci_label.configure(text=f"95%置信区间: [{lower:.2f}%, {upper:.2f}%]")
-        self.right_col.multi_diff_label.configure(text=f"显著差异最小差值: {diff_threshold:.2f} 个百分点")
-        self.right_col.multi_time_label.configure(text=f"运行时间: {format_elapsed_time(elapsed)}")
+        self.right_col.multi_ci_label.configure(text=f"95%置信區間: [{lower:.2f}%, {upper:.2f}%]")
+        self.right_col.multi_diff_label.configure(text=f"顯著差異最小差值: {diff_threshold:.2f} 個百分點")
+        self.right_col.multi_time_label.configure(text=f"運行時間: {format_elapsed_time(elapsed)}")
 
     # =========================================================================
-    # 6. 状态持久化与弹窗路由 (Persistence & Dialog Openers)
+    # 6. 狀態持久化與彈窗路由 (Persistence & Dialog Openers)
     # =========================================================================
 
     def save_condition_state(self):
@@ -823,9 +823,9 @@ class App:
             try:
                 with open(file_path, "w", encoding="utf-8") as f:
                     json.dump(data, f, ensure_ascii=False, indent=2)
-                messagebox.showinfo("保存成功", "场上情况与工况配置已成功保存至 JSON 文件。")
+                messagebox.showinfo("保存成功", "場上情況與工況配置已成功保存至 JSON 文件。")
             except Exception as e:
-                messagebox.showerror("保存失败", f"保存 JSON 文件失败：\n{e}")
+                messagebox.showerror("保存失敗", f"保存 JSON 文件失敗：\n{e}")
 
     def load_condition_state(self):
         file_path = filedialog.askopenfilename(filetypes=[("JSON Files", "*.json")])
@@ -861,9 +861,9 @@ class App:
                     else:
                         self._add_op(role_obj["ops"], -1, "condition", role=role_obj)
 
-                self.refresh_condition_roles_ui()  # 🌟 现在这个别名方法已补全
+                self.refresh_condition_roles_ui()  # 🌟 現在這個別名方法已補全
 
-            # 5. 恢复中栏执行计划步骤
+            # 5. 恢復中欄執行計劃步驟
             if "plan" in data and isinstance(data["plan"], list):
                 self.condition_plan_steps.clear()
                 for pdata in data["plan"]:
@@ -878,26 +878,26 @@ class App:
 
             self.middle_col.field_component.canvas.event_generate("<Configure>")
             self.refresh_field_canvas_stats()
-            messagebox.showinfo("导入成功", "场上情况与工况配置已成功导入。")
+            messagebox.showinfo("導入成功", "場上情況與工況配置已成功導入。")
         except Exception as e:
-            messagebox.showerror("导入失败", f"读取 JSON 文件失败：\n{e}")
+            messagebox.showerror("導入失敗", f"讀取 JSON 文件失敗：\n{e}")
 
     def _hydrate_op(self, raw_op: dict) -> dict:
-        """🌟 修复版水化反序列化函数：精准映射 steps_ops 与 nested_ops，确保多步骤操作的详细配置不丢失"""
+        """🌟 修復版水化反序列化函數：精準映射 steps_ops 與 nested_ops，確保多步驟操作的詳細配置不丟失"""
         if not isinstance(raw_op, dict):
-            return {"type_var": tk.StringVar(value="普通伤害"), "controls": {}, "params": {}}
+            return {"type_var": tk.StringVar(value="普通傷害"), "controls": {}, "params": {}}
 
         if "type_var" in raw_op and isinstance(raw_op["type_var"], tk.StringVar):
             return raw_op
 
-        type_name = raw_op.get("type", "普通伤害")
+        type_name = raw_op.get("type", "普通傷害")
         ui_op = {"type_var": tk.StringVar(value=type_name), "controls": {}, "params": {}}
 
         for key, val in raw_op.items():
             if key == "type":
                 continue
 
-            # 🌟 关键修复：特规映射 steps -> steps_ops 和 nested_ops -> nested_ops
+            # 🌟 關鍵修復：特規映射 steps -> steps_ops 和 nested_ops -> nested_ops
             if key == "steps":
                 hydrated_steps = [self._hydrate_op(sub) for sub in val] if isinstance(val, list) else []
                 ui_op["params"]["steps_ops"] = hydrated_steps
@@ -936,4 +936,4 @@ class App:
         webbrowser.open("manual.html")
 
     def show_author_notes(self):
-        messagebox.showinfo("作者说明", "试制 二六式黑白双翼模拟器 ver.0.3\n作者: Sillyslark\n重构完备版。")
+        messagebox.showinfo("作者說明", "試製 二六式黑白雙翼模擬器 ver.0.3\n作者: Sillyslark\n重構完備版。")

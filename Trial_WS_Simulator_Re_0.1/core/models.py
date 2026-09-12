@@ -1,21 +1,21 @@
 # -*- coding: utf-8 -*-
 """
-核心领域模型 (Core Domain Models)
-包含了卡牌、卡牌区域、游戏全局状态与角色状态的定义。
+核心領域模型 (Core Domain Models)
+包含了卡牌、卡牌區域、遊戲全局狀態與角色狀態的定義。
 """
 
 import copy
 from typing import List, Dict, Union, Any, Optional
 
 
-# ==================== 鸭子类型辅助函数 ====================
+# ==================== 鴨子類型輔助函數 ====================
 
 def card_is_climax(card: Union[str, dict, "Card"]) -> bool:
     if isinstance(card, str):
-        return card == "高潮"
+        return card == "名場面"
     elif isinstance(card, dict):
         kind = card.get("kind") or card.get("type")
-        return kind == "高潮"
+        return kind == "名場面"
     elif hasattr(card, "is_climax"):
         return card.is_climax()
     return False
@@ -34,7 +34,7 @@ def card_is_normal(card: Union[str, dict, "Card"]) -> bool:
 
 def get_card_kind(card: Union[str, dict, "Card"]) -> str:
     if isinstance(card, str):
-        return "高潮" if card == "高潮" else "角色"
+        return "名場面" if card == "名場面" else "角色"
     elif isinstance(card, dict):
         return card.get("kind") or card.get("type") or "角色"
     elif hasattr(card, "kind"):
@@ -56,7 +56,7 @@ def get_card_level(card: Union[str, dict, "Card"]) -> int:
 
 
 def get_card_soul(card: Union[str, dict, "Card"]) -> int:
-    """获取卡牌的基础魂点（默认为 1）"""
+    """獲取卡牌的基礎魂點（默認為 1）"""
     if isinstance(card, str):
         return 1 if card == "普通" else 0
     elif isinstance(card, dict):
@@ -70,11 +70,11 @@ def get_card_soul(card: Union[str, dict, "Card"]) -> int:
 
 
 def get_card_base_soul(card: Union[str, dict, "Card"]) -> int:
-    """获取卡牌的基础魂点（与 get_card_soul 保持一致）"""
+    """獲取卡牌的基礎魂點（與 get_card_soul 保持一致）"""
     return get_card_soul(card)
 
 def get_card_trigger_soul(card: Union[str, dict, "Card"]) -> int:
-    """获取卡牌判定翻顶牌时的触发魂加成（默认为 0）"""
+    """獲取卡牌判定翻頂牌時的觸發魂加成（默認為 0）"""
     if isinstance(card, str):
         return 0
     elif isinstance(card, dict):
@@ -104,7 +104,7 @@ def clone_card_list(cards: List[Any]) -> List[Any]:
         return copy.copy(cards)
 
 
-# ==================== 卡牌对象 ====================
+# ==================== 卡牌對象 ====================
 
 class Card:
     def __init__(
@@ -112,9 +112,9 @@ class Card:
         kind: str = "角色",
         level: Union[int, str] = 0,
         cost: Union[int, str] = 0,
-        soul: Union[int, str] = 1,           # 基础魂 (Base Soul, 默认 1)
-        trigger: str = "无",
-        trigger_soul: Union[int, str] = 0,   # 触发魂 (Trigger Soul, 默认 0)
+        soul: Union[int, str] = 1,           # 基礎魂 (Base Soul, 默認 1)
+        trigger: str = "無",
+        trigger_soul: Union[int, str] = 0,   # 觸發魂 (Trigger Soul, 默認 0)
         base_soul: Optional[Union[int, str]] = None,
     ):
         self.kind = str(kind)
@@ -154,12 +154,12 @@ class Card:
             level=d.get("level", 0),
             cost=d.get("cost", 0),
             soul=d.get("soul", d.get("base_soul", 1)),
-            trigger=d.get("trigger", "无"),
+            trigger=d.get("trigger", "無"),
             trigger_soul=d.get("trigger_soul", 0),
             base_soul=d.get("base_soul", 1),
         )
 
-# ==================== 游戏状态 ====================
+# ==================== 遊戲狀態 ====================
 
 class GameState:
     def __init__(
@@ -184,7 +184,7 @@ class GameState:
         self.hand = hand if hand is not None else []
         self.cx = cx if cx is not None else []
         self.front = front if front is not None else {f"前列{i}": [] for i in range(1, 4)}
-        self.back = back if back is not None else {f"后列{i}": [] for i in range(1, 3)}
+        self.back = back if back is not None else {f"後列{i}": [] for i in range(1, 3)}
         self.failed = False
 
     def count_climax(self, zone_name: str = "deck") -> int:
@@ -222,7 +222,7 @@ class GameState:
         return new_state
 
 
-# ==================== 角色状态 ====================
+# ==================== 角色狀態 ====================
 
 class RoleState:
     def __init__(

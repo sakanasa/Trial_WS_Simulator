@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-主界面左侧面板视图 (Left Column View) - Geek Indigo 统一样式高颜值版
+主界面左側面板視圖 (Left Column View) - Geek Indigo 統一樣式高顏值版
 """
 
 import tkinter as tk
@@ -15,7 +15,7 @@ from ui.components.left_column.char_sim_card import CharSimCard
 from ui.components.left_column.single_op_card import SingleOpCard
 
 class LeftColumnView(ctk.CTkFrame):  
-    """左侧面板配置视图类（底部固定 + 上部独立滚动）"""
+    """左側面板配置視圖類（底部固定 + 上部獨立滾動）"""
 
     def __init__(
         self,
@@ -39,8 +39,8 @@ class LeftColumnView(ctk.CTkFrame):
         self.stock_normal = tk.IntVar(value=7)
         self.stock_climax = tk.IntVar(value=0)
 
-        self.level_vars = [tk.StringVar(value="肉" if i >= 2 else "无") for i in range(4)]
-        self.clock_vars = [tk.StringVar(value="肉" if i < 4 else "无") for i in range(6)]
+        self.level_vars = [tk.StringVar(value="肉" if i >= 2 else "無") for i in range(4)]
+        self.clock_vars = [tk.StringVar(value="肉" if i < 4 else "無") for i in range(6)]
 
     def _create_card_frame(self, parent: Any, title_text: str) -> ctk.CTkFrame:
         card = ctk.CTkFrame(parent, fg_color=PALETTE["card_bg"], corner_radius=12, border_width=2, border_color=PALETTE["card_border"])
@@ -73,13 +73,13 @@ class LeftColumnView(ctk.CTkFrame):
             "text_color": PALETTE["text_main"]
         }
 
-        # 1. 底部固定区域
+        # 1. 底部固定區域
         btn_row = ctk.CTkFrame(self, fg_color="transparent")
         btn_row.pack(side=tk.BOTTOM, fill=tk.X, pady=6, padx=6)
 
         ctk.CTkButton(
             btn_row, 
-            text="AI说明书", 
+            text="AI說明書", 
             command=self.app.open_ai_manual,
             fg_color=PALETTE["secondary"], 
             hover_color=PALETTE["secondary_hover"], 
@@ -90,7 +90,7 @@ class LeftColumnView(ctk.CTkFrame):
 
         ctk.CTkButton(
             btn_row, 
-            text="切换主题", 
+            text="切換主題", 
             command=self.toggle_theme,
             fg_color=PALETTE["secondary"], 
             hover_color=PALETTE["secondary_hover"], 
@@ -99,42 +99,42 @@ class LeftColumnView(ctk.CTkFrame):
             width=100
         ).pack(side=tk.RIGHT, padx=2)
 
-        # 2. 上部独立滚动区域
+        # 2. 上部獨立滾動區域
         scroll_content = ctk.CTkScrollableFrame(self, fg_color="transparent")
         scroll_content.pack(side=tk.TOP, fill=tk.BOTH, expand=True, padx=6, pady=(6, 0))
 
-        # 2.1 卡组设置
-        deck_card = self._create_card_frame(scroll_content, "卡组设置")
+        # 2.1 牌組設置
+        deck_card = self._create_card_frame(scroll_content, "牌組設置")
         d_grid = ctk.CTkFrame(deck_card, fg_color="transparent")
         d_grid.pack(fill=tk.X, padx=10, pady=(0, 8))
 
-        ctk.CTkLabel(d_grid, text="肉数量:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=0, column=0, sticky="w", padx=2)
+        ctk.CTkLabel(d_grid, text="肉數量:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=0, column=0, sticky="w", padx=2)
         ctk.CTkEntry(d_grid, textvariable=self.deck_normal, **entry_opts).grid(row=0, column=1, padx=6, pady=2)
-        ctk.CTkLabel(d_grid, text="潮数量:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=1, column=0, sticky="w", padx=2)
+        ctk.CTkLabel(d_grid, text="潮數量:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=1, column=0, sticky="w", padx=2)
         ctk.CTkEntry(d_grid, textvariable=self.deck_climax, **entry_opts).grid(row=1, column=1, padx=6, pady=2)
 
-        # 2.2 控制室设置
-        control_card = self._create_card_frame(scroll_content, "控制室设置")
+        # 2.2 控制室設置
+        control_card = self._create_card_frame(scroll_content, "控制室設置")
         c_grid = ctk.CTkFrame(control_card, fg_color="transparent")
         c_grid.pack(fill=tk.X, padx=10, pady=(0, 8))
 
-        ctk.CTkLabel(c_grid, text="肉数量:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=0, column=0, sticky="w", padx=2)
+        ctk.CTkLabel(c_grid, text="肉數量:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=0, column=0, sticky="w", padx=2)
         ctk.CTkEntry(c_grid, textvariable=self.control_normal, **entry_opts).grid(row=0, column=1, padx=6, pady=2)
-        ctk.CTkLabel(c_grid, text="潮数量:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=1, column=0, sticky="w", padx=2)
+        ctk.CTkLabel(c_grid, text="潮數量:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=1, column=0, sticky="w", padx=2)
         ctk.CTkEntry(c_grid, textvariable=self.control_climax, **entry_opts).grid(row=1, column=1, padx=6, pady=2)
 
-        # 2.3 库存区设置
-        stock_card = self._create_card_frame(scroll_content, "库存区设置")
+        # 2.3 能量區設置
+        stock_card = self._create_card_frame(scroll_content, "能量區設置")
         s_grid = ctk.CTkFrame(stock_card, fg_color="transparent")
         s_grid.pack(fill=tk.X, padx=10, pady=(0, 8))
 
-        ctk.CTkLabel(s_grid, text="肉数量:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=0, column=0, sticky="w", padx=2)
+        ctk.CTkLabel(s_grid, text="肉數量:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=0, column=0, sticky="w", padx=2)
         ctk.CTkEntry(s_grid, textvariable=self.stock_normal, **entry_opts).grid(row=0, column=1, padx=6, pady=2)
-        ctk.CTkLabel(s_grid, text="潮数量:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=1, column=0, sticky="w", padx=2)
+        ctk.CTkLabel(s_grid, text="潮數量:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).grid(row=1, column=0, sticky="w", padx=2)
         ctk.CTkEntry(s_grid, textvariable=self.stock_climax, **entry_opts).grid(row=1, column=1, padx=6, pady=2)
 
-        # 2.4 等级区与计时区
-        lc_card = self._create_card_frame(scroll_content, "等级区与计时区设置")
+        # 2.4 等級區與傷害區
+        lc_card = self._create_card_frame(scroll_content, "等級區與傷害區設置")
         grid_frame = ctk.CTkFrame(lc_card, fg_color="transparent")
         grid_frame.pack(fill=tk.X, padx=10, pady=(0, 8))
 
@@ -156,7 +156,7 @@ class LeftColumnView(ctk.CTkFrame):
         )
         clock_box.grid(row=4, column=0, columnspan=6, padx=0, pady=(2, 0), sticky="ew")
 
-        options = ["无", "肉", "潮"]
+        options = ["無", "肉", "潮"]
 
         for row_idx, var in enumerate(self.level_vars):
             AppDropdown(level_box, variable=var, values=options, width=58, height=28).grid(row=row_idx, column=0, padx=4, pady=3)
@@ -164,7 +164,7 @@ class LeftColumnView(ctk.CTkFrame):
         for col_idx, var in enumerate(self.clock_vars):
             AppDropdown(clock_box, variable=var, values=options, width=58, height=28).grid(row=0, column=col_idx, padx=3, pady=4)
 
-        # 2.5 单次操作模拟
+        # 2.5 單次操作模擬
         self.single_op_card = SingleOpCard(
             scroll_content,
             app_controller=self.app,
@@ -172,7 +172,7 @@ class LeftColumnView(ctk.CTkFrame):
         )
         self.single_op_card.pack(fill=tk.X, pady=4, padx=2)
 
-        # 2.6 🌟 单角色操作模拟：实例化独立组件并传入 on_execute 回调
+        # 2.6 🌟 單角色操作模擬：實例化獨立組件並傳入 on_execute 回調
         self.char_sim_card = CharSimCard(
             scroll_content, 
             on_execute=self.app.execute_character_sim,

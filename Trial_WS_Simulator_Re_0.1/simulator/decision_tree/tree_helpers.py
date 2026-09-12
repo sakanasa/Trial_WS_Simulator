@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-决策树数学与排列辅助工具 (Decision Tree Helpers)
-包含组合数 nCr、多元超几何分布抽卡、有效对战组等价排列算法与文本格式化。
+決策樹數學與排列輔助工具 (Decision Tree Helpers)
+包含組合數 nCr、多元超幾何分佈抽卡、有效對戰組等價排列算法與文本格式化。
 """
 
 import math
@@ -21,18 +21,18 @@ def format_card_info(card: Any) -> str:
     if not card:
         return "[空]"
     if isinstance(card, str):
-        kind = "高潮" if card == "高潮" else "角色"
-        return f"[{kind}] Lv.0, 触发魂0"
+        kind = "名場面" if card == "名場面" else "角色"
+        return f"[{kind}] Lv.0, 觸發魂0"
     
     kind = get_card_kind(card)
     name = card.get("name", kind) if isinstance(card, dict) else getattr(card, "name", kind)
     level = get_card_level(card)
     trig_soul = get_card_trigger_soul(card)
     
-    if not name or name.startswith("新自定义") or name == "自定义角色":
+    if not name or name.startswith("新自定義") or name == "自定義角色":
         name = kind
         
-    return f"[{name}] Lv.{level}, 触发魂{trig_soul}"
+    return f"[{name}] Lv.{level}, 觸發魂{trig_soul}"
 
 
 def get_umi_draw_combinations(deck_cards: list, k: int) -> List[Tuple[List[dict], float]]:
@@ -42,7 +42,7 @@ def get_umi_draw_combinations(deck_cards: list, k: int) -> List[Tuple[List[dict]
     groups: Dict[tuple, List[dict]] = {}
     for card in deck_cards:
         if isinstance(card, str):
-            sig = ("高潮" if card == "高潮" else "角色", 0, 0, 1, card)
+            sig = ("名場面" if card == "名場面" else "角色", 0, 0, 1, card)
         else:
             sig = (
                 get_card_kind(card),
@@ -127,10 +127,10 @@ def group_slots_by_equivalence(available_slots: List[str], condition_front_cards
             display_text = rep_slot
         elif len(slot_list) == 2:
             other_slot = [s for s in slot_list if s != rep_slot][0]
-            display_text = f"{rep_slot}(与{other_slot}等价)"
+            display_text = f"{rep_slot}(與{other_slot}等價)"
         else:
             others = "、".join([s for s in slot_list if s != rep_slot])
-            display_text = f"{rep_slot}(与{others}等价)"
+            display_text = f"{rep_slot}(與{others}等價)"
         result.append((rep_slot, slot_list, display_text))
 
     return result
@@ -202,7 +202,7 @@ def calc_damage_branches(snapshot: Any, damage: int) -> List[Tuple[str, float, i
     T = N + C
 
     if T <= 0 or damage <= 0:
-        return [("命中 0 点", 1.0, 0, 0, 0)]
+        return [("命中 0 點", 1.0, 0, 0, 0)]
 
     branches = []
     prob_sum = 0.0
@@ -215,7 +215,7 @@ def calc_damage_branches(snapshot: Any, damage: int) -> List[Tuple[str, float, i
 
         p_k = p_prev * (C / cur_T)
         if p_k > 1e-6:
-            branches.append((f"在第 {k} 张取消", p_k, k - 1, 1, k))
+            branches.append((f"在第 {k} 張取消", p_k, k - 1, 1, k))
             prob_sum += p_k
 
         p_prev *= (cur_N / cur_T)
@@ -227,7 +227,7 @@ def calc_damage_branches(snapshot: Any, damage: int) -> List[Tuple[str, float, i
         for i in range(damage):
             p_hit *= (N - i) / (T - i)
         if p_hit > 1e-6:
-            branches.append((f"全部命中 {damage} 点", p_hit, damage, 0, 0))
+            branches.append((f"全部命中 {damage} 點", p_hit, damage, 0, 0))
             prob_sum += p_hit
 
     if prob_sum > 0:

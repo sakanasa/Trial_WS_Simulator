@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-决策树数据模型与局势快照 (Decision Tree Models & State Snapshot)
-包含 TreeNode 树节点类、GameStateSnapshot 状态快照类以及 pure-data 数据清洗函数。
+決策樹數據模型與局勢快照 (Decision Tree Models & State Snapshot)
+包含 TreeNode 樹節點類、GameStateSnapshot 狀態快照類以及 pure-data 數據清洗函數。
 """
 
 import copy
@@ -12,7 +12,7 @@ from typing import List, Dict, Any, Tuple, Optional, Callable
 
 
 def sanitize_card_dict(card: Any) -> Any:
-    """从卡牌/操作字典中彻底剔除所有 Tkinter/CTk 控件与 Variable 句柄，只留纯数据"""
+    """從卡牌/操作字典中徹底剔除所有 Tkinter/CTk 控件與 Variable 句柄，只留純數據"""
     if isinstance(card, str):
         return card
     if not isinstance(card, dict):
@@ -34,7 +34,7 @@ def sanitize_card_dict(card: Any) -> Any:
 
 
 def sanitize_zone_data(zone_data: Any) -> Any:
-    """递归清理卡区字典或列表中的卡牌数据，防止 deepcopy 抛出 pickle tkapp 错误"""
+    """遞歸清理卡區字典或列表中的卡牌數據，防止 deepcopy 拋出 pickle tkapp 錯誤"""
     if isinstance(zone_data, list):
         return [sanitize_card_dict(c) for c in zone_data]
     elif isinstance(zone_data, dict):
@@ -43,7 +43,7 @@ def sanitize_zone_data(zone_data: Any) -> Any:
 
 
 def _sanitize_enemy_front_roles(raw_roles: dict) -> dict:
-    """清洗敌方前列角色数据，将 tk.StringVar/tk.IntVar 转为原生类型"""
+    """清洗敵方前列角色數據，將 tk.StringVar/tk.IntVar 轉為原生類型"""
     clean = {}
     if not raw_roles:
         return clean
@@ -67,7 +67,7 @@ def _sanitize_enemy_front_roles(raw_roles: dict) -> dict:
 
 
 class GameStateSnapshot:
-    """局势状态快照类"""
+    """局勢狀態快照類"""
 
     def __init__(
         self,
@@ -170,7 +170,7 @@ class GameStateSnapshot:
             random.shuffle(self.my_deck)
             if self.my_deck:
                 top = self.my_deck.pop()
-                # 依赖 core.engine 的规则进行刷新伤害判定
+                # 依賴 core.engine 的規則進行刷新傷害判定
                 from core.engine import add_cards_to_clock
                 add_cards_to_clock(self.my_clock, [top], self.my_level, self.my_control, lambda: False)
 
@@ -185,7 +185,7 @@ class GameStateSnapshot:
 
 
 class TreeNode:
-    """决策树节点结构类"""
+    """決策樹節點結構類"""
 
     def __init__(
         self,

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-执行计划解析器 (Execution Plan Parser)
-负责将界面上的角色配置与执行计划步骤转译为模拟引擎可执行的 tuple 顺序列表 (role_idx, start_op_idx, end_op_idx) 及 roles_config。
+執行計劃解析器 (Execution Plan Parser)
+負責將界面上的角色配置與執行計劃步驟轉譯為模擬引擎可執行的 tuple 順序列表 (role_idx, start_op_idx, end_op_idx) 及 roles_config。
 """
 
 from typing import Tuple, List, Dict, Any
@@ -9,7 +9,7 @@ from utils.registry import registry
 
 
 class PlanParser:
-    """执行计划解析与转换工具类"""
+    """執行計劃解析與轉換工具類"""
 
     @classmethod
     def parse_execution_plan(
@@ -18,7 +18,7 @@ class PlanParser:
         plan_steps_list: List[dict]
     ) -> Tuple[List[Tuple[int, int, int]], List[Dict[str, Any]]]:
         """
-        通用解析函数：将界面角色列表与步骤行转换为引擎执行序列
+        通用解析函數：將界面角色列表與步驟行轉換為引擎執行序列
         返回: (execution_plan, roles_config)
         """
         roles_config = [

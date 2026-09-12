@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""单次测试日志选项卡组件"""
+"""單次測試日誌選項卡組件"""
 
 import tkinter as tk
 import customtkinter as ctk
@@ -17,7 +17,7 @@ class SingleTestTab(ctk.CTkFrame):
         self.scroll_frame = ctk.CTkScrollableFrame(self, fg_color="transparent")
         self.scroll_frame.pack(fill=tk.BOTH, expand=True)
 
-        self.init_card = InitStateCard(self.scroll_frame, default_summary="单次测试评估结果：未测试")
+        self.init_card = InitStateCard(self.scroll_frame, default_summary="單次測試評估結果：未測試")
         self.init_card.pack(fill=tk.X, pady=(4, 6), padx=2)
 
         self.result_frame = ctk.CTkFrame(self.scroll_frame, fg_color="transparent")

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-主界面中栏面板视图 (Middle Column View) - 统一浅色高颜值适配版
-包含了多次模拟配置、模式切换（常规/高级/工况）、动态角色管理、计划列表与执行控制。
+主界面中欄面板視圖 (Middle Column View) - 統一淺色高顏值適配版
+包含了多次模擬配置、模式切換（常規/高級/工況）、動態角色管理、計劃列表與執行控制。
 """
 
 import tkinter as tk
@@ -13,13 +13,13 @@ from utils.registry import registry
 from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
 from ui.components.middle_column.reg_sim_tab import RegSimTab
 from ui.components.middle_column.adv_sim_tab import AdvSimTab
-from ui.components.middle_column.cond_sim_tab import CondSimTab  # 🌟 1. 引入工况模式组件
+from ui.components.middle_column.cond_sim_tab import CondSimTab  # 🌟 1. 引入工況模式組件
 
 
 class MiddleColumnView(ctk.CTkFrame):
-    """中栏多模式模拟配置视图"""
+    """中欄多模式模擬配置視圖"""
 
-    # 常规模式透传属性
+    # 常規模式透傳屬性
     @property
     def reg_sim_times(self): return self.reg_tab.reg_sim_times
     @property
@@ -29,7 +29,7 @@ class MiddleColumnView(ctk.CTkFrame):
     @property
     def reg_ops_frame(self): return self.reg_tab.reg_ops_frame
 
-    # 高级模式透传属性
+    # 高級模式透傳屬性
     @property
     def adv_sim_times(self): return self.adv_tab.adv_sim_times
     @property
@@ -41,7 +41,7 @@ class MiddleColumnView(ctk.CTkFrame):
     @property
     def plan_list_frame(self): return self.adv_tab.plan_list_frame
 
-    # 🌟 2. 工况模式透传属性
+    # 🌟 2. 工況模式透傳屬性
     @property
     def cond_sim_times(self): return self.cond_tab.cond_sim_times
     @property
@@ -59,7 +59,7 @@ class MiddleColumnView(ctk.CTkFrame):
         super().__init__(parent, fg_color=("#F1F5F9", "#111827"), **kwargs)
         self.app = app_controller
 
-        self.multi_mode_var = tk.StringVar(value="常规")
+        self.multi_mode_var = tk.StringVar(value="常規")
         self._build_ui()
 
     def _build_ui(self):
@@ -84,7 +84,7 @@ class MiddleColumnView(ctk.CTkFrame):
 
         self.batch_btn = ctk.CTkButton(
             title_row, 
-            text="批量统计", 
+            text="批量統計", 
             command=lambda: self.app.open_batch_statistics(),
             width=75,
             **btn_aux_opts
@@ -93,7 +93,7 @@ class MiddleColumnView(ctk.CTkFrame):
 
         self.dt_btn = ctk.CTkButton(
             title_row, 
-            text="决策树", 
+            text="決策樹", 
             command=lambda: self.app.open_decision_tree_dialog(),
             width=65,
             **btn_aux_opts
@@ -109,22 +109,22 @@ class MiddleColumnView(ctk.CTkFrame):
             "corner_radius": 6
         }
 
-        self.btn_reg = ctk.CTkButton(self.mode_btn_frame, text="常规", command=lambda: self.select_mode("常规"), **tab_opts)
+        self.btn_reg = ctk.CTkButton(self.mode_btn_frame, text="常規", command=lambda: self.select_mode("常規"), **tab_opts)
         self.btn_reg.pack(side=tk.LEFT, padx=1)
 
-        self.btn_adv = ctk.CTkButton(self.mode_btn_frame, text="高级", command=lambda: self.select_mode("高级"), **tab_opts)
+        self.btn_adv = ctk.CTkButton(self.mode_btn_frame, text="高級", command=lambda: self.select_mode("高級"), **tab_opts)
         self.btn_adv.pack(side=tk.LEFT, padx=1)
 
-        self.btn_cond = ctk.CTkButton(self.mode_btn_frame, text="工况", command=lambda: self.select_mode("工况"), **tab_opts)
+        self.btn_cond = ctk.CTkButton(self.mode_btn_frame, text="工況", command=lambda: self.select_mode("工況"), **tab_opts)
         self.btn_cond.pack(side=tk.LEFT, padx=1)
 
         self.mode_buttons_dict = {
-            "常规": self.btn_reg,
-            "高级": self.btn_adv,
-            "工况": self.btn_cond
+            "常規": self.btn_reg,
+            "高級": self.btn_adv,
+            "工況": self.btn_cond
         }
 
-        # 1. 常规模式子容器
+        # 1. 常規模式子容器
         self.regular_frame = ctk.CTkFrame(multi_frame, fg_color="transparent")
         self.regular_frame.pack(fill=tk.BOTH, expand=True)
 
@@ -135,7 +135,7 @@ class MiddleColumnView(ctk.CTkFrame):
         )
         self.reg_tab.pack(fill=tk.BOTH, expand=True)
 
-        # 2. 高级模式子容器
+        # 2. 高級模式子容器
         self.advanced_frame = ctk.CTkFrame(multi_frame, fg_color="transparent")
         self.advanced_frame.pack(fill=tk.BOTH, expand=True)
         self.advanced_frame.pack_forget()
@@ -150,7 +150,7 @@ class MiddleColumnView(ctk.CTkFrame):
         )
         self.adv_tab.pack(fill=tk.BOTH, expand=True)
 
-        # 3. 🌟 工况模式子容器：实例化 CondSimTab
+        # 3. 🌟 工況模式子容器：實例化 CondSimTab
         self.condition_frame = ctk.CTkFrame(multi_frame, fg_color="transparent")
         self.condition_frame.pack(fill=tk.BOTH, expand=True)
         self.condition_frame.pack_forget()
@@ -170,7 +170,7 @@ class MiddleColumnView(ctk.CTkFrame):
         )
         self.cond_tab.pack(fill=tk.BOTH, expand=True)
 
-        self.select_mode("常规")
+        self.select_mode("常規")
 
     def select_mode(self, mode_name: str):
         self.multi_mode_var.set(mode_name)
@@ -180,11 +180,11 @@ class MiddleColumnView(ctk.CTkFrame):
         self.condition_frame.pack_forget()
         self.dt_btn.pack_forget()
 
-        if mode_name == "常规":
+        if mode_name == "常規":
             self.regular_frame.pack(fill=tk.BOTH, expand=True)
-        elif mode_name == "高级":
+        elif mode_name == "高級":
             self.advanced_frame.pack(fill=tk.BOTH, expand=True)
-        elif mode_name == "工况":
+        elif mode_name == "工況":
             self.condition_frame.pack(fill=tk.BOTH, expand=True)
             self.dt_btn.pack(side=tk.LEFT, padx=4)
 
@@ -203,7 +203,7 @@ class MiddleColumnView(ctk.CTkFrame):
                 )
 
     def toggle_multi_mode(self):
-        modes = ["常规", "高级", "工况"]
+        modes = ["常規", "高級", "工況"]
         current = self.multi_mode_var.get()
         next_mode = modes[(modes.index(current) + 1) % len(modes)]
         self.select_mode(next_mode)

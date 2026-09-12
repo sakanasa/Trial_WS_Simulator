@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-矩阵批量统计弹窗 (Batch Statistics Dialog) - Geek Indigo 统一样式高颜值版
-1. 全量采用 FONT_GLOBAL (-14px 五号字) 与 FONT_GLOBAL_BOLD。
-2. 配置底座与卡片完全对应 Geek Indigo / GitHub 黑碳灰规范，消除直角白边。
-3. 文本框字体统一为等宽 Consolas (-13px)，保证矩阵结果输出完美对齐。
+矩陣批量統計彈窗 (Batch Statistics Dialog) - Geek Indigo 統一樣式高顏值版
+1. 全量採用 FONT_GLOBAL (-14px 五號字) 與 FONT_GLOBAL_BOLD。
+2. 配置底座與卡片完全對應 Geek Indigo / GitHub 黑碳灰規範，消除直角白邊。
+3. 文本框字體統一為等寬 Consolas (-13px)，保證矩陣結果輸出完美對齊。
 """
 
 import time
@@ -20,20 +20,20 @@ from simulator.statistics import format_elapsed_time, calc_winrate, calc_avg_dam
 from utils.registry import registry
 from ui.components.app_dropdown import AppDropdown
 
-# 统一自中央主题库引入配色与字体规范
+# 統一自中央主題庫引入配色與字體規範
 from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
 
 
 class BatchStatisticsDialog(ctk.CTkToplevel):
-    """矩阵批量统计分析对话框类"""
+    """矩陣批量統計分析對話框類"""
 
     def __init__(self, parent: tk.Widget, app_controller: Any, **kwargs):
         super().__init__(parent, **kwargs)
         self.app = app_controller
-        self.title("矩阵批量统计分析")
+        self.title("矩陣批量統計分析")
         self.geometry("1000x700+80+60")
 
-        # 🌟 配置窗口大底色，防止深色模式下闪白
+        # 🌟 配置窗口大底色，防止深色模式下閃白
         self.configure(fg_color=PALETTE["bg_main"])
 
         self.after(10, lambda: self.lift())
@@ -43,23 +43,23 @@ class BatchStatisticsDialog(ctk.CTkToplevel):
         self._build_ui()
 
     def _init_variables(self):
-        self.var_options = ["无", "卡组潮数", "卡组肉数", "计时区肉数", "等级区肉数"]
+        self.var_options = ["無", "牌組潮數", "牌組肉數", "傷害區肉數", "等級區肉數"]
 
-        # 纵列 (轴1) 变量
-        self.batch_var1 = tk.StringVar(value="等级区肉数")
+        # 縱列 (軸1) 變量
+        self.batch_var1 = tk.StringVar(value="等級區肉數")
         self.batch_from1 = tk.IntVar(value=0)
         self.batch_to1 = tk.IntVar(value=3)
 
-        # 横行 (轴2) 变量
-        self.batch_var2 = tk.StringVar(value="计时区肉数")
+        # 橫行 (軸2) 變量
+        self.batch_var2 = tk.StringVar(value="傷害區肉數")
         self.batch_from2 = tk.IntVar(value=0)
         self.batch_to2 = tk.IntVar(value=6)
 
     def _build_ui(self):
-        """🌟 三级色彩结构重构：消除多余嵌套，对齐 left_column 统一样式"""
+        """🌟 三級色彩結構重構：消除多餘嵌套，對齊 left_column 統一樣式"""
         
         # ==========================================
-        # 二级结构：左列与右列面板 (背景色: #F1F5F9 / #111827)
+        # 二級結構：左列與右列面板 (背景色: #F1F5F9 / #111827)
         # ==========================================
         left_col = ctk.CTkFrame(
             self, 
@@ -77,22 +77,22 @@ class BatchStatisticsDialog(ctk.CTkToplevel):
         )
         right_col.pack(side=tk.RIGHT, fill=tk.BOTH, expand=True, padx=(4, 8), pady=8)
 
-        # 输入框统一样式配置（对齐 left_column 控件）
+        # 輸入框統一樣式配置（對齊 left_column 控件）
         entry_opts = {
             "width": 45,
             "height": 28,
             "font": FONT_GLOBAL,
             "fg_color": PALETTE["secondary"],
-            "border_color": PALETTE["input_border"], # 🌟 统一高对比度描边
-            "border_width": 1.5,                     # 🌟 统一 1.5px 描边
+            "border_color": PALETTE["input_border"], # 🌟 統一高對比度描邊
+            "border_width": 1.5,                     # 🌟 統一 1.5px 描邊
             "text_color": PALETTE["text_main"]
         }
 
         # ==========================================
-        # 三级结构 (左列内部)：独立配置卡片 (背景色: card_bg)
+        # 三級結構 (左列內部)：獨立配置卡片 (背景色: card_bg)
         # ==========================================
 
-        # --- 卡片 1：横行 (轴2) 配置 ---
+        # --- 卡片 1：橫行 (軸2) 配置 ---
         row2_card = ctk.CTkFrame(
             left_col, 
             fg_color=PALETTE["card_bg"], 
@@ -104,7 +104,7 @@ class BatchStatisticsDialog(ctk.CTkToplevel):
 
         ctk.CTkLabel(
             row2_card, 
-            text="横行 (轴2) 配置", 
+            text="橫行 (軸2) 配置", 
             font=FONT_GLOBAL_BOLD, 
             text_color=PALETTE["text_main"]
         ).pack(anchor="w", padx=10, pady=(8, 4))
@@ -112,16 +112,16 @@ class BatchStatisticsDialog(ctk.CTkToplevel):
         r2 = ctk.CTkFrame(row2_card, fg_color="transparent")
         r2.pack(fill=tk.X, padx=10, pady=(0, 8))
 
-        ctk.CTkLabel(r2, text="变量:", font=FONT_GLOBAL, text_color=PALETTE["text_main"]).pack(side=tk.LEFT, padx=(0, 2))
+        ctk.CTkLabel(r2, text="變量:", font=FONT_GLOBAL, text_color=PALETTE["text_main"]).pack(side=tk.LEFT, padx=(0, 2))
         AppDropdown(r2, variable=self.batch_var2, values=self.var_options, width=110).pack(side=tk.LEFT, padx=2)
 
-        ctk.CTkLabel(r2, text="从", font=FONT_GLOBAL, text_color=PALETTE["text_main"]).pack(side=tk.LEFT, padx=(6, 2))
+        ctk.CTkLabel(r2, text="從", font=FONT_GLOBAL, text_color=PALETTE["text_main"]).pack(side=tk.LEFT, padx=(6, 2))
         ctk.CTkEntry(r2, textvariable=self.batch_from2, **entry_opts).pack(side=tk.LEFT, padx=2)
 
         ctk.CTkLabel(r2, text="到", font=FONT_GLOBAL, text_color=PALETTE["text_main"]).pack(side=tk.LEFT, padx=(6, 2))
         ctk.CTkEntry(r2, textvariable=self.batch_to2, **entry_opts).pack(side=tk.LEFT, padx=2)
 
-        # --- 卡片 2：纵列 (轴1) 配置 ---
+        # --- 卡片 2：縱列 (軸1) 配置 ---
         row1_card = ctk.CTkFrame(
             left_col, 
             fg_color=PALETTE["card_bg"], 
@@ -133,7 +133,7 @@ class BatchStatisticsDialog(ctk.CTkToplevel):
 
         ctk.CTkLabel(
             row1_card, 
-            text="纵列 (轴1) 配置", 
+            text="縱列 (軸1) 配置", 
             font=FONT_GLOBAL_BOLD, 
             text_color=PALETTE["text_main"]
         ).pack(anchor="w", padx=10, pady=(8, 4))
@@ -141,19 +141,19 @@ class BatchStatisticsDialog(ctk.CTkToplevel):
         r1 = ctk.CTkFrame(row1_card, fg_color="transparent")
         r1.pack(fill=tk.X, padx=10, pady=(0, 8))
 
-        ctk.CTkLabel(r1, text="变量:", font=FONT_GLOBAL, text_color=PALETTE["text_main"]).pack(side=tk.LEFT, padx=(0, 2))
+        ctk.CTkLabel(r1, text="變量:", font=FONT_GLOBAL, text_color=PALETTE["text_main"]).pack(side=tk.LEFT, padx=(0, 2))
         AppDropdown(r1, variable=self.batch_var1, values=self.var_options, width=110).pack(side=tk.LEFT, padx=2)
 
-        ctk.CTkLabel(r1, text="从", font=FONT_GLOBAL, text_color=PALETTE["text_main"]).pack(side=tk.LEFT, padx=(6, 2))
+        ctk.CTkLabel(r1, text="從", font=FONT_GLOBAL, text_color=PALETTE["text_main"]).pack(side=tk.LEFT, padx=(6, 2))
         ctk.CTkEntry(r1, textvariable=self.batch_from1, **entry_opts).pack(side=tk.LEFT, padx=2)
 
         ctk.CTkLabel(r1, text="到", font=FONT_GLOBAL, text_color=PALETTE["text_main"]).pack(side=tk.LEFT, padx=(6, 2))
         ctk.CTkEntry(r1, textvariable=self.batch_to1, **entry_opts).pack(side=tk.LEFT, padx=2)
 
-        # --- 左列底部的控制按键与进度条 ---
+        # --- 左列底部的控制按鍵與進度條 ---
         self.start_btn = ctk.CTkButton(
             left_col,
-            text="开始矩阵批量统计",
+            text="開始矩陣批量統計",
             command=self.run_batch_statistics,
             fg_color=PALETTE["primary"],
             hover_color=PALETTE["primary_hover"],
@@ -167,11 +167,11 @@ class BatchStatisticsDialog(ctk.CTkToplevel):
         self.progress_bar.pack(fill=tk.X, padx=6, pady=4)
         self.progress_bar.set(0.0)
 
-        self.progress_label = ctk.CTkLabel(left_col, text="总进度：0%", font=FONT_GLOBAL, text_color=PALETTE["text_sub"])
+        self.progress_label = ctk.CTkLabel(left_col, text="總進度：0%", font=FONT_GLOBAL, text_color=PALETTE["text_sub"])
         self.progress_label.pack(pady=(0, 8))
 
         # ==========================================
-        # 三级结构 (右列内部)：结果展示卡片 (背景色: card_bg)
+        # 三級結構 (右列內部)：結果展示卡片 (背景色: card_bg)
         # ==========================================
         right_card = ctk.CTkFrame(
             right_col, 
@@ -184,12 +184,12 @@ class BatchStatisticsDialog(ctk.CTkToplevel):
 
         ctk.CTkLabel(
             right_card, 
-            text="=== 矩阵统计分析结果 ===", 
+            text="=== 矩陣統計分析結果 ===", 
             font=FONT_GLOBAL_BOLD, 
             text_color=PALETTE["text_main"]
         ).pack(anchor="w", padx=10, pady=(8, 4))
 
-        # 结果输出框（保持原有的 secondary 配色与等宽字体，不影响功能）
+        # 結果輸出框（保持原有的 secondary 配色與等寬字體，不影響功能）
         self.result_text = ctk.CTkTextbox(
             right_card, 
             wrap="none", 
@@ -203,26 +203,26 @@ class BatchStatisticsDialog(ctk.CTkToplevel):
         var1 = self.batch_var1.get()
         var2 = self.batch_var2.get()
 
-        if var1 == "无" and var2 == "无":
-            messagebox.showwarning("警告", "必须至少选择一个有效的矩阵变量！", parent=self)
+        if var1 == "無" and var2 == "無":
+            messagebox.showwarning("警告", "必須至少選擇一個有效的矩陣變量！", parent=self)
             return
 
         mode = self.app.middle_col.multi_mode_var.get()
-        if mode == "常规":
+        if mode == "常規":
             sim_times = self.app.middle_col.reg_sim_times.get()
             ops_params = [registry.extract_params(op) for op in self.app.reg_ops]
             execution_plan, roles_params = None, None
-        elif mode == "高级":
+        elif mode == "高級":
             sim_times = self.app.middle_col.adv_sim_times.get()
             execution_plan, roles_params = self.app._get_advanced_execution_plan()
             ops_params = None
-        else:  # 工况模式
+        else:  # 工況模式
             sim_times = self.app.middle_col.cond_sim_times.get()
             execution_plan, roles_params = self.app._get_condition_execution_plan()
             ops_params = None
 
         def get_range(var_name, f_val, t_val):
-            if var_name == "无":
+            if var_name == "無":
                 return [None]
             s, e = f_val.get(), t_val.get()
             return list(range(s, e + 1)) if s <= e else list(range(s, e - 1, -1))
@@ -256,7 +256,7 @@ class BatchStatisticsDialog(ctk.CTkToplevel):
                         )
                         stabilize_func = lambda: stabilize(d, c, l, cl)
 
-                        if mode == "常规":
+                        if mode == "常規":
                             game_over = False
                             dmg = 0
                             for op in ops_params:
@@ -312,36 +312,36 @@ class BatchStatisticsDialog(ctk.CTkToplevel):
         clock_meat = None
         level_meat = None
 
-        if var1 == "卡组潮数" and val1 is not None: d_climax = val1
-        elif var1 == "卡组肉数" and val1 is not None: d_normal = val1
-        elif var1 == "计时区肉数" and val1 is not None: clock_meat = val1
-        elif var1 == "等级区肉数" and val1 is not None: level_meat = val1
+        if var1 == "牌組潮數" and val1 is not None: d_climax = val1
+        elif var1 == "牌組肉數" and val1 is not None: d_normal = val1
+        elif var1 == "傷害區肉數" and val1 is not None: clock_meat = val1
+        elif var1 == "等級區肉數" and val1 is not None: level_meat = val1
 
-        if var2 == "卡组潮数" and val2 is not None: d_climax = val2
-        elif var2 == "卡组肉数" and val2 is not None: d_normal = val2
-        elif var2 == "计时区肉数" and val2 is not None: clock_meat = val2
-        elif var2 == "等级区肉数" and val2 is not None: level_meat = val2
+        if var2 == "牌組潮數" and val2 is not None: d_climax = val2
+        elif var2 == "牌組肉數" and val2 is not None: d_normal = val2
+        elif var2 == "傷害區肉數" and val2 is not None: clock_meat = val2
+        elif var2 == "等級區肉數" and val2 is not None: level_meat = val2
 
         deck = build_deck(d_normal, d_climax)
-        control = ["普通"] * c_normal + ["高潮"] * c_climax
-        stock = ["普通"] * fixed["stock_normal"] + ["高潮"] * fixed["stock_climax"]
+        control = ["普通"] * c_normal + ["名場面"] * c_climax
+        stock = ["普通"] * fixed["stock_normal"] + ["名場面"] * fixed["stock_climax"]
 
         l_climax = fixed["level_climax_count"]
         l_meat = level_meat if level_meat is not None else level_meat_def
-        level = ["高潮"] * l_climax + ["普通"] * min(l_meat, 4 - l_climax)
+        level = ["名場面"] * l_climax + ["普通"] * min(l_meat, 4 - l_climax)
         random.shuffle(level)
 
         cl_climax = fixed["clock_climax_count"]
         cl_meat = clock_meat if clock_meat is not None else clock_meat_def
-        clock = ["高潮"] * cl_climax + ["普通"] * min(cl_meat, 6 - cl_climax)
+        clock = ["名場面"] * cl_climax + ["普通"] * min(cl_meat, 6 - cl_climax)
         random.shuffle(clock)
 
         return deck, control, stock, level, clock
 
     def _update_progress(self, current, pct):
-        """🌟 进度条自适应刷新"""
+        """🌟 進度條自適應刷新"""
         self.progress_bar.set(pct / 100.0)
-        self.progress_label.configure(text=f"总进度：{pct}%")
+        self.progress_label.configure(text=f"總進度：{pct}%")
 
     def _render_results(self, winrate_matrix, avg_dmg_matrix, range1, range2, var1, var2, elapsed):
         self.start_btn.configure(state="normal")
@@ -357,8 +357,8 @@ class BatchStatisticsDialog(ctk.CTkToplevel):
                 lines.append(f"{r_label}\t" + "\t".join(row_vals))
             return "\n".join(lines)
 
-        txt = build_table(winrate_matrix, f"=== 斩杀率矩阵 (%) [纵轴: {var1} \\ 横轴: {var2}] ===")
-        txt += "\n\n" + build_table(avg_dmg_matrix, f"=== 平均伤害矩阵 [纵轴: {var1} \\ 横轴: {var2}] ===")
-        txt += f"\n\n总计算耗时: {format_elapsed_time(elapsed)}"
+        txt = build_table(winrate_matrix, f"=== 斬殺率矩陣 (%) [縱軸: {var1} \\ 橫軸: {var2}] ===")
+        txt += "\n\n" + build_table(avg_dmg_matrix, f"=== 平均傷害矩陣 [縱軸: {var1} \\ 橫軸: {var2}] ===")
+        txt += f"\n\n總計算耗時: {format_elapsed_time(elapsed)}"
 
         self.result_text.insert("1.0", txt)

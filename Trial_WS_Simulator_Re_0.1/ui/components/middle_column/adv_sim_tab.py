@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-高级模式模拟面板组件 (Advanced Simulation Tab Component)
-独立封装中间列“高级模式”的角色定义、执行计划、单次测试与多次模拟控制。
+高級模式模擬面板組件 (Advanced Simulation Tab Component)
+獨立封裝中間列“高級模式”的角色定義、執行計劃、單次測試與多次模擬控制。
 """
 
 import tkinter as tk
@@ -14,7 +14,7 @@ from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
 
 
 class AdvSimTab(ctk.CTkFrame):
-    """高级模式独立 UI 面板组件"""
+    """高級模式獨立 UI 面板組件"""
 
     def __init__(
         self, 
@@ -41,11 +41,11 @@ class AdvSimTab(ctk.CTkFrame):
         self._build_ui()
 
     def _build_ui(self):
-        # 1. 🌟 底部控制栏（通过 sim_row_callback 平铺插入“单次测试”按钮）
+        # 1. 🌟 底部控制欄（通過 sim_row_callback 平鋪插入“單次測試”按鈕）
         def build_adv_extra_buttons(sim_row):
             ctk.CTkButton(
                 sim_row, 
-                text="单次测试", 
+                text="單次測試", 
                 command=self._handle_single_test, 
                 fg_color=PALETTE["secondary"], 
                 text_color=PALETTE["text_main"], 
@@ -62,17 +62,17 @@ class AdvSimTab(ctk.CTkFrame):
         )
         self.bottom_bar.pack(side=tk.BOTTOM, fill=tk.X, pady=6, padx=8)
 
-        # 2. 中间可滚动区
+        # 2. 中間可滾動區
         self.adv_scroll_frame = ctk.CTkScrollableFrame(self, fg_color="transparent")
         self.adv_scroll_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=2, padx=4)
 
-        # 3. 角色定义卡片
-        self.roles_card = CollapsibleCard(self.adv_scroll_frame, title="角色定义")
+        # 3. 角色定義卡片
+        self.roles_card = CollapsibleCard(self.adv_scroll_frame, title="角色定義")
         self.roles_card.pack(side=tk.TOP, fill=tk.X, anchor="n", padx=2, pady=4)
         self.adv_roles_container = self.roles_card.content_frame
 
-        # 4. 执行计划卡片
-        self.plan_card = CollapsibleCard(self.adv_scroll_frame, title="执行计划（可选）")
+        # 4. 執行計劃卡片
+        self.plan_card = CollapsibleCard(self.adv_scroll_frame, title="執行計劃（可選）")
         self.plan_card.pack(side=tk.TOP, fill=tk.X, anchor="n", padx=2, pady=4)
         self.plan_card.add_header_button("+", command=self._handle_add_plan_step, width=24)
         self.plan_card.add_header_button("清空", command=self._handle_clear_plan, width=45)

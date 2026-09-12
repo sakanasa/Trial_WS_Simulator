@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-分支展开器抽象基类与注册上下文 (Branch Expanders Base & Context)
+分支展開器抽象基類與註冊上下文 (Branch Expanders Base & Context)
 """
 from abc import ABC, abstractmethod
 from typing import List, Dict, Type, Optional, Any
@@ -8,7 +8,7 @@ from ..tree_model import TreeNode
 
 
 class ExpansionContext:
-    """分支展开上下文，传递节点计数器、进度回调及局部状态"""
+    """分支展開上下文，傳遞節點計數器、進度回調及局部狀態"""
     def __init__(
         self, 
         slot: Optional[str] = None, 
@@ -25,16 +25,16 @@ class ExpansionContext:
 
 
 class BaseEffectHandler(ABC):
-    """Operation 分支展开抽象基类"""
+    """Operation 分支展開抽象基類"""
 
     @abstractmethod
     def expand(self, parent_node: TreeNode, op: dict, ctx: ExpansionContext) -> List[TreeNode]:
-        """将单个 operation 展开为下一层的决策/概率子节点列表"""
+        """將單個 operation 展開為下一層的決策/概率子節點列表"""
         pass
 
 
 class EffectRegistry:
-    """Operation 处理器注册表"""
+    """Operation 處理器註冊表"""
     _handlers: Dict[str, BaseEffectHandler] = {}
 
     @classmethod
@@ -47,12 +47,12 @@ class EffectRegistry:
 
     @classmethod
     def get_registered_operations(cls) -> List[str]:
-        """获取所有已注册的操作名称列表"""
+        """獲取所有已註冊的操作名稱列表"""
         return list(cls._handlers.keys())
 
 
 def register_effect(op_type: str):
-    """注册 Handler 的装饰器"""
+    """註冊 Handler 的裝飾器"""
     def decorator(cls: Type[BaseEffectHandler]):
         EffectRegistry.register(op_type, cls())
         return cls

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-卡区卡牌明细编辑弹窗 (Card Table Dialog)
+卡區卡牌明細編輯彈窗 (Card Table Dialog)
 """
 
 import copy
@@ -12,7 +12,7 @@ from typing import Any, List, Optional
 from core.models import card_is_normal, card_is_climax
 from ui.components.app_dropdown import AppDropdown
 from ui.dialogs.select_from_library_dialog import SelectFromLibraryDialog
-from ui.components.common.animations import animate_widget_bg, animate_delete_red_glow  # 🌟 引入通用动画
+from ui.components.common.animations import animate_widget_bg, animate_delete_red_glow  # 🌟 引入通用動畫
 from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
 
 
@@ -29,7 +29,7 @@ class CardTableDialog(ctk.CTkToplevel):
         self.cards = self.app.condition_zones.get(source_name, [])
         self.max_cards = self.app.zone_max_cards.get(source_name, None)
 
-        self.title(f"【{source_name}】卡牌列表编辑")
+        self.title(f"【{source_name}】卡牌列表編輯")
         self.geometry("1100x580+80+60")
         self.configure(fg_color=PALETTE["bg_main"])
 
@@ -81,7 +81,7 @@ class CardTableDialog(ctk.CTkToplevel):
             btn_new.pack(side=tk.LEFT, padx=2)
 
             btn_import_zone = ctk.CTkButton(
-                top_bar_frame, text="导入卡牌", width=90, height=28, font=label_font,
+                top_bar_frame, text="導入卡牌", width=90, height=28, font=label_font,
                 fg_color=PALETTE["secondary"], text_color=PALETTE["text_main"], hover_color=PALETTE["secondary_hover"]
             )
             btn_import_zone.pack(side=tk.LEFT, padx=2)
@@ -93,9 +93,9 @@ class CardTableDialog(ctk.CTkToplevel):
             header_frame.pack(side=tk.TOP, fill=tk.X, pady=(0, 4))
             
             headers = [
-                ("位置", 35), ("种类", 75), ("等级", 55), ("费用", 55),
-                ("触发魂", 55), ("触发类", 55), ("基础魂", 55), ("力量", 55),
-                ("调整与增删", 220), ("跨区移动", 220)
+                ("位置", 35), ("種類", 75), ("等級", 55), ("費用", 55),
+                ("觸發魂", 55), ("觸發類", 55), ("基礎魂", 55), ("力量", 55),
+                ("調整與增刪", 220), ("跨區移動", 220)
             ]
             for h_text, h_width in headers:
                 ctk.CTkLabel(
@@ -124,7 +124,7 @@ class CardTableDialog(ctk.CTkToplevel):
 
         parent._btn_new.configure(command=lambda: self._add_card(parent), state=state_str)
         parent._btn_import_zone.configure(command=lambda: self._import_custom_card_to_zone(parent), state=state_str)
-        parent._count_lbl.configure(text=f"（共 {len(self.cards)} 张卡牌）")
+        parent._count_lbl.configure(text=f"（共 {len(self.cards)} 張卡牌）")
 
         for card in self.cards:
             if "card_container" in card and card["card_container"].winfo_exists():
@@ -134,7 +134,7 @@ class CardTableDialog(ctk.CTkToplevel):
         valid_containers = set()
 
         if not self.cards:
-            empty_lbl = ctk.CTkLabel(list_container, text="当前卡区为空，点击上方 [新建] 或 [导入卡牌] 增加卡牌", font=label_font, text_color=PALETTE["text_sub"])
+            empty_lbl = ctk.CTkLabel(list_container, text="當前卡區為空，點擊上方 [新建] 或 [導入卡牌] 增加卡牌", font=label_font, text_color=PALETTE["text_sub"])
             empty_lbl.pack(side=tk.TOP, anchor="w", padx=10, pady=16)
         else:
             for child in list_container.winfo_children():
@@ -185,7 +185,7 @@ class CardTableDialog(ctk.CTkToplevel):
             self._update_card_row_commands(card, idx, parent, target_zone_names)
 
         if hasattr(parent, "_count_lbl") and parent._count_lbl.winfo_exists():
-            parent._count_lbl.configure(text=f"（共 {len(self.cards)} 张卡牌）")
+            parent._count_lbl.configure(text=f"（共 {len(self.cards)} 張卡牌）")
 
         self._notify_canvas_refresh()
 
@@ -202,7 +202,7 @@ class CardTableDialog(ctk.CTkToplevel):
 
         kind_var = tk.StringVar(value=card.get("kind", "角色"))
         kind_var.trace("w", lambda *a, c=card, v=kind_var: (c.update({"kind": v.get()}), self._notify_canvas_refresh()))
-        AppDropdown(row_frame, variable=kind_var, values=["角色", "事件", "高潮"], width=75).pack(side=tk.LEFT, padx=1)
+        AppDropdown(row_frame, variable=kind_var, values=["角色", "事件", "名場面"], width=75).pack(side=tk.LEFT, padx=1)
         card["kind_var"] = kind_var
 
         level_var = tk.StringVar(value=str(card.get("level", "0")))
@@ -220,9 +220,9 @@ class CardTableDialog(ctk.CTkToplevel):
         AppDropdown(row_frame, variable=trigger_soul_var, values=["0", "1", "2"], width=55).pack(side=tk.LEFT, padx=1)
         card["trigger_soul_var"] = trigger_soul_var
 
-        trigger_var = tk.StringVar(value=str(card.get("trigger", "无")))
+        trigger_var = tk.StringVar(value=str(card.get("trigger", "無")))
         trigger_var.trace("w", lambda *a, c=card, v=trigger_var: (c.update({"trigger": v.get()}), self._notify_canvas_refresh()))
-        AppDropdown(row_frame, variable=trigger_var, values=["无", "魂", "门", "裤", "风", "电"], width=55).pack(side=tk.LEFT, padx=1)
+        AppDropdown(row_frame, variable=trigger_var, values=["無", "魂", "門", "褲", "風", "電"], width=55).pack(side=tk.LEFT, padx=1)
         card["trigger_var"] = trigger_var
 
         base_soul_var = tk.StringVar(value=str(card.get("soul", card.get("base_soul", "1"))))
@@ -250,7 +250,7 @@ class CardTableDialog(ctk.CTkToplevel):
         card["copy_var"] = copy_var
 
         btn_add = ctk.CTkButton(
-            ops_box, text="复制", width=38, height=26, corner_radius=4, font=header_font,
+            ops_box, text="複製", width=38, height=26, corner_radius=4, font=header_font,
             fg_color=PALETTE["primary"], text_color=("#FFFFFF", "#0B0F19"), hover_color=PALETTE["primary_hover"],
             command=lambda c=card, cv=copy_var: self._copy_card(c, cv.get(), parent)
         )
@@ -260,7 +260,7 @@ class CardTableDialog(ctk.CTkToplevel):
         ctk.CTkEntry(ops_box, textvariable=copy_var, width=32, height=26, font=label_font, fg_color=PALETTE["secondary"], border_color=PALETTE["input_border"], border_width=1.5, text_color=PALETTE["text_main"]).pack(side=tk.LEFT, padx=1)
 
         btn_import = ctk.CTkButton(
-            ops_box, text="导入卡牌", width=75, height=26, font=label_font,
+            ops_box, text="導入卡牌", width=75, height=26, font=label_font,
             fg_color=PALETTE["secondary"], text_color=PALETTE["text_main"], hover_color=PALETTE["secondary_hover"],
             command=lambda c=card: self._import_custom_card_to_item(c, parent)
         )
@@ -288,7 +288,7 @@ class CardTableDialog(ctk.CTkToplevel):
         card["pos_var"] = pos_var
 
         btn_move = ctk.CTkButton(
-            move_box, text="移动", width=45, height=26, font=label_font,
+            move_box, text="移動", width=45, height=26, font=label_font,
             fg_color=PALETTE["secondary"], text_color=PALETTE["text_main"], hover_color=PALETTE["secondary_hover"],
             command=lambda c=card, tv=target_var, pv=pos_var: self._move_card_to(c, parent, tv.get(), pv.get())
         )
@@ -299,15 +299,15 @@ class CardTableDialog(ctk.CTkToplevel):
 
         pos_f = ctk.CTkFrame(move_box, fg_color="transparent")
         pos_f.pack(side=tk.LEFT, padx=1)
-        ctk.CTkLabel(pos_f, text="顶起", font=label_font, text_color=PALETTE["text_main"]).pack(side=tk.LEFT)
+        ctk.CTkLabel(pos_f, text="頂起", font=label_font, text_color=PALETTE["text_main"]).pack(side=tk.LEFT)
         ctk.CTkEntry(pos_f, textvariable=pos_var, width=32, height=26, font=label_font, fg_color=PALETTE["secondary"], border_color=PALETTE["input_border"], border_width=1.5, text_color=PALETTE["text_main"]).pack(side=tk.LEFT, padx=1)
-        ctk.CTkLabel(pos_f, text="张", font=label_font, text_color=PALETTE["text_main"]).pack(side=tk.LEFT)
+        ctk.CTkLabel(pos_f, text="張", font=label_font, text_color=PALETTE["text_main"]).pack(side=tk.LEFT)
 
         eff_summary = self._get_card_effects_summary(card)
         if eff_summary:
             desc_box = ctk.CTkFrame(card_container, fg_color=PALETTE["card_bg"], corner_radius=6, border_width=1, border_color=PALETTE["card_border"])
             desc_box.pack(fill=tk.X, padx=2, pady=(2, 4))
-            ctk.CTkLabel(desc_box, text=f"卡牌详细能力 ({card.get('name', '自定义卡片')}): {eff_summary}", font=label_font, text_color=PALETTE["primary"], justify="left").pack(anchor="w", padx=6, pady=2)
+            ctk.CTkLabel(desc_box, text=f"卡牌詳細能力 ({card.get('name', '自定義卡片')}): {eff_summary}", font=label_font, text_color=PALETTE["primary"], justify="left").pack(anchor="w", padx=6, pady=2)
 
     def _update_card_row_commands(self, card: dict, orig_idx: int, parent: ttk.Frame, target_zone_names: list):
         if "btn_delete" in card and card["btn_delete"] and card["btn_delete"].winfo_exists():
@@ -328,10 +328,10 @@ class CardTableDialog(ctk.CTkToplevel):
         if not effects or not isinstance(effects, dict):
             return ""
         phase_map = [
-            ("pre_attack", "(1) 攻击前"), ("attack_type", "(2) 攻击方式"),
-            ("on_attack", "(3) 攻击时"), ("trigger_step", "(4) 判定阶段"),
-            ("deal_damage", "(5) 伤害结算"), ("on_reverse", "(6) 击倒对手时"),
-            ("post_attack", "(7) 攻击结束")
+            ("pre_attack", "(1) 攻擊前"), ("attack_type", "(2) 攻擊方式"),
+            ("on_attack", "(3) 攻擊時"), ("trigger_step", "(4) 判定階段"),
+            ("deal_damage", "(5) 傷害結算"), ("on_reverse", "(6) 擊倒對手時"),
+            ("post_attack", "(7) 攻擊結束")
         ]
         parts = []
         for pk, p_label in phase_map:
@@ -349,13 +349,13 @@ class CardTableDialog(ctk.CTkToplevel):
             card_copy["kind"] = card_copy.get("type", "角色")
             card.update(card_copy)
             self._draw_card_table(parent)
-            messagebox.showinfo("导入成功", f"卡牌【{card.get('name', '自定义卡')}】能力已加载。", parent=self)
+            messagebox.showinfo("導入成功", f"卡牌【{card.get('name', '自定義卡')}】能力已加載。", parent=self)
 
         SelectFromLibraryDialog(self, app_controller=self.app, on_select=on_selected)
 
     def _import_custom_card_to_zone(self, parent: ttk.Frame):
         if self.max_cards is not None and len(self.cards) >= self.max_cards:
-            messagebox.showwarning("无法导入", f"卡区【{self.source_name}】已达到最大张数限制（{self.max_cards}张）！", parent=self)
+            messagebox.showwarning("無法導入", f"卡區【{self.source_name}】已達到最大張數限制（{self.max_cards}張）！", parent=self)
             return
 
         def on_selected(selected_card: dict):
@@ -381,7 +381,7 @@ class CardTableDialog(ctk.CTkToplevel):
             animate_widget_bg(card_container, start_color=("#D1FAE5", "#064E3B"), end_color="transparent")
             self._update_card_positions(parent)
 
-            messagebox.showinfo("导入成功", f"卡牌【{selected_card.get('name', '自定义卡')}】已加入卡区。", parent=self)
+            messagebox.showinfo("導入成功", f"卡牌【{selected_card.get('name', '自定義卡')}】已加入卡區。", parent=self)
 
         SelectFromLibraryDialog(self, app_controller=self.app, on_select=on_selected)
 
@@ -391,7 +391,7 @@ class CardTableDialog(ctk.CTkToplevel):
             
         new_card = {
             "kind": "角色", "level": "0", "cost": "0", "soul": "1",
-            "trigger": "无", "trigger_soul": "0", "base_soul": "1", "power": "500"
+            "trigger": "無", "trigger_soul": "0", "base_soul": "1", "power": "500"
         }
         self.cards.append(new_card)
 
@@ -528,7 +528,7 @@ class CardTableDialog(ctk.CTkToplevel):
 
         target_max = self.app.zone_max_cards.get(target_zone_name, None)
         if target_max is not None and len(target_cards) >= target_max:
-            messagebox.showwarning("无法移动", f"目标卡区【{target_zone_name}】已达到容量上限（{target_max}张）！", parent=self)
+            messagebox.showwarning("無法移動", f"目標卡區【{target_zone_name}】已達到容量上限（{target_max}張）！", parent=self)
             return
 
         self.cards.remove(card)

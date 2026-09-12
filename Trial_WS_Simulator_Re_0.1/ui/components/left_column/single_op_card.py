@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-单次操作模拟组件 (Single Op Card Component)
-独立封装左侧栏“单次操作模拟”卡片及其控件与执行调度。
+單次操作模擬組件 (Single Op Card Component)
+獨立封裝左側欄“單次操作模擬”卡片及其控件與執行調度。
 """
 
 import tkinter as tk
@@ -14,7 +14,7 @@ from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
 
 
 class SingleOpCard(ctk.CTkFrame):
-    """单次操作模拟独立卡片 UI 组件"""
+    """單次操作模擬獨立卡片 UI 組件"""
 
     def __init__(
         self, 
@@ -41,7 +41,7 @@ class SingleOpCard(ctk.CTkFrame):
         )
 
         self.single_op = {
-            "type_var": tk.StringVar(value="普通伤害"),
+            "type_var": tk.StringVar(value="普通傷害"),
             "params": {}, "controls": {}, "params_frame": None, "linkage_frame": None
         }
         self.single_ops = [self.single_op]
@@ -51,7 +51,7 @@ class SingleOpCard(ctk.CTkFrame):
     def _build_ui(self):
         title_lbl = ctk.CTkLabel(
             self,
-            text="单次操作模拟",
+            text="單次操作模擬",
             font=FONT_GLOBAL_BOLD,
             text_color=PALETTE["text_main"]
         )
@@ -60,14 +60,14 @@ class SingleOpCard(ctk.CTkFrame):
         self.single_op_container = ctk.CTkFrame(self, fg_color="transparent")
         self.single_op_container.pack(fill=tk.X, padx=10, pady=2)
 
-        # 🌟 使用 OpsListBuilder 渲染单次操作下拉框与参数行
+        # 🌟 使用 OpsListBuilder 渲染單次操作下拉框與參數行
         OpsListBuilder.create_ops_list_ui(
             self.single_ops, self.single_op_container, mode="single", app_controller=self.app
         )
 
         ctk.CTkButton(
             self, 
-            text="执行单次操作", 
+            text="執行單次操作", 
             command=self._handle_execute,
             fg_color=PALETTE["primary"], 
             hover_color=PALETTE["primary_hover"], 
@@ -82,5 +82,5 @@ class SingleOpCard(ctk.CTkFrame):
             self.app.execute_single()
 
     def get_op_params(self) -> dict:
-        """提取当前单次操作配置的参数字典"""
+        """提取當前單次操作配置的參數字典"""
         return registry.extract_params(self.single_op)

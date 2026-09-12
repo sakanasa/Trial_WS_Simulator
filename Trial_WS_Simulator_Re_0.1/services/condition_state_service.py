@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-工况局势数据与 JSON 存档服务 (Condition State Service)
-负责工况模式下我方/敌方各个卡区数据管理、容量上限配置以及局势配置的 JSON 导出与导入。
+工況局勢數據與 JSON 存檔服務 (Condition State Service)
+負責工況模式下我方/敵方各個卡區數據管理、容量上限配置以及局勢配置的 JSON 導出與導入。
 """
 
 import tkinter as tk
@@ -10,7 +10,7 @@ from typing import Dict, List, Any, Optional
 
 
 def clean_card_for_json(card: Any) -> Any:
-    """🌟 核心清洗函数：过滤掉卡牌字典中的 UI 控件句柄 (CTkFrame/CTkButton/tk.Variable)，提取纯数据"""
+    """🌟 核心清洗函數：過濾掉卡牌字典中的 UI 控件句柄 (CTkFrame/CTkButton/tk.Variable)，提取純數據"""
     if isinstance(card, str):
         return card
     if not isinstance(card, dict):
@@ -18,10 +18,10 @@ def clean_card_for_json(card: Any) -> Any:
 
     cleaned = {}
     for k, v in card.items():
-        # 1. 过滤掉所有 Tkinter/CustomTkinter 控件与 Variable 对象
+        # 1. 過濾掉所有 Tkinter/CustomTkinter 控件與 Variable 對象
         if isinstance(v, (tk.Variable, tk.Widget, ctk.CTkBaseClass)):
             continue
-        # 2. 过滤掉 UI 临时挂载的控件键名
+        # 2. 過濾掉 UI 臨時掛載的控件鍵名
         if k.endswith("_var") or k.startswith("btn_") or k in ("card_container", "pos_label", "desc_box", "row_frame"):
             continue
         cleaned[k] = v
@@ -29,7 +29,7 @@ def clean_card_for_json(card: Any) -> Any:
 
 
 def clean_zone_cards(zone_data: Any) -> Any:
-    """递归清理列表或字典卡区里的卡牌数据"""
+    """遞歸清理列表或字典卡區裡的卡牌數據"""
     if isinstance(zone_data, list):
         return [clean_card_for_json(c) for c in zone_data]
     elif isinstance(zone_data, dict):
@@ -38,7 +38,7 @@ def clean_zone_cards(zone_data: Any) -> Any:
 
 
 class ConditionStateService:
-    """工况局势状态与存档服务类（单例服务）"""
+    """工況局勢狀態與存檔服務類（單例服務）"""
 
     _instance = None
 
@@ -55,7 +55,7 @@ class ConditionStateService:
         self.init_state()
 
     def init_state(self):
-        """初始化/重置所有工况卡区列表与上限配置"""
+        """初始化/重置所有工況卡區列表與上限配置"""
         self.deck_cards: List[Any] = []
         self.control_cards: List[Any] = []
         self.memory_cards: List[Any] = []
@@ -63,15 +63,15 @@ class ConditionStateService:
         self.cx_cards: List[Any] = []
         self.hand_cards: List[Any] = []
 
-        self.level_cards: Dict[str, List[Any]] = {f"等级{i}": [] for i in range(1, 5)}
-        self.clock_cards: Dict[str, List[Any]] = {f"计时{i}": [] for i in range(1, 8)}
+        self.level_cards: Dict[str, List[Any]] = {f"等級{i}": [] for i in range(1, 5)}
+        self.clock_cards: Dict[str, List[Any]] = {f"傷害{i}": [] for i in range(1, 8)}
         self.front_cards: Dict[str, List[Any]] = {f"前列{i}": [] for i in range(1, 4)}
-        self.back_cards: Dict[str, List[Any]] = {f"后列{i}": [] for i in range(1, 3)}
-        self.enemy_front_cards: Dict[str, List[Any]] = {f"敌前列{i}": [] for i in range(1, 4)}
+        self.back_cards: Dict[str, List[Any]] = {f"後列{i}": [] for i in range(1, 3)}
+        self.enemy_front_cards: Dict[str, List[Any]] = {f"敵前列{i}": [] for i in range(1, 4)}
 
         self.zones: Dict[str, List[Any]] = {
-            "卡组": self.deck_cards, "控制室": self.control_cards,
-            "思出": self.memory_cards, "库存": self.stock_cards,
+            "牌組": self.deck_cards, "控制室": self.control_cards,
+            "思出": self.memory_cards, "能量": self.stock_cards,
             "CX": self.cx_cards, "手牌": self.hand_cards,
         }
         self.zones.update(self.level_cards)
@@ -81,7 +81,7 @@ class ConditionStateService:
         self.zones.update(self.enemy_front_cards)
 
         self.zone_max_cards: Dict[str, Optional[int]] = {
-            "卡组": None, "控制室": None, "思出": None, "库存": None, "CX": 1, "手牌": None,
+            "牌組": None, "控制室": None, "思出": None, "能量": None, "CX": 1, "手牌": None,
         }
         for k in self.level_cards: self.zone_max_cards[k] = 1
         for k in self.clock_cards: self.zone_max_cards[k] = 1
@@ -100,7 +100,7 @@ class ConditionStateService:
         roles_serialized: list, 
         plan_serialized: list
     ) -> dict:
-        """序列化工况局势为字典（自动清洗剔除 UI 控件对象，确保 JSON 序列化无报错）"""
+        """序列化工況局勢為字典（自動清洗剔除 UI 控件對象，確保 JSON 序列化無報錯）"""
         return {
             "deck": clean_zone_cards(self.deck_cards),
             "control": clean_zone_cards(self.control_cards),
@@ -119,7 +119,7 @@ class ConditionStateService:
         }
 
     def deserialize_data(self, data: dict):
-        """从字典反序列化恢复卡区内容"""
+        """從字典反序列化恢復卡區內容"""
         self.deck_cards[:] = data.get("deck", [])
         self.control_cards[:] = data.get("control", [])
         self.stock_cards[:] = data.get("stock", [])

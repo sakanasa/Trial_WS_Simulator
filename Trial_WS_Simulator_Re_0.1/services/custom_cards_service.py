@@ -1,20 +1,20 @@
 # -*- coding: utf-8 -*-
 """
-自定义卡库持久化服务 (Custom Cards Service)
-负责本地 custom_cards.json 文件的读取、保存、默认示例卡片生成与内存数据管理。
+自定義卡庫持久化服務 (Custom Cards Service)
+負責本地 custom_cards.json 文件的讀取、保存、默認示例卡片生成與內存數據管理。
 """
 
 import os
 import json
 from typing import List, Dict, Any
 
-# 本地自定义卡库持久化存储文件路径 (自动定位到项目根目录)
+# 本地自定義卡庫持久化存儲文件路徑 (自動定位到項目根目錄)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CUSTOM_CARDS_FILE = os.path.join(BASE_DIR, "custom_cards.json")
 
 
 class CustomCardsService:
-    """自定义卡库数据管理与持久化服务类（单例服务）"""
+    """自定義卡庫數據管理與持久化服務類（單例服務）"""
 
     _instance = None
 
@@ -32,7 +32,7 @@ class CustomCardsService:
         self.load()
 
     def load(self) -> List[Dict[str, Any]]:
-        """从本地 JSON 文件读取卡库数据，若无文件则自动生成默认示例卡"""
+        """從本地 JSON 文件讀取卡庫數據，若無文件則自動生成默認示例卡"""
         self.cards_data = []
         if os.path.exists(CUSTOM_CARDS_FILE):
             try:
@@ -41,7 +41,7 @@ class CustomCardsService:
                 if isinstance(data, list) and data:
                     self.cards_data = data
             except Exception as e:
-                print(f"[WARN] 读取本地 custom_cards.json 失败: {e}")
+                print(f"[WARN] 讀取本地 custom_cards.json 失敗: {e}")
 
         if not self.cards_data:
             self.cards_data = [self._get_default_example_card()]
@@ -50,7 +50,7 @@ class CustomCardsService:
         return self.cards_data
 
     def save(self, cards_data: List[Dict[str, Any]] = None) -> bool:
-        """将当前卡库数据写盘保存到本地 JSON 文件中"""
+        """將當前卡庫數據寫盤保存到本地 JSON 文件中"""
         if cards_data is not None:
             self.cards_data = cards_data
 
@@ -59,16 +59,16 @@ class CustomCardsService:
                 json.dump(self.cards_data, f, ensure_ascii=False, indent=2)
             return True
         except Exception as e:
-            print(f"[ERROR] 保存 custom_cards.json 失败: {e}")
+            print(f"[ERROR] 保存 custom_cards.json 失敗: {e}")
             return False
 
     def get_all(self) -> List[Dict[str, Any]]:
-        """获取所有卡库数据"""
+        """獲取所有卡庫數據"""
         return self.cards_data
 
     @staticmethod
     def _get_default_example_card() -> Dict[str, Any]:
-        """默认示例卡片模板"""
+        """默認示例卡片模板"""
         return {
             "name": "示例·早川秋 (角色)",
             "type": "角色",
@@ -80,15 +80,15 @@ class CustomCardsService:
             "trigger_soul": 1,
             "effects": {
                 "pre_attack": [],
-                "attack_type": [{"type": "攻击方式", "attack_type": "正面"}],
+                "attack_type": [{"type": "攻擊方式", "attack_type": "正面"}],
                 "on_attack": [{"type": "摩卡", "mocha_mode": "原位", "mocha_count": 2}],
-                "trigger_step": [{"type": "工况判定"}],
-                "deal_damage": [{"type": "角色伤害", "role_damage_base": 0, "role_bonus_type": "魂点", "trigger_rate": 0.0}],
-                "on_reverse": [{"type": "普通伤害", "damage": 2, "trigger_rate": 0.0}],
+                "trigger_step": [{"type": "工況判定"}],
+                "deal_damage": [{"type": "角色傷害", "role_damage_base": 0, "role_bonus_type": "魂點", "trigger_rate": 0.0}],
+                "on_reverse": [{"type": "普通傷害", "damage": 2, "trigger_rate": 0.0}],
                 "post_attack": []
             }
         }
 
 
-# 全局单例服务实例
+# 全局單例服務實例
 custom_cards_service = CustomCardsService()

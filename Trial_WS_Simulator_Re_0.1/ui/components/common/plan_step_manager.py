@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-执行计划列表管理器 (Plan Step Manager)
-统一管理高级模式与工况模式下的执行计划步骤行（角色选择下拉框、从操作 X 到操作 Y 输入框）的 UI 动态构建与角色联动更新。
+執行計劃列表管理器 (Plan Step Manager)
+統一管理高級模式與工況模式下的執行計劃步驟行（角色選擇下拉框、從操作 X 到操作 Y 輸入框）的 UI 動態構建與角色聯動更新。
 """
 
 import tkinter as tk
@@ -13,7 +13,7 @@ from ui.theme import PALETTE, FONT_GLOBAL
 
 
 class PlanStepManager:
-    """执行计划列表通用 UI 渲染与更新管理类"""
+    """執行計劃列表通用 UI 渲染與更新管理類"""
 
     @classmethod
     def refresh_plan_ui(
@@ -26,8 +26,8 @@ class PlanStepManager:
         on_up: Callable[[int], None], 
         on_down: Callable[[int], None]
     ):
-        """重新挂载与物理对齐执行计划步骤行 UI"""
-        # 🌟 空状态处理：若无步骤，隐藏容器
+        """重新掛載與物理對齊執行計劃步驟行 UI"""
+        # 🌟 空狀態處理：若無步驟，隱藏容器
         if not steps_list:
             container.pack_forget()
             for child in container.winfo_children():
@@ -44,7 +44,7 @@ class PlanStepManager:
                 step_row = step["step_row"]
                 valid_containers.add(step_row)
 
-                step_row.pack_forget()  # 🌟 解包确保物理重排
+                step_row.pack_forget()  # 🌟 解包確保物理重排
                 step_row.pack(fill=tk.X, pady=2)
 
                 if "ctrl_group" in step and step["ctrl_group"].winfo_exists():
@@ -90,7 +90,7 @@ class PlanStepManager:
 
                 ctk.CTkLabel(
                     step_row, 
-                    text="从操作", 
+                    text="從操作", 
                     text_color=PALETTE["text_main"],
                     font=FONT_GLOBAL
                 ).pack(side=tk.LEFT, padx=(4, 1))
@@ -118,7 +118,7 @@ class PlanStepManager:
 
     @classmethod
     def update_role_options(cls, steps_list: list, roles_list: list):
-        """当角色增删改变时，动态更新所有执行计划下拉框的可选项"""
+        """當角色增刪改變時，動態更新所有執行計劃下拉框的可選項"""
         role_names = [f"角色{i+1}" for i in range(len(roles_list))]
         for step in steps_list:
             combo = step.get("role_combo")

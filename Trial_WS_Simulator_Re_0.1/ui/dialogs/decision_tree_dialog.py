@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
-决策树与节点模拟弹窗 (Decision Tree & Sub-Node Simulation Dialog) - CustomTkinter 适配版
-支持复杂的局势博弈决策与智能评估：
-1. 【显示决策树】：多线程推演全量决策树，顶栏按按钮显式锁定 width，绝对零位移；
-2. 【彩色高亮与战局预测】：融入 Expectimax 算法生成拓扑图，标出每个决策点的最高期望胜率与 ⭐最优推荐；
-3. 【已注册操作展示】：显示当前系统所有生效注册的 Operation 列表。
+決策樹與節點模擬彈窗 (Decision Tree & Sub-Node Simulation Dialog) - CustomTkinter 適配版
+支持複雜的局勢博弈決策與智能評估：
+1. 【顯示決策樹】：多線程推演全量決策樹，頂欄按按鈕顯式鎖定 width，絕對零位移；
+2. 【彩色高亮與戰局預測】：融入 Expectimax 算法生成拓撲圖，標出每個決策點的最高期望勝率與 ⭐最優推薦；
+3. 【已註冊操作展示】：顯示當前系統所有生效註冊的 Operation 列表。
 """
 
 import threading
@@ -19,12 +19,12 @@ from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
 
 
 class DecisionTreeDialog(ctk.CTkToplevel):
-    """决策树分析与节点模拟对话框类"""
+    """決策樹分析與節點模擬對話框類"""
 
     def __init__(self, parent: tk.Widget, app_controller: Any, **kwargs):
         super().__init__(parent, **kwargs)
         self.app = app_controller
-        self.title("工况模式决策树分析 ver.1.5")
+        self.title("工況模式決策樹分析 ver.1.5")
         self.geometry("1280x820+80+60")
         self.minsize(1050, 650)
 
@@ -58,30 +58,30 @@ class DecisionTreeDialog(ctk.CTkToplevel):
         main_frame.rowconfigure(1, weight=2)
         main_frame.rowconfigure(2, weight=1)
 
-        # 1. 🌟 顶部操作栏卡片
+        # 1. 🌟 頂部操作欄卡片
         top_bar = ctk.CTkFrame(main_frame, fg_color=PALETTE["panel_bg"], corner_radius=12, border_width=1, border_color=border_card)
         top_bar.grid(row=0, column=0, sticky="ew", pady=(0, 6), padx=2)
 
         top_inner = ctk.CTkFrame(top_bar, fg_color="transparent")
         top_inner.pack(fill=tk.X, padx=8, pady=6)
 
-        # 左侧控制组：保留“显示决策树”按钮
+        # 左側控制組：保留“顯示決策樹”按鈕
         left_group = ctk.CTkFrame(top_inner, fg_color="transparent")
         left_group.pack(side=tk.LEFT)
 
         self.btn_build_tree = ctk.CTkButton(
-            left_group, text="🌳 显示决策树", command=self.generate_and_render_tree_async,
+            left_group, text="🌳 顯示決策樹", command=self.generate_and_render_tree_async,
             fg_color=PALETTE["primary"], hover_color=PALETTE["primary_hover"], text_color=("#FFFFFF", "#0B0F19"), 
             font=header_font, width=120, height=30
         )
         self.btn_build_tree.pack(side=tk.LEFT, padx=4)
 
-        # 右侧状态组
+        # 右側狀態組
         right_group = ctk.CTkFrame(top_inner, fg_color="transparent")
         right_group.pack(side=tk.RIGHT)
 
         self.top_progress_lbl = ctk.CTkLabel(
-            right_group, text="就绪", font=label_font, text_color=text_main, width=130, anchor="e"
+            right_group, text="就緒", font=label_font, text_color=text_main, width=130, anchor="e"
         )
         self.top_progress_lbl.pack(side=tk.RIGHT, padx=(4, 0))
 
@@ -89,13 +89,13 @@ class DecisionTreeDialog(ctk.CTkToplevel):
         self.top_progress_bar.pack(side=tk.RIGHT, padx=4)
         self.top_progress_bar.set(0.0)
 
-        # 2. 中间树状拓扑图卡片
+        # 2. 中間樹狀拓撲圖卡片
         tree_card = ctk.CTkFrame(main_frame, fg_color=PALETTE["panel_bg"], corner_radius=12, border_width=1, border_color=border_card)
         tree_card.grid(row=1, column=0, sticky="nsew", pady=4, padx=2)
 
         ctk.CTkLabel(
             tree_card, 
-            text="决策树拓扑 (蓝色高亮最优路线 | 绿色为斩杀 | 红色为败北)", 
+            text="決策樹拓撲 (藍色高亮最優路線 | 綠色為斬殺 | 紅色為敗北)", 
             font=header_font, 
             text_color=text_main
         ).pack(anchor="w", padx=10, pady=(8, 4))
@@ -114,7 +114,7 @@ class DecisionTreeDialog(ctk.CTkToplevel):
         
         style.configure(
             "Treeview", 
-            font=("微软雅黑", tree_font_size), 
+            font=("微軟雅黑", tree_font_size), 
             rowheight=tree_row_height, 
             background=bg_card[mode_idx], 
             fieldbackground=bg_card[mode_idx], 
@@ -125,7 +125,7 @@ class DecisionTreeDialog(ctk.CTkToplevel):
         
         style.configure(
             "Treeview.Heading", 
-            font=("微软雅黑", tree_header_size, "bold"), 
+            font=("微軟雅黑", tree_header_size, "bold"), 
             background=sec_color[mode_idx], 
             foreground=text_main[mode_idx],
             relief="flat",
@@ -143,19 +143,19 @@ class DecisionTreeDialog(ctk.CTkToplevel):
 
         self.tree = ttk.Treeview(tree_inner, columns=cols, selectmode="browse")
 
-        self.tree.tag_configure("optimal", foreground=PALETTE["optimal"][mode_idx], font=("微软雅黑", tree_font_size, "bold"))
+        self.tree.tag_configure("optimal", foreground=PALETTE["optimal"][mode_idx], font=("微軟雅黑", tree_font_size, "bold"))
         self.tree.tag_configure("win", foreground=PALETTE["success"][mode_idx])
         self.tree.tag_configure("fail", foreground=PALETTE["danger"][mode_idx])
 
-        self.tree.heading("#0", text="节点名称 / 执行步骤", anchor="w")
-        self.tree.heading("exp_winrate", text="期望胜率", anchor="center")
-        self.tree.heading("prob", text="单步概率", anchor="center")
-        self.tree.heading("cum_prob", text="累积概率", anchor="center")
-        self.tree.heading("enemy_deck", text="敌卡组 (肉/潮)", anchor="center")
-        self.tree.heading("enemy_clock", text="敌计时区", anchor="center")
-        self.tree.heading("enemy_level", text="敌等级区", anchor="center")
-        self.tree.heading("my_soul", text="当前魂点", anchor="center")
-        self.tree.heading("status", text="分支状态", anchor="center")
+        self.tree.heading("#0", text="節點名稱 / 執行步驟", anchor="w")
+        self.tree.heading("exp_winrate", text="期望勝率", anchor="center")
+        self.tree.heading("prob", text="單步概率", anchor="center")
+        self.tree.heading("cum_prob", text="累積概率", anchor="center")
+        self.tree.heading("enemy_deck", text="敵牌組 (肉/潮)", anchor="center")
+        self.tree.heading("enemy_clock", text="敵傷害區", anchor="center")
+        self.tree.heading("enemy_level", text="敵等級區", anchor="center")
+        self.tree.heading("my_soul", text="當前魂點", anchor="center")
+        self.tree.heading("status", text="分支狀態", anchor="center")
 
         self.tree.column("#0", width=460, anchor="w")
         self.tree.column("exp_winrate", width=95, anchor="center")
@@ -177,7 +177,7 @@ class DecisionTreeDialog(ctk.CTkToplevel):
 
         self.tree.bind("<<TreeviewSelect>>", self._on_node_selected)
 
-        # 3. 下半部分：选中节点详情卡片与已注册操作展示卡片
+        # 3. 下半部分：選中節點詳情卡片與已註冊操作展示卡片
         bottom_container = ctk.CTkFrame(main_frame, fg_color="transparent")
         bottom_container.grid(row=2, column=0, sticky="nsew", pady=(4, 0), padx=2)
 
@@ -185,11 +185,11 @@ class DecisionTreeDialog(ctk.CTkToplevel):
         bottom_container.columnconfigure(0, weight=2)
         bottom_container.columnconfigure(1, weight=1)
 
-        # 左下：选中节点局势明细
+        # 左下：選中節點局勢明細
         detail_card = ctk.CTkFrame(bottom_container, fg_color=PALETTE["panel_bg"], corner_radius=12, border_width=1, border_color=border_card)
         detail_card.grid(row=0, column=0, sticky="nsew", padx=(0, 4))
 
-        ctk.CTkLabel(detail_card, text="选中节点局势明细与战局预测", font=header_font, text_color=text_main).pack(anchor="w", padx=8, pady=(6, 2))
+        ctk.CTkLabel(detail_card, text="選中節點局勢明細與戰局預測", font=header_font, text_color=text_main).pack(anchor="w", padx=8, pady=(6, 2))
 
         self.detail_text = ctk.CTkTextbox(
             detail_card, 
@@ -201,13 +201,13 @@ class DecisionTreeDialog(ctk.CTkToplevel):
         )
         self.detail_text.pack(fill=tk.BOTH, expand=True, padx=6, pady=(0, 6))
 
-        # 🌟 右下：已注册操作展示区 (替换原自选节点后续计算结果)
+        # 🌟 右下：已註冊操作展示區 (替換原自選節點後續計算結果)
         res_card = ctk.CTkFrame(bottom_container, fg_color=PALETTE["panel_bg"], corner_radius=12, border_width=1, border_color=border_card)
         res_card.grid(row=0, column=1, sticky="nsew", padx=(4, 0))
 
-        ctk.CTkLabel(res_card, text="已注册操作", font=header_font, text_color=text_main).pack(anchor="w", padx=8, pady=(6, 4))
+        ctk.CTkLabel(res_card, text="已註冊操作", font=header_font, text_color=text_main).pack(anchor="w", padx=8, pady=(6, 4))
 
-        # 使用 CTkTextbox 支持自动换行与滚动
+        # 使用 CTkTextbox 支持自動換行與滾動
         self.txt_registered_ops = ctk.CTkTextbox(
             res_card, 
             wrap="word", 
@@ -218,25 +218,25 @@ class DecisionTreeDialog(ctk.CTkToplevel):
         )
         self.txt_registered_ops.pack(fill=tk.BOTH, expand=True, padx=6, pady=(0, 6))
 
-        # 加载填入当前已注册的操作列表
+        # 加載填入當前已註冊的操作列表
         self.refresh_registered_ops_display()
 
     def refresh_registered_ops_display(self):
-        """填入并更新已注册操作的内容"""
+        """填入並更新已註冊操作的內容"""
         ops_info = get_registered_operations_info()
         self.txt_registered_ops.configure(state="normal")
         self.txt_registered_ops.delete("1.0", tk.END)
         self.txt_registered_ops.insert("1.0", ops_info)
         self.txt_registered_ops.configure(state="disabled")
 
-    # ==================== 功能：后台线程构建并渲染决策树 ====================
+    # ==================== 功能：後臺線程構建並渲染決策樹 ====================
 
     def generate_and_render_tree_async(self):
         for item in self.tree.get_children():
             self.tree.delete(item)
         self.node_map.clear()
 
-        # 渲染前顺便更新一下最新的注册操作列表
+        # 渲染前順便更新一下最新的註冊操作列表
         self.refresh_registered_ops_display()
 
         my_deck = getattr(self.app, "condition_deck_cards", [])
@@ -266,7 +266,7 @@ class DecisionTreeDialog(ctk.CTkToplevel):
         def _tree_build_thread():
             try:
                 def on_tree_progress(count):
-                    self.after(0, lambda: self.top_progress_lbl.configure(text=f"生成节点: {count}"))
+                    self.after(0, lambda: self.top_progress_lbl.configure(text=f"生成節點: {count}"))
 
                 root_node = build_full_decision_tree(
                     my_deck=my_deck,
@@ -307,23 +307,23 @@ class DecisionTreeDialog(ctk.CTkToplevel):
 
             node_title = node.name
             if node.is_optimal:
-                node_title = f"⭐【最优推荐】{node_title}"
+                node_title = f"⭐【最優推薦】{node_title}"
 
             exp_winrate_str = f"{node.exp_winrate * 100:.1f}%"
             prob_str = f"{node.prob * 100:.1f}%"
             cum_prob_str = f"{node.cum_prob * 100:.2f}%"
 
             e_deck_str = f"{snap.enemy_deck_normal}肉 / {snap.enemy_deck_climax}潮" if snap else "-"
-            e_clock_str = f"{snap.enemy_clock_meat + snap.enemy_clock_climax}张" if snap else "-"
+            e_clock_str = f"{snap.enemy_clock_meat + snap.enemy_clock_climax}張" if snap else "-"
             e_level_str = f"Level {snap.enemy_level_meat + snap.enemy_level_climax}" if snap else "-"
             soul_str = str(snap.role_soul) if snap else "-"
 
-            status_str = "运行中"
+            status_str = "運行中"
             if snap:
                 if snap.game_over:
-                    status_str = "胜利(斩杀)"
+                    status_str = "勝利(斬殺)"
                 elif snap.my_failed:
-                    status_str = "我方败北"
+                    status_str = "我方敗北"
 
             values = (exp_winrate_str, prob_str, cum_prob_str, e_deck_str, e_clock_str, e_level_str, soul_str, status_str)
 
@@ -354,15 +354,15 @@ class DecisionTreeDialog(ctk.CTkToplevel):
         self.top_progress_lbl.configure(text=f"推演完成({elapsed:.1f}s)")
         self.btn_build_tree.configure(state="normal")
 
-        messagebox.showinfo("生成成功", f"决策树推演完毕(共生成 {len(self.node_map)} 个节点，耗时 {elapsed:.2f}s)！", parent=self)
+        messagebox.showinfo("生成成功", f"決策樹推演完畢(共生成 {len(self.node_map)} 個節點，耗時 {elapsed:.2f}s)！", parent=self)
 
     def _on_tree_build_error(self, error: Exception):
         self.top_progress_bar.stop()
         self.top_progress_bar.configure(mode="determinate")
         self.top_progress_bar.set(0.0)
-        self.top_progress_lbl.configure(text="失败")
+        self.top_progress_lbl.configure(text="失敗")
         self.btn_build_tree.configure(state="normal")
-        messagebox.showerror("生成失败", f"构建决策树时发生错误：\n{error}", parent=self)
+        messagebox.showerror("生成失敗", f"構建決策樹時發生錯誤：\n{error}", parent=self)
 
     def _on_node_selected(self, event=None):
         selected_items = self.tree.selection()
@@ -382,8 +382,8 @@ class DecisionTreeDialog(ctk.CTkToplevel):
         snap = node.state_snapshot
         lines = [
             f"================================================──────────",
-            f"【选中节点】: {node.name}",
-            f"【期望胜率】: {node.exp_winrate * 100:.2f}%    【单步概率】: {node.prob*100:.2f}%    【累积概率】: {node.cum_prob*100:.2f}%",
+            f"【選中節點】: {node.name}",
+            f"【期望勝率】: {node.exp_winrate * 100:.2f}%    【單步概率】: {node.prob*100:.2f}%    【累積概率】: {node.cum_prob*100:.2f}%",
             f"================================================──────────",
         ]
 
@@ -391,42 +391,42 @@ class DecisionTreeDialog(ctk.CTkToplevel):
 
         if node.node_type == "decision" or any(getattr(c, "node_type", "") == "choice" for c in node.children):
             lines.extend([
-                "💡【决策节点分析与推荐】",
-                f"  ★ 最高期望胜率：{node.exp_winrate * 100:.2f}%",
-                "  ★ 各操作期望胜率对比："
+                "💡【決策節點分析與推薦】",
+                f"  ★ 最高期望勝率：{node.exp_winrate * 100:.2f}%",
+                "  ★ 各操作期望勝率對比："
             ])
             for child in node.children:
-                mark = " ⭐ (当前局势下的最佳选择)" if child.is_optimal else " ❌"
-                lines.append(f"    ► {child.name}: 期望胜率 {child.exp_winrate * 100:.2f}%{mark}")
+                mark = " ⭐ (當前局勢下的最佳選擇)" if child.is_optimal else " ❌"
+                lines.append(f"    ► {child.name}: 期望勝率 {child.exp_winrate * 100:.2f}%{mark}")
             lines.append("----------------------------------------------------------")
 
         elif node.node_type == "choice" or node.is_optimal or (parent_node and getattr(parent_node, "node_type", "") == "decision"):
-            mark_str = "⭐ 是 (当前局势下的最佳选择)" if node.is_optimal else "❌ 否 (存在期望胜率更高的操作)"
+            mark_str = "⭐ 是 (當前局勢下的最佳選擇)" if node.is_optimal else "❌ 否 (存在期望勝率更高的操作)"
             lines.extend([
-                "💡【当前决策评估】",
-                f"  ★ 当前决策操作：{node.name}",
-                f"  ★ 本分支期望胜率：{node.exp_winrate * 100:.2f}%",
-                f"  ★ 是否推荐：{mark_str}",
+                "💡【當前決策評估】",
+                f"  ★ 當前決策操作：{node.name}",
+                f"  ★ 本分支期望勝率：{node.exp_winrate * 100:.2f}%",
+                f"  ★ 是否推薦：{mark_str}",
                 "----------------------------------------------------------"
             ])
 
-        lines.append("【我方前列状态】:")
+        lines.append("【我方前列狀態】:")
         for s in ["前列1", "前列2", "前列3"]:
             c_list = snap.condition_front_cards.get(s, [])
             if c_list:
                 c = c_list[0]
-                c_name = c.get("name", "自定义角色")
+                c_name = c.get("name", "自定義角色")
                 c_lvl = c.get("level", 0)
                 c_pwr = c.get("power", 500)
                 c_base_soul = c.get("soul", 1)
                 c_trig_soul = c.get("trigger_soul", 0)
-                lines.append(f"  ► {s} [{c_name}] : Lv.{c_lvl} | 力量:{c_pwr} | 基础魂:{c_base_soul} | 触发魂:{c_trig_soul} | 当前攻击魂:{snap.role_soul}")
+                lines.append(f"  ► {s} [{c_name}] : Lv.{c_lvl} | 力量:{c_pwr} | 基礎魂:{c_base_soul} | 觸發魂:{c_trig_soul} | 當前攻擊魂:{snap.role_soul}")
             else:
                 lines.append(f"  ► {s} : [空]")
 
         lines.append("----------------------------------------------------------")
 
-        lines.append("【敌方前列状态】:")
+        lines.append("【敵方前列狀態】:")
         for s in ["前列1", "前列2", "前列3"]:
             e_role = snap.enemy_front_roles.get(s, {})
             lvl_item = e_role.get("level", "0")
@@ -435,29 +435,29 @@ class DecisionTreeDialog(ctk.CTkToplevel):
             if hasattr(enemy_pwr, "get"):
                 enemy_pwr = enemy_pwr.get()
             is_rev = e_role.get("is_reversed", False)
-            rev_str = "已击倒" if is_rev else "正常"
+            rev_str = "已擊倒" if is_rev else "正常"
 
             if enemy_lvl_str == "空":
-                lines.append(f"  ► 敌{s} : [空]")
+                lines.append(f"  ► 敵{s} : [空]")
             else:
                 my_cards = snap.condition_front_cards.get(s, [])
                 matchup_pred = ""
                 if my_cards:
                     my_pwr = int(my_cards[0].get("power", 500) or 500)
                     if my_pwr >= int(enemy_pwr or 500):
-                        matchup_pred = f"  [正面战斗预估: 我方{my_pwr} >= 敌方{enemy_pwr} ➔ 预测击倒]"
+                        matchup_pred = f"  [正面戰鬥預估: 我方{my_pwr} >= 敵方{enemy_pwr} ➔ 預測擊倒]"
                     else:
-                        matchup_pred = f"  [正面战斗预估: 我方{my_pwr} < 敌方{enemy_pwr} ➔ 无法击倒]"
+                        matchup_pred = f"  [正面戰鬥預估: 我方{my_pwr} < 敵方{enemy_pwr} ➔ 無法擊倒]"
 
-                lines.append(f"  ► 敌{s} : Lv.{enemy_lvl_str} | 力量:{enemy_pwr} | 状态:{rev_str}{matchup_pred}")
+                lines.append(f"  ► 敵{s} : Lv.{enemy_lvl_str} | 力量:{enemy_pwr} | 狀態:{rev_str}{matchup_pred}")
 
         lines.append("----------------------------------------------------------")
 
         lines.extend([
-            f"【敌方卡组局势】: 肉 {snap.enemy_deck_normal} 张，潮 {snap.enemy_deck_climax} 张 (共 {snap.enemy_deck_total} 张) | 控室潮 {snap.enemy_control_climax} 张",
-            f"【敌方等级/计时】: Level {snap.enemy_level_meat + snap.enemy_level_climax} (计时区 {snap.enemy_clock_meat + snap.enemy_clock_climax} 张)",
+            f"【敵方牌組局勢】: 肉 {snap.enemy_deck_normal} 張，潮 {snap.enemy_deck_climax} 張 (共 {snap.enemy_deck_total} 張) | 控室潮 {snap.enemy_control_climax} 張",
+            f"【敵方等級/傷害】: Level {snap.enemy_level_meat + snap.enemy_level_climax} (傷害區 {snap.enemy_clock_meat + snap.enemy_clock_climax} 張)",
             "----------------------------------------------------------",
-            f"【节点事件说明】: {node.details}"
+            f"【節點事件說明】: {node.details}"
         ])
 
         self.detail_text.insert(tk.END, "\n".join(lines))

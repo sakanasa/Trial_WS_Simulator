@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-决策树分支生成汇总类 (DecisionTreeBuilder)
-修复版：面对敌方角色时，100% 独立展开【正面攻击】与【侧面攻击】分支，精准呈现战斗阶段走向。
+決策樹分支生成彙總類 (DecisionTreeBuilder)
+修復版：面對敵方角色時，100% 獨立展開【正面攻擊】與【側面攻擊】分支，精準呈現戰鬥階段走向。
 """
 import copy
 import itertools
@@ -19,14 +19,14 @@ from .pruning import default_pruner_manager
 
 
 class DecisionTreeBuilder:
-    """决策树分支生成器汇总类"""
+    """決策樹分支生成器彙總類"""
 
     @classmethod
     def expand_role_damage(
         cls, parent_node: TreeNode, damage: int, op_name: str, 
         node_counter_ref: list = None, on_progress_cb: Optional[Callable[[int], None]] = None
     ) -> List[TreeNode]:
-        """战斗伤害分支展开（代理至 combat 辅助机制）"""
+        """戰鬥傷害分支展開（代理至 combat 輔助機制）"""
         from .combat import expand_role_damage_helper
         ctx = ExpansionContext(node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb)
         return expand_role_damage_helper(parent_node, damage, op_name, ctx)
@@ -36,7 +36,7 @@ class DecisionTreeBuilder:
         cls, parent_node: TreeNode, effect_op: dict, slot: str = None, 
         cancelled_damage: int = 0, node_counter_ref: list = None, on_progress_cb: Optional[Callable[[int], None]] = None
     ) -> List[TreeNode]:
-        """统一效果分发出口"""
+        """統一效果分發出口"""
         if not effect_op or not isinstance(effect_op, dict): 
             return [parent_node]
 
@@ -55,7 +55,7 @@ class DecisionTreeBuilder:
         parent_node: TreeNode, 
         effects_list: list, 
         slot: str = None, 
-        phase_name: str = "攻击时",
+        phase_name: str = "攻擊時",
         node_counter_ref: list = None, 
         on_progress_cb: Optional[Callable[[int], None]] = None
     ) -> List[TreeNode]:
@@ -69,16 +69,16 @@ class DecisionTreeBuilder:
             phase_info_node = TreeNode(
                 name=f"【{phase_name}】: {op_name}",
                 node_type="info", prob=1.0, state_snapshot=parent_node.state_snapshot.clone(),
-                details=f"触发【{phase_name}】阶段效果: {op_name}。",
+                details=f"觸發【{phase_name}】階段效果: {op_name}。",
                 node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb,
             )
             parent_node.add_child(phase_info_node)
             return cls._resolve_single_effect(phase_info_node, eff_op, slot=slot, node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb) or [phase_info_node]
 
         order_dec_node = TreeNode(
-            name=f"🔀 [决策点] 选择【{phase_name}】{len(effects_list)}个效果的发动顺序",
+            name=f"🔀 [決策點] 選擇【{phase_name}】{len(effects_list)}個效果的發動順序",
             node_type="decision", prob=1.0, state_snapshot=parent_node.state_snapshot,
-            details=f"正统WS规则：【{phase_name}】多个效果同时诱发，玩家可自由决策发动的先后顺序。",
+            details=f"正統WS規則：【{phase_name}】多個效果同時誘發，玩家可自由決策發動的先後順序。",
             node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb,
         )
         parent_node.add_child(order_dec_node)
@@ -89,9 +89,9 @@ class DecisionTreeBuilder:
         for perm_idx, perm in enumerate(permutations):
             ordered_names = [effects_list[idx].get("type", "效果") if isinstance(effects_list[idx], dict) else "效果" for idx in perm]
             order_choice_node = TreeNode(
-                name=f"🎯 顺序 {perm_idx+1}: " + " ➔ ".join(ordered_names), node_type="choice", prob=1.0,
+                name=f"🎯 順序 {perm_idx+1}: " + " ➔ ".join(ordered_names), node_type="choice", prob=1.0,
                 state_snapshot=parent_node.state_snapshot.clone(),
-                details=f"决策选择【{phase_name}】效果发动顺序为: {' ➔ '.join(ordered_names)}。",
+                details=f"決策選擇【{phase_name}】效果發動順序為: {' ➔ '.join(ordered_names)}。",
                 node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb,
             )
             order_dec_node.add_child(order_choice_node)
@@ -122,9 +122,9 @@ class DecisionTreeBuilder:
 
         if not candidates:
             info_node = TreeNode(
-                name="【传火】: 无未行动目标，传火终止",
+                name="【傳火】: 無未行動目標，傳火終止",
                 node_type="info", prob=1.0, state_snapshot=snapshot.clone(),
-                details="因无其余未行动角色，停止能力传递。",
+                details="因無其餘未行動角色，停止能力傳遞。",
                 node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb,
             )
             cancel_node.add_child(info_node)
@@ -139,9 +139,9 @@ class DecisionTreeBuilder:
                 groups.setdefault(sig, []).append(slot)
 
         dec_node = TreeNode(
-            name=f"🔀 [决策点] 选择【传火】目标角色 (候选 {len(candidates)} 个)",
+            name=f"🔀 [決策點] 選擇【傳火】目標角色 (候選 {len(candidates)} 個)",
             node_type="decision", prob=1.0, state_snapshot=snapshot,
-            details="传火效果生效！请选择将取消触发能力传递给前列未行动的哪个角色。",
+            details="傳火效果生效！請選擇將取消觸發能力傳遞給前列未行動的哪個角色。",
             remaining_plan=cancel_node.remaining_plan, node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb,
         )
         cancel_node.add_child(dec_node)
@@ -151,7 +151,7 @@ class DecisionTreeBuilder:
             rep_slot = slot_list[0]
             rep_card = snapshot.condition_front_cards[rep_slot][0]
             card_name = rep_card.get("name", "角色")
-            display_text = f"🎯 传火给 [{card_name}({rep_slot})]" if len(slot_list) == 1 else f"🎯 传火给 [{card_name}({rep_slot})](与{'、'.join([s for s in slot_list if s != rep_slot])}等效)"
+            display_text = f"🎯 傳火給 [{card_name}({rep_slot})]" if len(slot_list) == 1 else f"🎯 傳火給 [{card_name}({rep_slot})](與{'、'.join([s for s in slot_list if s != rep_slot])}等效)"
 
             next_state = snapshot.clone()
             target_card = next_state.condition_front_cards[rep_slot][0]
@@ -159,7 +159,7 @@ class DecisionTreeBuilder:
 
             choice_node = TreeNode(
                 name=display_text, node_type="choice", prob=1.0, state_snapshot=next_state,
-                details=f"决策选择将“传火”能力传递给 [{card_name}({rep_slot})]。",
+                details=f"決策選擇將“傳火”能力傳遞給 [{card_name}({rep_slot})]。",
                 remaining_plan=cancel_node.remaining_plan, node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb,
             )
             dec_node.add_child(choice_node)
@@ -174,7 +174,7 @@ class DecisionTreeBuilder:
         equipped = card.get("equipped_cancel_triggers", [])
         for op in equipped:
             if isinstance(op, dict):
-                results.append((op, op.get("sub_mode", "单次触发") == "传火" or op.get("pass_on_trigger", False)))
+                results.append((op, op.get("sub_mode", "單次觸發") == "傳火" or op.get("pass_on_trigger", False)))
         passed = card.get("passed_cancel_triggers", [])
         for op in passed:
             if isinstance(op, dict): results.append((op, True))
@@ -188,8 +188,8 @@ class DecisionTreeBuilder:
         if len(perms) <= 1: return [parent_node]
 
         dec_node = TreeNode(
-            name="🔀 [决策点] 调整【前列角色初始位置】", node_type="decision", prob=1.0, state_snapshot=snapshot,
-            details="决策节点：在攻击开始前可以自由调整我方前列角色的槽位排列。",
+            name="🔀 [決策點] 調整【前列角色初始位置】", node_type="decision", prob=1.0, state_snapshot=snapshot,
+            details="決策節點：在攻擊開始前可以自由調整我方前列角色的槽位排列。",
             remaining_plan=parent_node.remaining_plan, node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb,
         )
         parent_node.add_child(dec_node)
@@ -201,8 +201,8 @@ class DecisionTreeBuilder:
             desc_parts = [f"{s}[{new_front.get(s, [{}])[0].get('name', '角色') if new_front.get(s) else '空'}]" for s in ["前列1", "前列2", "前列3"]]
 
             choice_node = TreeNode(
-                name=f"🎯 选择排列 {idx+1}: {', '.join(desc_parts)}{' (保持原位)' if is_orig else ''}",
-                node_type="choice", prob=1.0, state_snapshot=next_state, details=f"决策选择初始位置排列：{', '.join(desc_parts)}。",
+                name=f"🎯 選擇排列 {idx+1}: {', '.join(desc_parts)}{' (保持原位)' if is_orig else ''}",
+                node_type="choice", prob=1.0, state_snapshot=next_state, details=f"決策選擇初始位置排列：{', '.join(desc_parts)}。",
                 remaining_plan=parent_node.remaining_plan, node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb,
             )
             dec_node.add_child(choice_node)
@@ -217,7 +217,7 @@ class DecisionTreeBuilder:
     ) -> List[TreeNode]:
         current_leaves = [choice_node]
 
-        # 1. 攻击前效果 (pre_attack)
+        # 1. 攻擊前效果 (pre_attack)
         pre_ops = effects.get("pre_attack", [])
         if pre_ops:
             next_leaves = []
@@ -225,11 +225,11 @@ class DecisionTreeBuilder:
                 if leaf.state_snapshot.game_over or leaf.state_snapshot.my_failed:
                     next_leaves.append(leaf)
                     continue
-                res_nodes = cls.expand_same_phase_effects_order(leaf, pre_ops, slot=slot, phase_name="攻击前", node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb)
+                res_nodes = cls.expand_same_phase_effects_order(leaf, pre_ops, slot=slot, phase_name="攻擊前", node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb)
                 next_leaves.extend(res_nodes)
             current_leaves = next_leaves
 
-        # 2. 攻击时效果 (on_attack)
+        # 2. 攻擊時效果 (on_attack)
         on_ops = effects.get("on_attack", [])
         if on_ops:
             next_leaves = []
@@ -237,11 +237,11 @@ class DecisionTreeBuilder:
                 if leaf.state_snapshot.game_over or leaf.state_snapshot.my_failed:
                     next_leaves.append(leaf)
                     continue
-                res_nodes = cls.expand_same_phase_effects_order(leaf, on_ops, slot=slot, phase_name="攻击时", node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb)
+                res_nodes = cls.expand_same_phase_effects_order(leaf, on_ops, slot=slot, phase_name="攻擊時", node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb)
                 next_leaves.extend(res_nodes)
             current_leaves = next_leaves
 
-        # 3. 判定步骤 (trigger_step)
+        # 3. 判定步驟 (trigger_step)
         raw_trigger_cfg = effects.get("trigger_step") if isinstance(effects, dict) else None
         should_do_trigger = True
         if raw_trigger_cfg is not None and isinstance(raw_trigger_cfg, list) and len(raw_trigger_cfg) == 0:
@@ -257,10 +257,10 @@ class DecisionTreeBuilder:
                 next_leaves.extend(children)
             current_leaves = next_leaves
 
-        # 4. 伤害处理步骤 (deal_damage)
+        # 4. 傷害處理步驟 (deal_damage)
         raw_deal_cfg = effects.get("deal_damage") if isinstance(effects, dict) else None
         if raw_deal_cfg is None:
-            deal_ops = [{"type": "角色伤害", "role_damage_base": 0, "role_bonus_type": "魂点"}]
+            deal_ops = [{"type": "角色傷害", "role_damage_base": 0, "role_bonus_type": "魂點"}]
         else:
             deal_ops = raw_deal_cfg
 
@@ -272,9 +272,9 @@ class DecisionTreeBuilder:
                     continue
 
                 damage_phase_node = TreeNode(
-                    name="【伤害步骤】: 结算角色伤害",
+                    name="【傷害步驟】: 結算角色傷害",
                     node_type="info", prob=1.0, state_snapshot=leaf.state_snapshot.clone(),
-                    details="进入伤害步骤，结算角色的攻击伤害。",
+                    details="進入傷害步驟，結算角色的攻擊傷害。",
                     node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb,
                 )
                 leaf.add_child(damage_phase_node)
@@ -298,7 +298,7 @@ class DecisionTreeBuilder:
                         if cancel_triggers:
                             cancel_leaves = [child]
                             for raw_op, is_pass in cancel_triggers:
-                                nested_op = raw_op.get("nested_op") if raw_op.get("type") == "取消触发" else raw_op
+                                nested_op = raw_op.get("nested_op") if raw_op.get("type") == "取消觸發" else raw_op
                                 level_next = []
 
                                 for c_leaf in cancel_leaves:
@@ -330,7 +330,7 @@ class DecisionTreeBuilder:
 
             current_leaves = next_leaves
 
-        # 5. 战斗阶段 (on_reverse) —— 仅在决策树中实际选定为"正面"攻击且敌方存在角色时才展开！
+        # 5. 戰鬥階段 (on_reverse) —— 僅在決策樹中實際選定為"正面"攻擊且敵方存在角色時才展開！
         next_leaves = []
         for leaf in current_leaves:
             if leaf.state_snapshot.game_over or leaf.state_snapshot.my_failed:
@@ -365,32 +365,32 @@ class DecisionTreeBuilder:
                     
                     if reverse_ops:
                         battle_node = TreeNode(
-                            name=f"【战斗阶段】: 成功击倒对手 (力量 {my_pwr} vs {e_pwr})",
+                            name=f"【戰鬥階段】: 成功擊倒對手 (力量 {my_pwr} vs {e_pwr})",
                             node_type="info", prob=1.0, state_snapshot=next_state,
-                            details=f"正面战斗力量对比：我方 {my_pwr} >= 敌方 {e_pwr}，成功击倒对手！",
+                            details=f"正面戰鬥力量對比：我方 {my_pwr} >= 敵方 {e_pwr}，成功擊倒對手！",
                             node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb,
                         )
                         leaf.add_child(battle_node)
 
                         res_nodes = cls.expand_same_phase_effects_order(
-                            battle_node, reverse_ops, slot=slot, phase_name="击倒时",
+                            battle_node, reverse_ops, slot=slot, phase_name="擊倒時",
                             node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb
                         )
                         next_leaves.extend(res_nodes)
                     else:
                         battle_node = TreeNode(
-                            name=f"【战斗阶段】: 成功击倒对手 (力量 {my_pwr} vs {e_pwr})",
+                            name=f"【戰鬥階段】: 成功擊倒對手 (力量 {my_pwr} vs {e_pwr})",
                             node_type="info", prob=1.0, state_snapshot=next_state,
-                            details=f"正面战斗力量对比：我方 {my_pwr} >= 敌方 {e_pwr}，成功击倒对手。",
+                            details=f"正面戰鬥力量對比：我方 {my_pwr} >= 敵方 {e_pwr}，成功擊倒對手。",
                             node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb,
                         )
                         leaf.add_child(battle_node)
                         next_leaves.append(battle_node)
                 else:
                     battle_node = TreeNode(
-                        name=f"【战斗阶段】: 未能击倒对手 (力量 {my_pwr} vs {e_pwr})",
+                        name=f"【戰鬥階段】: 未能擊倒對手 (力量 {my_pwr} vs {e_pwr})",
                         node_type="info", prob=1.0, state_snapshot=snap.clone(),
-                        details=f"正面战斗力量对比：我方 {my_pwr} < 敌方 {e_pwr}，力量不足，未能击倒对手。",
+                        details=f"正面戰鬥力量對比：我方 {my_pwr} < 敵方 {e_pwr}，力量不足，未能擊倒對手。",
                         node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb,
                     )
                     leaf.add_child(battle_node)
@@ -400,7 +400,7 @@ class DecisionTreeBuilder:
 
         current_leaves = next_leaves
 
-        # 6. 攻击后效果 (post_attack)
+        # 6. 攻擊後效果 (post_attack)
         post_ops = effects.get("post_attack", [])
         if post_ops:
             next_leaves = []
@@ -408,11 +408,11 @@ class DecisionTreeBuilder:
                 if leaf.state_snapshot.game_over or leaf.state_snapshot.my_failed:
                     next_leaves.append(leaf)
                     continue
-                res_nodes = cls.expand_same_phase_effects_order(leaf, post_ops, slot=slot, phase_name="攻击后", node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb)
+                res_nodes = cls.expand_same_phase_effects_order(leaf, post_ops, slot=slot, phase_name="攻擊後", node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb)
                 next_leaves.extend(res_nodes)
             current_leaves = next_leaves
 
-        # 应用全局剪枝
+        # 應用全局剪枝
         return default_pruner_manager.prune_leaves(current_leaves)
 
     @classmethod
@@ -428,7 +428,7 @@ class DecisionTreeBuilder:
         all_choices = []
         for rep_slot, slot_list, display_text in eq_groups:
             card = snapshot.condition_front_cards[rep_slot][0]
-            card_name = card.get("name", "自定义角色")
+            card_name = card.get("name", "自定義角色")
             base_soul = int(card.get("soul", 1) or 1)
             effects = card.get("effects", {})
 
@@ -436,7 +436,7 @@ class DecisionTreeBuilder:
 
             modes_choices = []
             if isinstance(raw_attack_type_cfg, list) and len(raw_attack_type_cfg) == 0:
-                modes_choices.append((f"🎯 行动: [{card_name}({display_text})]", "无", base_soul))
+                modes_choices.append((f"🎯 行動: [{card_name}({display_text})]", "無", base_soul))
             else:
                 allowed_attack_types = None
                 if raw_attack_type_cfg and isinstance(raw_attack_type_cfg, list):
@@ -448,7 +448,7 @@ class DecisionTreeBuilder:
                         elif isinstance(item, str):
                             allowed_attack_types.add(item)
 
-                if allowed_attack_types is not None and ("无" in allowed_attack_types or "不能攻击" in allowed_attack_types):
+                if allowed_attack_types is not None and ("無" in allowed_attack_types or "不能攻擊" in allowed_attack_types):
                     continue
 
                 enemy_role = enemy_front_roles.get(rep_slot, {})
@@ -457,19 +457,19 @@ class DecisionTreeBuilder:
 
                 if enemy_level_str == "空":
                     new_soul = base_soul + 1
-                    if allowed_attack_types is None or ("直击" in allowed_attack_types or "正面" in allowed_attack_types or "任意" in allowed_attack_types):
-                        modes_choices.append((f"🎯 [{card_name}({display_text})] 直击 (空位魂+1 ➔ 魂点 {new_soul})", "直击", new_soul))
+                    if allowed_attack_types is None or ("直擊" in allowed_attack_types or "正面" in allowed_attack_types or "任意" in allowed_attack_types):
+                        modes_choices.append((f"🎯 [{card_name}({display_text})] 直擊 (空位魂+1 ➔ 魂點 {new_soul})", "直擊", new_soul))
                 else:
                     try: e_level = int(enemy_level_str)
                     except ValueError: e_level = 0
 
-                    # 🌟 核心修正：无论是 Lv.0 还是高 Level，只要面前有敌方角色，均独立展开【正面攻击】与【侧面攻击】！
-                    if allowed_attack_types is None or ("不能正面攻击" not in allowed_attack_types and "只能侧面攻击" not in allowed_attack_types):
-                        modes_choices.append((f"🎯 [{card_name}({display_text})] 正面攻击 (魂点 {base_soul})", "正面", base_soul))
+                    # 🌟 核心修正：無論是 Lv.0 還是高 Level，只要面前有敵方角色，均獨立展開【正面攻擊】與【側面攻擊】！
+                    if allowed_attack_types is None or ("不能正面攻擊" not in allowed_attack_types and "只能側面攻擊" not in allowed_attack_types):
+                        modes_choices.append((f"🎯 [{card_name}({display_text})] 正面攻擊 (魂點 {base_soul})", "正面", base_soul))
                     
                     side_soul = max(0, base_soul - e_level)
-                    if allowed_attack_types is None or ("不能侧面攻击" not in allowed_attack_types and "只能正面攻击" not in allowed_attack_types):
-                        modes_choices.append((f"🎯 [{card_name}({display_text})] 侧面攻击 (减Lv.{e_level} ➔ 魂点 {side_soul})", "侧面", side_soul))
+                    if allowed_attack_types is None or ("不能側面攻擊" not in allowed_attack_types and "只能正面攻擊" not in allowed_attack_types):
+                        modes_choices.append((f"🎯 [{card_name}({display_text})] 側面攻擊 (減Lv.{e_level} ➔ 魂點 {side_soul})", "側面", side_soul))
 
             if modes_choices:
                 all_choices.append((rep_slot, slot_list, display_text, card_name, effects, modes_choices))
@@ -477,10 +477,10 @@ class DecisionTreeBuilder:
         if not all_choices:
             return
 
-        dec_title = f"🔀 [决策点] 选择【第 {attack_index} 个发动行动】的角色"
+        dec_title = f"🔀 [決策點] 選擇【第 {attack_index} 個發動行動】的角色"
         dec_node = TreeNode(
             name=dec_title, node_type="decision", prob=1.0, state_snapshot=snapshot,
-            details=f"决策节点：选择第 {attack_index} 个发动的角色。",
+            details=f"決策節點：選擇第 {attack_index} 個發動的角色。",
             remaining_plan=parent_node.remaining_plan, node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb,
         )
         parent_node.add_child(dec_node)
@@ -493,7 +493,7 @@ class DecisionTreeBuilder:
 
                 choice_node = TreeNode(
                     name=c_title, node_type="choice", prob=1.0, state_snapshot=choice_state,
-                    details=f"决策选择 [{card_name}] 从 [{display_text}] 发动{mode}，魂点为 {final_soul}。",
+                    details=f"決策選擇 [{card_name}] 從 [{display_text}] 發動{mode}，魂點為 {final_soul}。",
                     remaining_plan=parent_node.remaining_plan, node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb,
                 )
                 dec_node.add_child(choice_node)
@@ -521,8 +521,8 @@ class DecisionTreeBuilder:
 
             card_info = format_card_info(top_card)
             child = TreeNode(
-                name=f"【判定阶段】: [已知置顶] 翻出 {card_info} (触发魂+{trig_soul} ➔ 魂点 {next_state.role_soul})", node_type="info", prob=1.0, state_snapshot=next_state,
-                details=f"因前置操作已确定置顶牌，100% 确定翻出 {card_info}，触发魂+{trig_soul} 入库。", remaining_plan=parent_node.remaining_plan,
+                name=f"【判定階段】: [已知置頂] 翻出 {card_info} (觸發魂+{trig_soul} ➔ 魂點 {next_state.role_soul})", node_type="info", prob=1.0, state_snapshot=next_state,
+                details=f"因前置操作已確定置頂牌，100% 確定翻出 {card_info}，觸發魂+{trig_soul} 入庫。", remaining_plan=parent_node.remaining_plan,
                 node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb,
             )
             parent_node.add_child(child)
@@ -534,8 +534,8 @@ class DecisionTreeBuilder:
             if not next_state.my_deck:
                 next_state.my_failed = True
                 child = TreeNode(
-                    name="【判定阶段】: 我方卡组与控室均为0，判定败北", node_type="terminal", prob=1.0, state_snapshot=next_state,
-                    details="我方无法翻顶入库，判定败北。", remaining_plan=[], node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb,
+                    name="【判定階段】: 我方牌組與控室均為0，判定敗北", node_type="terminal", prob=1.0, state_snapshot=next_state,
+                    details="我方無法翻頂入庫，判定敗北。", remaining_plan=[], node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb,
                 )
                 parent_node.add_child(child)
                 return [child]
@@ -544,7 +544,7 @@ class DecisionTreeBuilder:
         total_cards = len(snapshot.my_deck)
         groups: Dict[tuple, List[dict]] = {}
         for card in snapshot.my_deck:
-            sig = ("高潮" if card == "高潮" else "角色", get_card_level(card), get_card_trigger_soul(card), card.get("name", "卡牌") if isinstance(card, dict) else str(card))
+            sig = ("名場面" if card == "名場面" else "角色", get_card_level(card), get_card_trigger_soul(card), card.get("name", "卡牌") if isinstance(card, dict) else str(card))
             groups.setdefault(sig, []).append(card)
 
         chance_nodes = []
@@ -565,8 +565,8 @@ class DecisionTreeBuilder:
             card_info = format_card_info(sample_card)
 
             child = TreeNode(
-                name=f"🎲 [{prob*100:.1f}%] 【判定阶段】: 翻出 {card_info} (触发魂+{trig_soul} ➔ 魂点 {next_state.role_soul})", node_type="chance", prob=prob, state_snapshot=next_state,
-                details=f"卡组剩余 {total_cards} 张中共有 {count} 张 {card_info}，翻出概率为 {prob*100:.2f}%。", remaining_plan=parent_node.remaining_plan,
+                name=f"🎲 [{prob*100:.1f}%] 【判定階段】: 翻出 {card_info} (觸發魂+{trig_soul} ➔ 魂點 {next_state.role_soul})", node_type="chance", prob=prob, state_snapshot=next_state,
+                details=f"牌組剩餘 {total_cards} 張中共有 {count} 張 {card_info}，翻出概率為 {prob*100:.2f}%。", remaining_plan=parent_node.remaining_plan,
                 node_counter_ref=node_counter_ref, on_progress_cb=on_progress_cb,
             )
             parent_node.add_child(child)

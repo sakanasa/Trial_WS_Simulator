@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-操作列表 UI 构建工具 (Ops List Builder)
-负责统一管理所有模式（single, regular, char, advanced, condition）的操作控件列表的创建、重排、类型切换与操作增删上移下移。
+操作列表 UI 構建工具 (Ops List Builder)
+負責統一管理所有模式（single, regular, char, advanced, condition）的操作控件列表的創建、重排、類型切換與操作增刪上移下移。
 """
 
 import tkinter as tk
@@ -13,7 +13,7 @@ from ui.components.app_dropdown import AppDropdown, CTkControlButtons
 
 
 class OpsListBuilder:
-    """操作列表通用渲染与逻辑构建工具类"""
+    """操作列表通用渲染與邏輯構建工具類"""
 
     @classmethod
     def create_ops_list_ui(
@@ -24,10 +24,10 @@ class OpsListBuilder:
         role: Optional[dict] = None,
         app_controller: Any = None
     ):
-        """按 ops_list 的最新顺序重新物理装载与挂载所有操作行 UI 控件"""
+        """按 ops_list 的最新順序重新物理裝載與掛載所有操作行 UI 控件"""
         valid_containers = set()
 
-        # 重排前先对所有已有容器解包 (pack_forget)，强迫 Tkinter 按新顺序重新物理堆叠
+        # 重排前先對所有已有容器解包 (pack_forget)，強迫 Tkinter 按新順序重新物理堆疊
         for op in ops_list:
             if "op_container" in op and op["op_container"].winfo_exists():
                 try:
@@ -108,7 +108,7 @@ class OpsListBuilder:
 
     @classmethod
     def on_op_type_change(cls, op: dict, mode: str):
-        """切换操作类型时的清理与重建"""
+        """切換操作類型時的清理與重建"""
         op["params"].clear()
         op["controls"].clear()
         registry.build_widgets(
@@ -119,7 +119,7 @@ class OpsListBuilder:
     @classmethod
     def add_op(cls, ops_list: list, index: int, mode: str, role: Optional[dict] = None, app_controller: Any = None):
         new_op = {
-            "type_var": tk.StringVar(value="普通伤害"),
+            "type_var": tk.StringVar(value="普通傷害"),
             "params_frame": None, "row_frame": None, "linkage_frame": None,
             "cancel_detail_frame": None, "controls": {}, "params": {}
         }
@@ -171,7 +171,7 @@ class OpsListBuilder:
 
     @classmethod
     def refresh_ops_ui(cls, ops_list: list, mode: str, role: Optional[dict] = None, app_controller: Any = None):
-        """根据模式刷新对应容器的操作列表 UI"""
+        """根據模式刷新對應容器的操作列表 UI"""
         if mode == "regular" and app_controller and hasattr(app_controller, "middle_col"):
             cls.create_ops_list_ui(ops_list, app_controller.middle_col.reg_ops_frame, mode="regular", app_controller=app_controller)
         elif mode == "char" and app_controller and hasattr(app_controller, "left_col"):

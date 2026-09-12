@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-决策树子包入口 (Decision Tree Package Initializer)
-统一导出决策树数据模型、数学辅助函数、分支生成器与推演评估算法，确保外部 100% 向后兼容。
+決策樹子包入口 (Decision Tree Package Initializer)
+統一導出決策樹數據模型、數學輔助函數、分支生成器與推演評估算法，確保外部 100% 向後兼容。
 """
 
 from .tree_model import (

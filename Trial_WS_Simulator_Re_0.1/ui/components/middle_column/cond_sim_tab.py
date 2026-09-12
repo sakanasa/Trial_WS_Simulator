@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-工况模式模拟面板组件 (Condition Simulation Tab Component)
-独立封装中间列“工况模式”的战场画布、角色定义、执行计划、存档/自定义卡片控制与多次模拟。
+工況模式模擬面板組件 (Condition Simulation Tab Component)
+獨立封裝中間列“工況模式”的戰場畫布、角色定義、執行計劃、存檔/自定義卡片控制與多次模擬。
 """
 
 import tkinter as tk
@@ -15,7 +15,7 @@ from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
 
 
 class CondSimTab(ctk.CTkFrame):
-    """工况模式独立 UI 面板组件"""
+    """工況模式獨立 UI 面板組件"""
 
     def __init__(
         self, 
@@ -52,7 +52,7 @@ class CondSimTab(ctk.CTkFrame):
         self._build_ui()
 
     def _build_ui(self):
-        # 1. 🌟 底部控制区（通过 sim_row_callback 单层平铺，完美对齐）
+        # 1. 🌟 底部控制區（通過 sim_row_callback 單層平鋪，完美對齊）
         def build_cond_extra_buttons(sim_row):
             btn_aux_opts = {
                 "font": FONT_GLOBAL,
@@ -61,11 +61,11 @@ class CondSimTab(ctk.CTkFrame):
                 "hover_color": PALETTE["secondary_hover"],
                 "height": 26
             }
-            ctk.CTkButton(sim_row, text="单次测试", command=self._handle_single_test, width=65, **btn_aux_opts).pack(side=tk.LEFT, padx=2)
-            ctk.CTkLabel(sim_row, text="存档:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=(4, 2))
+            ctk.CTkButton(sim_row, text="單次測試", command=self._handle_single_test, width=65, **btn_aux_opts).pack(side=tk.LEFT, padx=2)
+            ctk.CTkLabel(sim_row, text="存檔:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=(4, 2))
             ctk.CTkButton(sim_row, text="保存", command=self._handle_save_state, width=45, **btn_aux_opts).pack(side=tk.LEFT, padx=1)
-            ctk.CTkButton(sim_row, text="导入", command=self._handle_load_state, width=45, **btn_aux_opts).pack(side=tk.LEFT, padx=1)
-            ctk.CTkButton(sim_row, text="自定义卡片", command=self._handle_open_custom_cards, width=75, **btn_aux_opts).pack(side=tk.RIGHT, padx=2)
+            ctk.CTkButton(sim_row, text="導入", command=self._handle_load_state, width=45, **btn_aux_opts).pack(side=tk.LEFT, padx=1)
+            ctk.CTkButton(sim_row, text="自定義卡片", command=self._handle_open_custom_cards, width=75, **btn_aux_opts).pack(side=tk.RIGHT, padx=2)
 
         self.bottom_bar = SimBottomBar(
             self, 
@@ -74,12 +74,12 @@ class CondSimTab(ctk.CTkFrame):
         )
         self.bottom_bar.pack(side=tk.BOTTOM, fill=tk.X, pady=6, padx=8)
 
-        # 2. 中间可滚动区
+        # 2. 中間可滾動區
         self.cond_scroll_frame = ctk.CTkScrollableFrame(self, fg_color="transparent")
         self.cond_scroll_frame.pack(side=tk.TOP, fill=tk.BOTH, expand=True, pady=2, padx=4)
 
-        # 3. 场上情况卡片
-        self.field_card = CollapsibleCard(self.cond_scroll_frame, title="场上情况")
+        # 3. 場上情況卡片
+        self.field_card = CollapsibleCard(self.cond_scroll_frame, title="場上情況")
         self.field_card.pack(side=tk.TOP, fill=tk.X, anchor="n", padx=2, pady=4)
 
         self.field_component = ConditionFieldCanvas(
@@ -89,13 +89,13 @@ class CondSimTab(ctk.CTkFrame):
         )
         self.field_component.pack(fill=tk.BOTH, expand=True, padx=2, pady=2)
 
-        # 4. 角色定义卡片
-        self.roles_card = CollapsibleCard(self.cond_scroll_frame, title="角色定义")
+        # 4. 角色定義卡片
+        self.roles_card = CollapsibleCard(self.cond_scroll_frame, title="角色定義")
         self.roles_card.pack(side=tk.TOP, fill=tk.X, anchor="n", padx=2, pady=4)
         self.condition_roles_container = self.roles_card.content_frame
 
-        # 5. 执行计划卡片
-        self.plan_card = CollapsibleCard(self.cond_scroll_frame, title="执行计划（可选）")
+        # 5. 執行計劃卡片
+        self.plan_card = CollapsibleCard(self.cond_scroll_frame, title="執行計劃（可選）")
         self.plan_card.pack(side=tk.TOP, fill=tk.X, anchor="n", padx=2, pady=4)
         self.plan_card.add_header_button("+", command=self._handle_add_plan_step, width=24)
         self.plan_card.add_header_button("清空", command=self._handle_clear_plan, width=45)

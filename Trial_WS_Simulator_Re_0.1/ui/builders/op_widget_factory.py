@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-操作 UI 控件工厂 (Operation Widget Factory) - 全量排查防溢出版
-负责所有复杂算卡操作二级 UI 控件的生成与联动渲染。
+操作 UI 控件工廠 (Operation Widget Factory) - 全量排查防溢出版
+負責所有複雜算卡操作二級 UI 控件的生成與聯動渲染。
 """
 
 import tkinter as tk
@@ -14,7 +14,7 @@ from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
 
 
 def _build_role_damage_extra(op, params_frame, linkage_frame, cancel_detail_frame, mode, steps_frame, context=""):
-    bonus_values = ["魂点", "0", "取消伤害"] if context == "cancel_trigger" else ["魂点", "0"]
+    bonus_values = ["魂點", "0", "取消傷害"] if context == "cancel_trigger" else ["魂點", "0"]
     combo = op["controls"].get("role_bonus_type_combo")
     if combo and hasattr(combo, "configure"):
         combo.configure(values=bonus_values)
@@ -27,7 +27,7 @@ def _build_shoot_extra(op, params_frame, linkage_frame, cancel_detail_frame, mod
     count_suffix = op["controls"].get("shoot_count_suffix_label")
 
     def update_visibility(*args):
-        if mode_var.get() == "卡组":
+        if mode_var.get() == "牌組":
             if shoot_label: shoot_label.pack(side=tk.LEFT, padx=2)
             if count_entry: count_entry.pack(side=tk.LEFT, padx=2)
             if count_suffix: count_suffix.pack(side=tk.LEFT, padx=2)
@@ -65,10 +65,10 @@ def _build_special_linkage_extra(op, params_frame, linkage_frame, cancel_detail_
 
     if combo and hasattr(combo, "configure"):
         if mode == "condition":
-            combo.configure(values=["早川秋", "源樱", "蓝头盔"])
+            combo.configure(values=["早川秋", "源櫻", "藍頭盔"])
         else:
-            combo.configure(values=["早川秋", "源樱"])
-            if char_var.get() == "蓝头盔":
+            combo.configure(values=["早川秋", "源櫻"])
+            if char_var.get() == "藍頭盔":
                 char_var.set("早川秋")
 
     def update_visibility(*args):
@@ -104,12 +104,12 @@ def _rebuild_sub_op_ui(params_frame, linkage_frame, cancel_detail_frame, steps_f
 
 def _build_cancel_trigger_extra(op, params_frame, linkage_frame, cancel_detail_frame, mode, steps_frame, context=""):
     if "sub_mode_var" not in op["params"]:
-        op["params"]["sub_mode_var"] = tk.StringVar(value="单次触发")
+        op["params"]["sub_mode_var"] = tk.StringVar(value="單次觸發")
     sub_mode_var = op["params"]["sub_mode_var"]
 
-    values = ["单次触发", "多次触发"]
+    values = ["單次觸發", "多次觸發"]
     if mode in ("advanced", "condition"):
-        values.append("传火")
+        values.append("傳火")
 
     sub_mode_combo = AppDropdown(
         params_frame, 
@@ -131,7 +131,7 @@ def _build_cancel_trigger_extra(op, params_frame, linkage_frame, cancel_detail_f
         op["params"]["nested_ops"] = []
 
     total_frame = ctk.CTkFrame(params_frame, fg_color="transparent", height=28)
-    ctk.CTkLabel(total_frame, text="共计触发", text_color=PALETTE["text_main"], font=FONT_GLOBAL, height=26).pack(side=tk.LEFT, padx=2)
+    ctk.CTkLabel(total_frame, text="共計觸發", text_color=PALETTE["text_main"], font=FONT_GLOBAL, height=26).pack(side=tk.LEFT, padx=2)
     ctk.CTkEntry(
         total_frame, 
         textvariable=total_var, 
@@ -146,7 +146,7 @@ def _build_cancel_trigger_extra(op, params_frame, linkage_frame, cancel_detail_f
     ctk.CTkLabel(total_frame, text="次", text_color=PALETTE["text_main"], font=FONT_GLOBAL, height=26).pack(side=tk.LEFT, padx=2)
 
     pass_target_frame = ctk.CTkFrame(params_frame, fg_color="transparent", height=28)
-    ctk.CTkLabel(pass_target_frame, text="传给角色", text_color=PALETTE["text_main"], font=FONT_GLOBAL, height=26).pack(side=tk.LEFT, padx=2)
+    ctk.CTkLabel(pass_target_frame, text="傳給角色", text_color=PALETTE["text_main"], font=FONT_GLOBAL, height=26).pack(side=tk.LEFT, padx=2)
     ctk.CTkEntry(
         pass_target_frame, 
         textvariable=op["params"]["pass_target_var"], 
@@ -168,7 +168,7 @@ def _build_cancel_trigger_extra(op, params_frame, linkage_frame, cancel_detail_f
 
         smode = sub_mode_var.get()
 
-        if smode == "多次触发":
+        if smode == "多次觸發":
             try:
                 n = total_var.get()
             except (tk.TclError, ValueError):
@@ -177,10 +177,10 @@ def _build_cancel_trigger_extra(op, params_frame, linkage_frame, cancel_detail_f
         else:
             n = 1
 
-        if smode == "多次触发":
+        if smode == "多次觸發":
             total_frame.pack(side=tk.LEFT, padx=2)
             pass_target_frame.pack_forget()
-        elif smode == "传火":
+        elif smode == "傳火":
             total_frame.pack_forget()
             pass_target_frame.pack(side=tk.LEFT, padx=2)
         else:
@@ -217,7 +217,7 @@ def _build_cancel_trigger_extra(op, params_frame, linkage_frame, cancel_detail_f
                     continue
             else:
                 sub_op = {
-                    "type_var": tk.StringVar(value="普通伤害"),
+                    "type_var": tk.StringVar(value="普通傷害"),
                     "controls": {}, "params": {}
                 }
                 nested_list.append(sub_op)
@@ -230,7 +230,7 @@ def _build_cancel_trigger_extra(op, params_frame, linkage_frame, cancel_detail_f
                 row_frame = ctk.CTkFrame(sub_op_container, fg_color="transparent", height=28)
                 row_frame.pack(side=tk.TOP, fill=tk.X)
 
-                label_txt = f"第{idx+1}次取消触发:" if smode == "多次触发" else "取消触发效果:"
+                label_txt = f"第{idx+1}次取消觸發:" if smode == "多次觸發" else "取消觸發效果:"
                 lbl = ctk.CTkLabel(
                     row_frame, 
                     text=label_txt, 
@@ -271,7 +271,7 @@ def _build_cancel_trigger_extra(op, params_frame, linkage_frame, cancel_detail_f
                     mode
                 )
             except Exception as err:
-                print(f"[WARN] 追加取消触发第 {idx+1} 行暂态警告: {err}")
+                print(f"[WARN] 追加取消觸發第 {idx+1} 行暫態警告: {err}")
 
     safe_trace(sub_mode_var, "w", update_detail_ui, op.setdefault("_trace_ids", {}), "sub_mode")
     safe_trace(total_var, "w", update_detail_ui, op.setdefault("_trace_ids", {}), "total_triggers")
@@ -286,13 +286,13 @@ def _extract_cancel_trigger_extra(op):
     smode = result.get("sub_mode")
     nested_list = op["params"].get("nested_ops", [])
 
-    if smode in ("单次触发", "传火"):
+    if smode in ("單次觸發", "傳火"):
         if nested_list:
             result["nested_op"] = registry.extract_params(nested_list[0])
-        if smode == "传火":
+        if smode == "傳火":
             result["pass_target"] = op["params"].get("pass_target_var", tk.IntVar(value=1)).get()
 
-    elif smode == "多次触发":
+    elif smode == "多次觸發":
         result["total_triggers"] = op["params"].get("total_triggers_var", tk.IntVar(value=1)).get()
         result["nested_ops"] = [registry.extract_params(sub_op) for sub_op in nested_list]
 
@@ -319,7 +319,7 @@ def _build_bottom_drain_extra(op, params_frame, linkage_frame, cancel_detail_fra
         combo = AppDropdown(
             linkage_frame,
             variable=linkage_type_var,
-            values=["有潮", "潮数"],
+            values=["有潮", "潮數"],
             width=70,
             command=lambda val: _update_linkage_params(op)
         )
@@ -355,9 +355,9 @@ def _update_linkage_params(op):
         if "burn_times_var" not in op["params"]:
             op["params"]["burn_times_var"] = tk.IntVar(value=1)
 
-        ctk.CTkLabel(frame, text="烧", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=2)
+        ctk.CTkLabel(frame, text="燒", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=2)
         ctk.CTkEntry(frame, textvariable=op["params"]["burn_damage_var"], **entry_opts).pack(side=tk.LEFT, padx=2)
-        ctk.CTkLabel(frame, text="点伤害", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=2)
+        ctk.CTkLabel(frame, text="點傷害", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=2)
         ctk.CTkEntry(frame, textvariable=op["params"]["burn_times_var"], **entry_opts).pack(side=tk.LEFT, padx=2)
         ctk.CTkLabel(frame, text="次", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=2)
     else:
@@ -368,19 +368,19 @@ def _update_linkage_params(op):
         if "base_times_var" not in op["params"]:
             op["params"]["base_times_var"] = tk.IntVar(value=0)
         if "times_bonus_var" not in op["params"]:
-            op["params"]["times_bonus_var"] = tk.StringVar(value="潮数")
+            op["params"]["times_bonus_var"] = tk.StringVar(value="潮數")
 
-        ctk.CTkLabel(frame, text="烧(", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=1)
+        ctk.CTkLabel(frame, text="燒(", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=1)
         ctk.CTkEntry(frame, textvariable=op["params"]["base_damage_var"], **entry_opts).pack(side=tk.LEFT, padx=2)
         ctk.CTkLabel(frame, text="+", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=1)
         
-        AppDropdown(frame, variable=op["params"]["damage_bonus_var"], values=["0", "潮数"], width=65).pack(side=tk.LEFT, padx=2)
+        AppDropdown(frame, variable=op["params"]["damage_bonus_var"], values=["0", "潮數"], width=65).pack(side=tk.LEFT, padx=2)
         
-        ctk.CTkLabel(frame, text=")点伤害(", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=1)
+        ctk.CTkLabel(frame, text=")點傷害(", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=1)
         ctk.CTkEntry(frame, textvariable=op["params"]["base_times_var"], **entry_opts).pack(side=tk.LEFT, padx=2)
         ctk.CTkLabel(frame, text="+", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=1)
         
-        AppDropdown(frame, variable=op["params"]["times_bonus_var"], values=["0", "潮数"], width=65).pack(side=tk.LEFT, padx=2)
+        AppDropdown(frame, variable=op["params"]["times_bonus_var"], values=["0", "潮數"], width=65).pack(side=tk.LEFT, padx=2)
         
         ctk.CTkLabel(frame, text=")次", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=1)
 
@@ -396,11 +396,11 @@ def _extract_bottom_drain_extra(op):
         result["base_damage"] = op["params"].get("base_damage_var", tk.IntVar(value=3)).get()
         result["damage_bonus"] = op["params"].get("damage_bonus_var", tk.StringVar(value="0")).get()
         result["base_times"] = op["params"].get("base_times_var", tk.IntVar(value=0)).get()
-        result["times_bonus"] = op["params"].get("times_bonus_var", tk.StringVar(value="潮数")).get()
+        result["times_bonus"] = op["params"].get("times_bonus_var", tk.StringVar(value="潮數")).get()
     return result
 
 def _build_multi_step_extra(op, params_frame, linkage_frame, cancel_detail_frame, mode, steps_frame, context=""):
-    """🌟 修复版多步骤 UI 构建器：优先复用已反序列化好的 steps_ops"""
+    """🌟 修復版多步驟 UI 構建器：優先複用已反序列化好的 steps_ops"""
     if "steps_ops" in op["params"] and op["params"]["steps_ops"]:
         if "step_count_var" not in op["params"]:
             op["params"]["step_count_var"] = tk.IntVar(value=len(op["params"]["steps_ops"]))
@@ -426,7 +426,7 @@ def _build_multi_step_extra(op, params_frame, linkage_frame, cancel_detail_frame
 
     count_frame = ctk.CTkFrame(params_frame, fg_color="transparent", height=28)
     count_frame.pack(side=tk.LEFT, padx=2)
-    ctk.CTkLabel(count_frame, text="步数:", text_color=PALETTE["text_main"], font=FONT_GLOBAL, height=26).pack(side=tk.LEFT, padx=2)
+    ctk.CTkLabel(count_frame, text="步數:", text_color=PALETTE["text_main"], font=FONT_GLOBAL, height=26).pack(side=tk.LEFT, padx=2)
     ctk.CTkEntry(count_frame, textvariable=step_count_var, **entry_opts).pack(side=tk.LEFT, padx=2)
 
     if steps_frame is not None:
@@ -463,7 +463,7 @@ def _build_multi_step_extra(op, params_frame, linkage_frame, cancel_detail_frame
                     continue
             else:
                 sub_op = {
-                    "type_var": tk.StringVar(value="普通伤害"),
+                    "type_var": tk.StringVar(value="普通傷害"),
                     "controls": {}, "params": {}
                 }
                 steps_list.append(sub_op)
@@ -521,7 +521,7 @@ def _extract_multi_step_extra(op):
 
 
 def _build_top_check_burn_extra(op, params_frame, linkage_frame, cancel_detail_frame, mode, steps_frame, context=""):
-    """翻顶烧二级 UI 构建：在第二行渲染烧(伤害+加成)点伤害X次"""
+    """翻頂燒二級 UI 構建：在第二行渲染燒(傷害+加成)點傷害X次"""
     if linkage_frame:
         if hasattr(linkage_frame, "grid_info") and linkage_frame.grid_info():
             linkage_frame.grid(row=1, column=0, sticky="w", pady=(2, 0))
@@ -551,11 +551,11 @@ def _build_top_check_burn_extra(op, params_frame, linkage_frame, cancel_detail_f
             "text_color": PALETTE["text_main"]
         }
 
-        ctk.CTkLabel(linkage_frame, text="烧(", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=1)
+        ctk.CTkLabel(linkage_frame, text="燒(", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=1)
         ctk.CTkEntry(linkage_frame, textvariable=op["params"]["burn_damage_var"], **entry_opts).pack(side=tk.LEFT, padx=2)
         ctk.CTkLabel(linkage_frame, text="+", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=1)
-        AppDropdown(linkage_frame, variable=op["params"]["burn_bonus_type_var"], values=["0", "等级", "基础魂点"], width=75).pack(side=tk.LEFT, padx=2)
-        ctk.CTkLabel(linkage_frame, text=")点伤害", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=1)
+        AppDropdown(linkage_frame, variable=op["params"]["burn_bonus_type_var"], values=["0", "等級", "基礎魂點"], width=75).pack(side=tk.LEFT, padx=2)
+        ctk.CTkLabel(linkage_frame, text=")點傷害", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=1)
         ctk.CTkEntry(linkage_frame, textvariable=op["params"]["burn_times_var"], **entry_opts).pack(side=tk.LEFT, padx=2)
         ctk.CTkLabel(linkage_frame, text="次", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=1)
 
@@ -569,7 +569,7 @@ def _extract_top_check_burn_extra(op):
 
 
 def _build_top_push_burn_extra(op, params_frame, linkage_frame, cancel_detail_frame, mode, steps_frame, context=""):
-    """🌟 修复：推顶烧二级 UI 构建，把超宽的烧点数与次数移到第二行，防止水平遮挡隐形"""
+    """🌟 修復：推頂燒二級 UI 構建，把超寬的燒點數與次數移到第二行，防止水平遮擋隱形"""
     if linkage_frame:
         if hasattr(linkage_frame, "grid_info") and linkage_frame.grid_info():
             linkage_frame.grid(row=1, column=0, sticky="w", pady=(2, 0))
@@ -601,14 +601,14 @@ def _build_top_push_burn_extra(op, params_frame, linkage_frame, cancel_detail_fr
             "text_color": PALETTE["text_main"]
         }
 
-        ctk.CTkLabel(linkage_frame, text="烧(", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=1)
+        ctk.CTkLabel(linkage_frame, text="燒(", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=1)
         ctk.CTkEntry(linkage_frame, textvariable=op["params"]["base_damage_var"], **entry_opts).pack(side=tk.LEFT, padx=2)
         ctk.CTkLabel(linkage_frame, text="+", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=1)
-        AppDropdown(linkage_frame, variable=op["params"]["damage_bonus_var"], values=["0", "潮数", "触发魂点", "等级"], width=100).pack(side=tk.LEFT, padx=2)
-        ctk.CTkLabel(linkage_frame, text=")点(", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=1)
+        AppDropdown(linkage_frame, variable=op["params"]["damage_bonus_var"], values=["0", "潮數", "觸發魂點", "等級"], width=100).pack(side=tk.LEFT, padx=2)
+        ctk.CTkLabel(linkage_frame, text=")點(", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=1)
         ctk.CTkEntry(linkage_frame, textvariable=op["params"]["base_times_var"], **entry_opts).pack(side=tk.LEFT, padx=2)
         ctk.CTkLabel(linkage_frame, text="+", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=1)
-        AppDropdown(linkage_frame, variable=op["params"]["times_bonus_var"], values=["0", "潮数", "触发魂点", "等级"], width=100).pack(side=tk.LEFT, padx=2)
+        AppDropdown(linkage_frame, variable=op["params"]["times_bonus_var"], values=["0", "潮數", "觸發魂點", "等級"], width=100).pack(side=tk.LEFT, padx=2)
         ctk.CTkLabel(linkage_frame, text=")次", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=1)
 
 
@@ -623,24 +623,24 @@ def _extract_top_push_burn_extra(op):
 
 
 class OpWidgetFactory:
-    """注册并绑定所有算卡操作的 UI 绘制工厂类"""
+    """註冊並綁定所有算卡操作的 UI 繪製工廠類"""
 
     @classmethod
     def register_all_ui_builders(cls):
-        """统一将界面构建器与参数提取器挂载到 registry"""
+        """統一將界面構建器與參數提取器掛載到 registry"""
         import core.operations
         import core.condition_operations
 
         builder_map = {
-            "角色伤害": (_build_role_damage_extra, None),
+            "角色傷害": (_build_role_damage_extra, None),
             "射血": (_build_shoot_extra, None),
-            "上顶": (_build_top_deck_extra, None),
-            "特殊联动": (_build_special_linkage_extra, _extract_special_linkage_extra),
-            "取消触发": (_build_cancel_trigger_extra, _extract_cancel_trigger_extra),
-            "拔底联动": (_build_bottom_drain_extra, _extract_bottom_drain_extra),
-            "多步骤操作": (_build_multi_step_extra, _extract_multi_step_extra),
-            "翻顶烧": (_build_top_check_burn_extra, _extract_top_check_burn_extra),
-            "推顶烧": (_build_top_push_burn_extra, _extract_top_push_burn_extra), # 🌟 新增推顶烧构建器
+            "上頂": (_build_top_deck_extra, None),
+            "特殊聯動": (_build_special_linkage_extra, _extract_special_linkage_extra),
+            "取消觸發": (_build_cancel_trigger_extra, _extract_cancel_trigger_extra),
+            "拔底聯動": (_build_bottom_drain_extra, _extract_bottom_drain_extra),
+            "多步驟操作": (_build_multi_step_extra, _extract_multi_step_extra),
+            "翻頂燒": (_build_top_check_burn_extra, _extract_top_check_burn_extra),
+            "推頂燒": (_build_top_push_burn_extra, _extract_top_push_burn_extra), # 🌟 新增推頂燒構建器
         }
 
         for type_name, (b_extra, e_extra) in builder_map.items():

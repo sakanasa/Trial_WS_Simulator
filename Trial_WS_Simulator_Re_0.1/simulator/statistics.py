@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-统计分析计算器 (Statistics Calculator)
-负责置信区间计算、显著差异评估、斩杀率与伤害统计等数学逻辑。
+統計分析計算器 (Statistics Calculator)
+負責置信區間計算、顯著差異評估、斬殺率與傷害統計等數學邏輯。
 """
 
 import math
@@ -9,14 +9,14 @@ from typing import Tuple, Dict, Any
 
 
 def calc_winrate(wins: int, total_runs: int) -> float:
-    """计算斩杀率 (%)"""
+    """計算斬殺率 (%)"""
     if total_runs <= 0:
         return 0.0
     return (wins / total_runs) * 100.0
 
 
 def calc_avg_damage(total_damage: int, total_runs: int) -> float:
-    """计算平均伤害"""
+    """計算平均傷害"""
     if total_runs <= 0:
         return 0.0
     return total_damage / total_runs
@@ -26,7 +26,7 @@ def calc_wilson_score_interval(
     winrate_percent: float, total_runs: int, z: float = 1.96
 ) -> Tuple[float, float]:
     """
-    使用 Wilson 得分区间 (Wilson Score Interval) 计算 95% 置信区间
+    使用 Wilson 得分區間 (Wilson Score Interval) 計算 95% 置信區間
     返回: (下限%, 上限%)
     """
     if total_runs <= 0:
@@ -48,20 +48,20 @@ def calc_significant_difference_threshold(
     winrate_percent: float, total_runs: int, z: float = 1.96
 ) -> float:
     """
-    计算基于双样本比例检验的 95% 显著差异所需最小差值（百分点）
+    計算基於雙樣本比例檢驗的 95% 顯著差異所需最小差值（百分點）
     """
     if total_runs <= 0:
         return 0.0
 
     p = winrate_percent / 100.0
     n = total_runs
-    # 假设两组模拟样本量相同 n，合并标准误计算
+    # 假設兩組模擬樣本量相同 n，合併標準誤計算
     diff_min = z * math.sqrt((2 * p * (1 - p)) / n) * 100.0
     return diff_min
 
 
 def format_elapsed_time(seconds: float) -> str:
-    """将耗时秒数格式化为 readable 文本（如 X分Y.Z秒 或 X.YZ秒）"""
+    """將耗時秒數格式化為 readable 文本（如 X分Y.Z秒 或 X.YZ秒）"""
     if seconds < 0:
         seconds = 0.0
 

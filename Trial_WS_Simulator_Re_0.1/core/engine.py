@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-核心结算引擎 (Core Combat Engine)
-包含了 Weiss Schwarz 核心规则结算：
-伤害结算、卡组刷新与刷新伤害、等级区升级溢出、多潮取消、拔底联动、摩卡、龙星、冰甲等。
+核心結算引擎 (Core Combat Engine)
+包含了 Weiss Schwarz 核心規則結算：
+傷害結算、牌組刷新與刷新傷害、等級區升級溢出、多潮取消、拔底聯動、摩卡、龍星、冰甲等。
 """
 
 import random
@@ -15,8 +15,8 @@ from core.models import (
 
 
 def build_deck(normal: int, climax: int) -> List[str]:
-    """构建并打乱卡组（常规模式极速字符串形式）"""
-    deck = ["普通"] * normal + ["高潮"] * climax
+    """構建並打亂牌組（常規模式極速字符串形式）"""
+    deck = ["普通"] * normal + ["名場面"] * climax
     random.shuffle(deck)
     return deck
 
@@ -28,14 +28,14 @@ def add_cards_to_clock(
     control: List[Any],
     stabilize_func: Callable[[], bool]
 ) -> bool:
-    """自适应将卡牌放入计时区（支持列表形式与工况字典形式）"""
+    """自適應將卡牌放入傷害區（支持列表形式與工況字典形式）"""
     if isinstance(clock, list):
         clock.extend(cards)
     elif isinstance(clock, dict):
         for card in cards:
             placed = False
             for i in range(1, 8):
-                k = f"计时{i}"
+                k = f"傷害{i}"
                 if not clock.get(k):
                     clock[k] = [card]
                     placed = True
@@ -51,9 +51,9 @@ def process_clock_overflow(
     level: Union[List[Any], Dict[str, List[Any]]],
     control: List[Any]
 ) -> bool:
-    """处理计时区溢出升级（>= 7张）"""
+    """處理傷害區溢出升級（>= 7張）"""
     if isinstance(clock, dict):
-        clock_list = [clock[f"计时{i}"][0] for i in range(1, 8) if clock.get(f"计时{i}")]
+        clock_list = [clock[f"傷害{i}"][0] for i in range(1, 8) if clock.get(f"傷害{i}")]
     else:
         clock_list = clock
 
@@ -68,11 +68,11 @@ def process_clock_overflow(
 
         chosen = first7.pop(chosen_idx)
 
-        # 放入等级区
+        # 放入等級區
         if isinstance(level, dict):
             placed = False
             for i in range(1, 5):
-                lk = f"等级{i}"
+                lk = f"等級{i}"
                 if not level.get(lk):
                     level[lk] = [chosen]
                     placed = True
@@ -91,10 +91,10 @@ def process_clock_overflow(
 
         if isinstance(clock, dict):
             for i in range(1, 8):
-                clock[f"计时{i}"].clear()
+                clock[f"傷害{i}"].clear()
             for idx, c in enumerate(clock_list):
                 if idx < 7:
-                    clock[f"计时{idx+1}"] = [c]
+                    clock[f"傷害{idx+1}"] = [c]
 
     return False
 
@@ -105,7 +105,7 @@ def stabilize(
     level: Union[List[Any], Dict[str, List[Any]]],
     clock: Union[List[Any], Dict[str, List[Any]]]
 ) -> bool:
-    """通用游戏稳定性状态修正"""
+    """通用遊戲穩定性狀態修正"""
     while True:
         level_count = sum(1 for v in level.values() if v) if isinstance(level, dict) else len(level)
         if level_count >= 4 or (len(deck) + len(control) == 0):
@@ -136,7 +136,7 @@ def resolve_damage(
     damage: int,
     stabilize_func: Callable[[], bool]
 ) -> Tuple[int, bool, bool, Optional[int]]:
-    """伤害判定结算（明确返回在第 X 张取消）"""
+    """傷害判定結算（明確返回在第 X 張取消）"""
     total_damage = 0
     resolution = []
     cancelled = False
@@ -181,7 +181,7 @@ def execute_ice_armor(
     X: int,
     stabilize_func: Callable[[], bool]
 ) -> Tuple[int, bool]:
-    """冰甲能力触发：命中 X 次时，从卡组顶端翻开最多 X 张肉牌推入控制室"""
+    """冰甲能力觸發：命中 X 次時，從牌組頂端翻開最多 X 張肉牌推入控制室"""
     Y = 0
     for _ in range(X):
         if not deck:
@@ -343,7 +343,7 @@ def mocha_operation(deck: List[Any], control: List[Any], count: int, mode: str, 
 
 
 def dragon_star_diffusion(deck: List[Any], control: List[Any], clock: Any, level: Any, count: int, mode: str, stabilize_func: Callable[[], bool]):
-    if mode == "公开":
+    if mode == "公開":
         take = min(count, len(deck))
         if take == 0:
             if not deck:
@@ -422,7 +422,7 @@ def perform_bottom_drain_and_burn(deck: List[Any], control: List[Any], stock: Li
     for i in range(X):
         if not deck:
             if local_stabilize():
-                return True, f"拔底{X}张，潮{C}张；游戏胜利", 0, 0, 0
+                return True, f"拔底{X}張，潮{C}張；遊戲勝利", 0, 0, 0
             if not deck:
                 break
 
@@ -433,7 +433,7 @@ def perform_bottom_drain_and_burn(deck: List[Any], control: List[Any], stock: Li
 
         if not deck:
             if local_stabilize():
-                return True, f"拔底{X}张，潮{C}张；游戏胜利", 0, 0, 0
+                return True, f"拔底{X}張，潮{C}張；遊戲勝利", 0, 0, 0
 
     total_burn_damage = 0
     cancel_count = 0
@@ -445,7 +445,7 @@ def perform_bottom_drain_and_burn(deck: List[Any], control: List[Any], stock: Li
             times = params["times"]
             for _ in range(times):
                 if local_stabilize():
-                    return True, f"拔底{X}张，潮{C}张；后续判定：{damage}点{times}次，取消{cancel_count}次，命中{hit_count}次，共造成{total_burn_damage}点伤害；游戏胜利", total_burn_damage, cancel_count, hit_count
+                    return True, f"拔底{X}張，潮{C}張；後續判定：{damage}點{times}次，取消{cancel_count}次，命中{hit_count}次，共造成{total_burn_damage}點傷害；遊戲勝利", total_burn_damage, cancel_count, hit_count
                 added, cancelled, win, cancel_pos = resolve_damage(deck, control, clock, damage, local_stabilize)
                 total_burn_damage += added
                 if cancelled:
@@ -453,21 +453,21 @@ def perform_bottom_drain_and_burn(deck: List[Any], control: List[Any], stock: Li
                 else:
                     hit_count += 1
                 if win or local_stabilize():
-                    return True, f"拔底{X}张，潮{C}张；后续判定：{damage}点{times}次，取消{cancel_count}次，命中{hit_count}次，共造成{total_burn_damage}点伤害；游戏胜利", total_burn_damage, cancel_count, hit_count
-            return False, f"拔底{X}张，潮{C}张；后续判定：{damage}点{times}次，取消{cancel_count}次，命中{hit_count}次，共造成{total_burn_damage}点伤害", total_burn_damage, cancel_count, hit_count
+                    return True, f"拔底{X}張，潮{C}張；後續判定：{damage}點{times}次，取消{cancel_count}次，命中{hit_count}次，共造成{total_burn_damage}點傷害；遊戲勝利", total_burn_damage, cancel_count, hit_count
+            return False, f"拔底{X}張，潮{C}張；後續判定：{damage}點{times}次，取消{cancel_count}次，命中{hit_count}次，共造成{total_burn_damage}點傷害", total_burn_damage, cancel_count, hit_count
         else:
-            return False, f"拔底{X}张，潮0张；无高潮，不造成伤害", 0, 0, 0
+            return False, f"拔底{X}張，潮0張；無名場面，不造成傷害", 0, 0, 0
     else:
         A = params["base_damage"]
         B = params["base_times"]
-        damage_bonus = C if params.get("damage_bonus") == "潮数" else 0
-        times_bonus = C if params.get("times_bonus") == "潮数" else 0
+        damage_bonus = C if params.get("damage_bonus") == "潮數" else 0
+        times_bonus = C if params.get("times_bonus") == "潮數" else 0
         damage = A + damage_bonus
         times = B + times_bonus
 
         for _ in range(times):
             if local_stabilize():
-                return True, f"拔底{X}张，潮{C}张；后续判定：{damage}点{times}次，取消{cancel_count}次，命中{hit_count}次，共造成{total_burn_damage}点伤害；游戏胜利", total_burn_damage, cancel_count, hit_count
+                return True, f"拔底{X}張，潮{C}張；後續判定：{damage}點{times}次，取消{cancel_count}次，命中{hit_count}次，共造成{total_burn_damage}點傷害；遊戲勝利", total_burn_damage, cancel_count, hit_count
             added, cancelled, win, cancel_pos = resolve_damage(deck, control, clock, damage, local_stabilize)
             total_burn_damage += added
             if cancelled:
@@ -475,5 +475,5 @@ def perform_bottom_drain_and_burn(deck: List[Any], control: List[Any], stock: Li
             else:
                 hit_count += 1
             if win or local_stabilize():
-                return True, f"拔底{X}张，潮{C}张；后续判定：{damage}点{times}次，取消{cancel_count}次，命中{hit_count}次，共造成{total_burn_damage}点伤害；游戏胜利", total_burn_damage, cancel_count, hit_count
-        return False, f"拔底{X}张，潮{C}张；后续判定：{damage}点{times}次，取消{cancel_count}次，命中{hit_count}次，共造成{total_burn_damage}点伤害", total_burn_damage, cancel_count, hit_count
+                return True, f"拔底{X}張，潮{C}張；後續判定：{damage}點{times}次，取消{cancel_count}次，命中{hit_count}次，共造成{total_burn_damage}點傷害；遊戲勝利", total_burn_damage, cancel_count, hit_count
+        return False, f"拔底{X}張，潮{C}張；後續判定：{damage}點{times}次，取消{cancel_count}次，命中{hit_count}次，共造成{total_burn_damage}點傷害", total_burn_damage, cancel_count, hit_count

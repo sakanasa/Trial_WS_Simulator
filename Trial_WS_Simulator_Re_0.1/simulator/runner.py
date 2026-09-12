@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 """
-模拟执行器 (Simulation Runner) - 触发架构重构版
-负责常规模式、高级模式、工况模式以及批量矩阵统计的多线程后台计算。
-引入 TriggerQueueManager，实现我方优先(My Priority)、队列化平铺与规则优先机制。
-支持自定义卡牌 7 步攻击流水线 (1)~(7) 与敌方前列击倒比对。
+模擬執行器 (Simulation Runner) - 觸發架構重構版
+負責常規模式、高級模式、工況模式以及批量矩陣統計的多線程後臺計算。
+引入 TriggerQueueManager，實現我方優先(My Priority)、隊列化平鋪與規則優先機制。
+支持自定義卡牌 7 步攻擊流水線 (1)~(7) 與敵方前列擊倒比對。
 """
 
 import time
@@ -23,7 +23,7 @@ from simulator.statistics import calc_winrate, calc_avg_damage
 
 
 class TrialConditionHelper:
-    """单次模拟独立的线程安全工况助手（代表我方场上状态）"""
+    """單次模擬獨立的線程安全工況助手（代表我方場上狀態）"""
 
     def __init__(self, cond_deck: list, cond_control: list, cond_stock: list, cond_level: Any, cond_clock: Any):
         self.cond_deck = cond_deck
@@ -31,10 +31,10 @@ class TrialConditionHelper:
         self.cond_stock = cond_stock
         self.cond_level = cond_level
         self.cond_clock = cond_clock
-        self.failed = False  # 我方败北标志
+        self.failed = False  # 我方敗北標誌
 
     def _refresh_condition_deck(self):
-        """我方卡组刷新与刷新伤害"""
+        """我方牌組刷新與刷新傷害"""
         if not self.cond_deck and self.cond_control:
             self.cond_deck.extend(self.cond_control)
             self.cond_control.clear()
@@ -44,7 +44,7 @@ class TrialConditionHelper:
                 add_cards_to_clock(self.cond_clock, [top], self.cond_level, self.cond_control, lambda: False)
 
     def stabilize_condition(self) -> bool:
-        """检查我方工况区域是否败北（我方 Level 4 或无牌）"""
+        """檢查我方工況區域是否敗北（我方 Level 4 或無牌）"""
         res = stabilize(self.cond_deck, self.cond_control, self.cond_level, self.cond_clock)
         if res:
             self.failed = True
@@ -53,8 +53,8 @@ class TrialConditionHelper:
 
 class TriggerQueueManager:
     """
-    触发队列管理器：
-    严格遵循 WS 规范：我方优先(My Priority) -> 敌方(Enemy) 顺序平铺弹出现有队列。
+    觸發隊列管理器：
+    嚴格遵循 WS 規範：我方優先(My Priority) -> 敵方(Enemy) 順序平鋪彈出現有隊列。
     """
 
     def __init__(self):
@@ -62,7 +62,7 @@ class TriggerQueueManager:
         self.enemy_queue: List[Dict[str, Any]] = []
 
     def add_task(self, owner: str, task: Dict[str, Any]):
-        """入池：根据 owner 标签压入对应队列"""
+        """入池：根據 owner 標籤壓入對應隊列"""
         if owner == "my":
             self.my_queue.append(task)
         else:
@@ -72,7 +72,7 @@ class TriggerQueueManager:
         return len(self.my_queue) > 0 or len(self.enemy_queue) > 0
 
     def pop_next_task(self) -> Optional[Dict[str, Any]]:
-        """我方优先弹出原则：只要 my_queue 有任务，永远先弹 my_queue"""
+        """我方優先彈出原則：只要 my_queue 有任務，永遠先彈 my_queue"""
         if self.my_queue:
             return self.my_queue.pop(0)
         if self.enemy_queue:
@@ -92,7 +92,7 @@ class TriggerQueueManager:
         front_slot: str = None,
         enemy_front_roles: dict = None
     ) -> Tuple[bool, int, int]:
-        """队列解算主循环"""
+        """隊列解算主循環"""
         game_over = False
         total_cancel_damage = 0
         role_no = role_idx + 1
@@ -139,9 +139,9 @@ class TriggerQueueManager:
                         game_over = True
 
                     if steps_info is not None:
-                        title = f"角色{role_no}取消操作(由操作{triggered_by_op}触发)"
+                        title = f"角色{role_no}取消操作(由操作{triggered_by_op}觸發)"
                         steps_info.append({
-                            "is_cancel": True, "title": title, "index": title, "desc": f"取消触发: {desc}",
+                            "is_cancel": True, "title": title, "index": title, "desc": f"取消觸發: {desc}",
                             "deck": deck.copy(), "control": control.copy(), "stock": stock.copy(),
                             "level": level.copy(), "clock": clock.copy(), "soul": soul_points,
                             "abilities": copy.deepcopy(abilities) if abilities else [],
@@ -169,11 +169,11 @@ class TriggerQueueManager:
                                     nested_ops[cnt] if cnt < len(nested_ops) else None
                                 )
                                 if sub_nested:
-                                    # 🌟【传火逻辑修复】：若开启了 pass_on_trigger，将能力传递给目标角色
+                                    # 🌟【傳火邏輯修復】：若開啟了 pass_on_trigger，將能力傳遞給目標角色
                                     if ab_item.get("pass_on_trigger"):
                                         target_idx = ab_item.get("pass_target", 1) - 1
 
-                                        # 🌟 增加顺延判断：
+                                        # 🌟 增加順延判斷：
                                         if target_idx <= role_idx:
                                             target_idx = role_idx + 1
 
@@ -183,8 +183,8 @@ class TriggerQueueManager:
                                                 "owner": ab_item.get("owner", "my"),
                                                 "nested_op": copy.deepcopy(sub_nested),
                                                 "triggered": False,
-                                                "pass_on_trigger": True,                          # 🌟 继承传火标志
-                                                "pass_target": ab_item.get("pass_target", 1)      # 🌟 继承传火目标
+                                                "pass_on_trigger": True,                          # 🌟 繼承傳火標誌
+                                                "pass_target": ab_item.get("pass_target", 1)      # 🌟 繼承傳火目標
                                             }
                                             pending_pass.setdefault(target_idx, []).append(passed_ability)
 
@@ -196,10 +196,10 @@ class TriggerQueueManager:
             elif task_type == "ice_armor":
                 hits = task.get("hits", 0)
                 ice_idx = task.get("ice_idx", 1)
-                ice_title = f"角色{role_no}冰甲{ice_idx}(由操作{triggered_by_op}触发)"
+                ice_title = f"角色{role_no}冰甲{ice_idx}(由操作{triggered_by_op}觸發)"
 
                 Y, ice_over = execute_ice_armor(deck, control, clock, level, hits, stabilize_func)
-                desc_ice = f"冰甲{ice_idx}: 受到{hits}次命中伤害，冰甲响应从卡组顶推入{Y}张肉牌到控制室"
+                desc_ice = f"冰甲{ice_idx}: 受到{hits}次命中傷害，冰甲響應從牌組頂推入{Y}張肉牌到控制室"
 
                 if ice_over or (cond_helper and cond_helper.stabilize_condition()):
                     game_over = True
@@ -217,7 +217,7 @@ class TriggerQueueManager:
 
 
 class SimulationRunner:
-    """多线程蒙特卡洛模拟核心控制器"""
+    """多線程蒙特卡洛模擬核心控制器"""
 
     @staticmethod
     def simulate_role_ops_segment(
@@ -228,7 +228,7 @@ class SimulationRunner:
         condition_deck: list = None, condition_stock: list = None, app: Any = None,
         front_slot: str = None, enemy_front_roles: dict = None
     ) -> Tuple[bool, int, list]:
-        """单角色/阶段操作模拟核心引擎"""
+        """單角色/階段操作模擬核心引擎"""
         soul_points = role_state.get("soul", 3)
         abilities = role_state.setdefault("abilities", [])
         ice_armors = global_ice_armors if global_ice_armors is not None else role_state.setdefault("ice_armors", [])
@@ -254,20 +254,20 @@ class SimulationRunner:
             opt = op["type"]
             op_no = i + 1
 
-            if opt == "取消触发":
-                sub_mode = op.get("sub_mode", "单次触发")
-                if sub_mode in ("单次触发", "传火"):
+            if opt == "取消觸發":
+                sub_mode = op.get("sub_mode", "單次觸發")
+                if sub_mode in ("單次觸發", "傳火"):
                     ability = {
                         "type": "single", "owner": "my",
                         "nested_op": op.get("nested_op"),
                         "triggered": False
                     }
-                    if sub_mode == "传火":
+                    if sub_mode == "傳火":
                         ability["pass_on_trigger"] = True
                         ability["pass_target"] = op.get("pass_target", 1)
                     abilities.append(ability)
 
-                elif sub_mode == "多次触发":
+                elif sub_mode == "多次觸發":
                     total = op.get("total_triggers", 1)
                     ability = {
                         "type": "multi", "owner": "my",
@@ -276,7 +276,7 @@ class SimulationRunner:
                     }
                     abilities.append(ability)
 
-                desc = "添加取消触发能力"
+                desc = "添加取消觸發能力"
                 if collect_steps:
                     steps_info.append({
                         "is_cancel": False, "title": f"角色{role_no}操作{op_no}", "index": op_no, "desc": desc,
@@ -286,7 +286,7 @@ class SimulationRunner:
                     })
                 continue
 
-            if opt == "多步骤操作":
+            if opt == "多步驟操作":
                 steps = op.get("steps", [])
                 m_dmg = 0
                 for step_idx, step_op in enumerate(steps):
@@ -344,19 +344,19 @@ class SimulationRunner:
                                         nested_op_to_run = nested_ops[cnt]
 
                             if trig and nested_op_to_run:
-                                # 🌟【传火与顺延逻辑】：若开启了传火，将能力传递给下一个有效角色
+                                # 🌟【傳火與順延邏輯】：若開啟了傳火，將能力傳遞給下一個有效角色
                                 if ab.get("pass_on_trigger"):
                                     target_idx = ab.get("pass_target", 1) - 1
                                     if target_idx <= role_idx:
-                                        target_idx = role_idx + 1  # 目标 <= 当前时，自动顺延传给下一个角色 (X + 1)
+                                        target_idx = role_idx + 1  # 目標 <= 當前時，自動順延傳給下一個角色 (X + 1)
                                     if 0 <= target_idx < num_roles:
                                         passed_ability = {
                                             "type": "single",
                                             "owner": ab.get("owner", "my"),
                                             "nested_op": copy.deepcopy(nested_op_to_run),
                                             "triggered": False,
-                                            "pass_on_trigger": True,                    # 🌟 继承传火标志（实现无限连锁）
-                                            "pass_target": ab.get("pass_target", 1)     # 🌟 继承原始目标参数
+                                            "pass_on_trigger": True,                    # 🌟 繼承傳火標誌（實現無限連鎖）
+                                            "pass_target": ab.get("pass_target", 1)     # 🌟 繼承原始目標參數
                                         }
                                         pending_pass.setdefault(target_idx, []).append(passed_ability)
 
@@ -412,7 +412,7 @@ class SimulationRunner:
                 if "soul_points" in extra:
                     soul_points = extra["soul_points"]
 
-                # === 【新增】记录攻击方式状态 (正面/侧面/直击) ===
+                # === 【新增】記錄攻擊方式狀態 (正面/側面/直擊) ===
                 if "attack_mode" in extra:
                     role_state["attack_mode"] = extra["attack_mode"]
 
@@ -445,19 +445,19 @@ class SimulationRunner:
                                     nested_op_to_run = nested_ops[cnt]
 
                         if trig and nested_op_to_run:
-                            # 🌟【传火与顺延逻辑】：若开启了传火，将能力传递给下一个有效角色
+                            # 🌟【傳火與順延邏輯】：若開啟了傳火，將能力傳遞給下一個有效角色
                             if ab.get("pass_on_trigger"):
                                 target_idx = ab.get("pass_target", 1) - 1
                                 if target_idx <= role_idx:
-                                    target_idx = role_idx + 1  # 目标 <= 当前时，自动顺延传给下一个角色 (X + 1)
+                                    target_idx = role_idx + 1  # 目標 <= 當前時，自動順延傳給下一個角色 (X + 1)
                                 if 0 <= target_idx < num_roles:
                                     passed_ability = {
                                         "type": "single",
                                         "owner": ab.get("owner", "my"),
                                         "nested_op": copy.deepcopy(nested_op_to_run),
                                         "triggered": False,
-                                        "pass_on_trigger": True,                    # 🌟 继承传火标志（实现无限连锁）
-                                        "pass_target": ab.get("pass_target", 1)     # 🌟 继承原始目标参数
+                                        "pass_on_trigger": True,                    # 🌟 繼承傳火標誌（實現無限連鎖）
+                                        "pass_target": ab.get("pass_target", 1)     # 🌟 繼承原始目標參數
                                     }
                                     pending_pass.setdefault(target_idx, []).append(passed_ability)
 
@@ -502,10 +502,10 @@ class SimulationRunner:
         cond_helper: Any = None
     ) -> Tuple[bool, int, list]:
         """
-        对单个导入的自定义卡牌依次展开 (1)~(7) 攻击流水线：
-        (1) 攻击前 -> (2) 攻击方式 -> (3) 攻击时 -> (4) 判定阶段 -> (5) 伤害结算 -> (击倒判定) -> (6) 击倒对手时 -> (7) 攻击结束
+        對單個導入的自定義卡牌依次展開 (1)~(7) 攻擊流水線：
+        (1) 攻擊前 -> (2) 攻擊方式 -> (3) 攻擊時 -> (4) 判定階段 -> (5) 傷害結算 -> (擊倒判定) -> (6) 擊倒對手時 -> (7) 攻擊結束
         """
-        card_name = card_data.get("name", "自定义角色")
+        card_name = card_data.get("name", "自定義角色")
         effects = card_data.get("effects", {})
         my_power = int(card_data.get("power", 500) or 500)
         base_soul = int(card_data.get("soul", 1) or 1)
@@ -522,13 +522,13 @@ class SimulationRunner:
         game_over = False
 
         phases = [
-            ("pre_attack", "(1) 攻击前"),
-            ("attack_type", "(2) 攻击方式"),
-            ("on_attack", "(3) 攻击时"),
-            ("trigger_step", "(4) 判定阶段"),
-            ("deal_damage", "(5) 伤害结算"),
-            ("on_reverse", "(6) 击倒对手时"),
-            ("post_attack", "(7) 攻击结束")
+            ("pre_attack", "(1) 攻擊前"),
+            ("attack_type", "(2) 攻擊方式"),
+            ("on_attack", "(3) 攻擊時"),
+            ("trigger_step", "(4) 判定階段"),
+            ("deal_damage", "(5) 傷害結算"),
+            ("on_reverse", "(6) 擊倒對手時"),
+            ("post_attack", "(7) 攻擊結束")
         ]
 
         is_reverse_success = False
@@ -537,13 +537,13 @@ class SimulationRunner:
             if game_over or (cond_helper and cond_helper.failed):
                 break
 
-            # 若未成功击倒敌方，跳过 (6) 击倒对手时
+            # 若未成功擊倒敵方，跳過 (6) 擊倒對手時
             if phase_key == "on_reverse" and not is_reverse_success:
                 continue
 
             ops = effects.get(phase_key, [])
             if not ops and phase_key == "attack_type":
-                ops = [{"type": "攻击方式", "attack_type": "正面"}]
+                ops = [{"type": "攻擊方式", "attack_type": "正面"}]
 
             if not ops:
                 continue
@@ -570,9 +570,9 @@ class SimulationRunner:
                 game_over = True
                 break
 
-            # (5) 伤害结算完成后，进行击倒判定
+            # (5) 傷害結算完成後，進行擊倒判定
             if phase_key == "deal_damage" and not game_over:
-                current_attack_mode = role_state.get("attack_mode", "正面")  # 获取当前攻击方式
+                current_attack_mode = role_state.get("attack_mode", "正面")  # 獲取當前攻擊方式
                 enemy_role = enemy_front_roles.get(front_slot) if enemy_front_roles else None
                 enemy_lvl_str = "空"
                 enemy_pwr = 500
@@ -585,7 +585,7 @@ class SimulationRunner:
                     enemy_lvl_str = str(lvl_item.get()) if hasattr(lvl_item, "get") else str(lvl_item or "空")
                     enemy_pwr = int(pwr_item.get()) if hasattr(pwr_item, "get") else int(pwr_item or 500)
 
-                # === 【关键修正】只有 [正面攻击] 且 [对方槽位不为"空"] 且 [未被击倒] 时，才进行力量对比与击倒 ===
+                # === 【關鍵修正】只有 [正面攻擊] 且 [對方槽位不為"空"] 且 [未被擊倒] 時，才進行力量對比與擊倒 ===
                 if current_attack_mode == "正面" and enemy_lvl_str != "空" and not is_rev:
                     if my_power >= enemy_pwr:
                         enemy_role["is_reversed"] = True
@@ -593,33 +593,33 @@ class SimulationRunner:
                         if collect_steps:
                             steps_info.append({
                                 "is_cancel": False,
-                                "title": f"【{card_name}】正面战斗比对",
-                                "index": "击倒判定",
-                                "desc": f"击倒判定: 正面攻击力量({my_power}) >= 对方力量({enemy_pwr})，成功击倒对方【{front_slot}】角色！",
+                                "title": f"【{card_name}】正面戰鬥比對",
+                                "index": "擊倒判定",
+                                "desc": f"擊倒判定: 正面攻擊力量({my_power}) >= 對方力量({enemy_pwr})，成功擊倒對方【{front_slot}】角色！",
                                 "deck": deck.copy(), "control": control.copy(), "stock": stock.copy(),
                                 "level": level.copy(), "clock": clock.copy(), "soul": role_state.get("soul", 1),
                                 "abilities": copy.deepcopy(role_state.get("abilities", [])),
                                 "game_over": False
                             })
-                # 如果是侧面攻击，记录侧击日志，不触发击倒
-                elif current_attack_mode == "侧面" and collect_steps:
+                # 如果是側面攻擊，記錄側擊日誌，不觸發擊倒
+                elif current_attack_mode == "側面" and collect_steps:
                     steps_info.append({
                         "is_cancel": False,
-                        "title": f"【{card_name}】侧击判定",
-                        "index": "侧击",
-                        "desc": f"侧击判定: 攻击方式为[侧面]，不触发战斗比对与击倒结算。",
+                        "title": f"【{card_name}】側擊判定",
+                        "index": "側擊",
+                        "desc": f"側擊判定: 攻擊方式為[側面]，不觸發戰鬥比對與擊倒結算。",
                         "deck": deck.copy(), "control": control.copy(), "stock": stock.copy(),
                         "level": level.copy(), "clock": clock.copy(), "soul": role_state.get("soul", 1),
                         "abilities": copy.deepcopy(role_state.get("abilities", [])),
                         "game_over": False
                     })
-                # 如果对方角色为空，记录直击日志，不触发击倒
+                # 如果對方角色為空，記錄直擊日誌，不觸發擊倒
                 elif enemy_lvl_str == "空" and collect_steps:
                     steps_info.append({
                         "is_cancel": False,
-                        "title": f"【{card_name}】直击判定",
-                        "index": "直击",
-                        "desc": f"直击判定: 对方【{front_slot}】角色为空，自动进行直击，不触发战斗比对与击倒结算。",
+                        "title": f"【{card_name}】直擊判定",
+                        "index": "直擊",
+                        "desc": f"直擊判定: 對方【{front_slot}】角色為空，自動進行直擊，不觸發戰鬥比對與擊倒結算。",
                         "deck": deck.copy(), "control": control.copy(), "stock": stock.copy(),
                         "level": level.copy(), "clock": clock.copy(), "soul": role_state.get("soul", 1),
                         "abilities": copy.deepcopy(role_state.get("abilities", [])),
@@ -645,15 +645,15 @@ class SimulationRunner:
             try:
                 for i in range(sim_times):
                     deck = build_deck(fixed_params["deck_normal"], fixed_params["deck_climax"])
-                    control = ["普通"] * fixed_params["control_normal"] + ["高潮"] * fixed_params["control_climax"]
-                    stock = ["普通"] * fixed_params["stock_normal"] + ["高潮"] * fixed_params["stock_climax"]
+                    control = ["普通"] * fixed_params["control_normal"] + ["名場面"] * fixed_params["control_climax"]
+                    stock = ["普通"] * fixed_params["stock_normal"] + ["名場面"] * fixed_params["stock_climax"]
 
                     level_climax = fixed_params["level_climax_count"]
-                    level = ["高潮"] * level_climax + ["普通"] * min(level_meat, 4 - level_climax)
+                    level = ["名場面"] * level_climax + ["普通"] * min(level_meat, 4 - level_climax)
                     random.shuffle(level)
 
                     clock_climax = fixed_params["clock_climax_count"]
-                    clock = ["高潮"] * clock_climax + ["普通"] * min(clock_meat, 6 - clock_climax)
+                    clock = ["名場面"] * clock_climax + ["普通"] * min(clock_meat, 6 - clock_climax)
                     random.shuffle(clock)
 
                     stabilize_func = lambda: stabilize(deck, control, level, clock)
@@ -705,15 +705,15 @@ class SimulationRunner:
             try:
                 for i in range(sim_times):
                     deck = build_deck(fixed_params["deck_normal"], fixed_params["deck_climax"])
-                    control = ["普通"] * fixed_params["control_normal"] + ["高潮"] * fixed_params["control_climax"]
-                    stock = ["普通"] * fixed_params["stock_normal"] + ["高潮"] * fixed_params["stock_climax"]
+                    control = ["普通"] * fixed_params["control_normal"] + ["名場面"] * fixed_params["control_climax"]
+                    stock = ["普通"] * fixed_params["stock_normal"] + ["名場面"] * fixed_params["stock_climax"]
 
                     level_climax = fixed_params["level_climax_count"]
-                    level = ["高潮"] * level_climax + ["普通"] * min(level_meat, 4 - level_climax)
+                    level = ["名場面"] * level_climax + ["普通"] * min(level_meat, 4 - level_climax)
                     random.shuffle(level)
 
                     clock_climax = fixed_params["clock_climax_count"]
-                    clock = ["高潮"] * clock_climax + ["普通"] * min(clock_meat, 6 - clock_climax)
+                    clock = ["名場面"] * clock_climax + ["普通"] * min(clock_meat, 6 - clock_climax)
                     random.shuffle(clock)
 
                     game_over = False
@@ -774,15 +774,15 @@ class SimulationRunner:
             try:
                 for i in range(sim_times):
                     deck = build_deck(fixed_params["deck_normal"], fixed_params["deck_climax"])
-                    control = ["普通"] * fixed_params["control_normal"] + ["高潮"] * fixed_params["control_climax"]
-                    stock = ["普通"] * fixed_params["stock_normal"] + ["高潮"] * fixed_params["stock_climax"]
+                    control = ["普通"] * fixed_params["control_normal"] + ["名場面"] * fixed_params["control_climax"]
+                    stock = ["普通"] * fixed_params["stock_normal"] + ["名場面"] * fixed_params["stock_climax"]
 
                     level_climax = fixed_params["level_climax_count"]
-                    level = ["高潮"] * level_climax + ["普通"] * min(level_meat, 4 - level_climax)
+                    level = ["名場面"] * level_climax + ["普通"] * min(level_meat, 4 - level_climax)
                     random.shuffle(level)
 
                     clock_climax = fixed_params["clock_climax_count"]
-                    clock = ["高潮"] * clock_climax + ["普通"] * min(clock_meat, 6 - clock_climax)
+                    clock = ["名場面"] * clock_climax + ["普通"] * min(clock_meat, 6 - clock_climax)
                     random.shuffle(clock)
 
                     cond_deck = clone_card_list(condition_deck_cards)
@@ -807,7 +807,7 @@ class SimulationRunner:
                     pending_pass = {}
                     global_ice_armors = []
 
-                    # 拷贝敌方角色状态
+                    # 拷貝敵方角色狀態
                     local_enemy_front = {}
                     if enemy_front_roles:
                         for k, v in enemy_front_roles.items():
@@ -815,7 +815,7 @@ class SimulationRunner:
                             pval = v.get("power").get() if hasattr(v.get("power"), "get") else v.get("power", 500)
                             local_enemy_front[k] = {"level": lval, "power": pval, "is_reversed": False}
 
-                    # 1. 解算角色定义区的操作
+                    # 1. 解算角色定義區的操作
                     role_states = [{"soul": rp["soul"], "abilities": [], "ops": rp["ops"]} for rp in roles_params]
 
                     for role_idx, start_idx, end_idx in execution_plan:
@@ -828,14 +828,14 @@ class SimulationRunner:
                             pending_pass, role_idx, len(roles_params),
                             collect_steps=False, global_ice_armors=global_ice_armors,
                             condition_deck=cond_helper.cond_deck, condition_stock=cond_helper.cond_stock, app=cond_helper,
-                            front_slot=f"前列{role_idx+1}",  # <--- 修正：传入 front_slot
+                            front_slot=f"前列{role_idx+1}",  # <--- 修正：傳入 front_slot
                             enemy_front_roles=local_enemy_front
                         )
                         total_dmg += dmg
                         if over:
                             game_over = True
 
-                    # 2. 依次解算我方前列1 -> 前列2 -> 前列3 的 7 步流水线卡牌
+                    # 2. 依次解算我方前列1 -> 前列2 -> 前列3 的 7 步流水線卡牌
                     if not game_over and not cond_helper.failed and condition_front_cards:
                         for front_key in ["前列1", "前列2", "前列3"]:
                             if game_over or cond_helper.failed:
