@@ -15,7 +15,7 @@ from typing import Any, List, Dict, Optional, Callable
 from utils.registry import registry, safe_trace
 from ui.components.app_dropdown import AppDropdown
 
-from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
+from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD, RADIUS
 
 from ui.dialogs.select_from_library_dialog import SelectFromLibraryDialog
 
@@ -50,7 +50,7 @@ class CustomCardsDialog(ctk.CTkToplevel):
                         "pre_attack": [],
                         "attack_type": [{"type": "攻擊方式", "attack_type": "正面"}],
                         "on_attack": [{"type": "摩卡", "mocha_mode": "原位", "mocha_count": 2}],
-                        "trigger_step": [{"type": "工況判定"}],
+                        "trigger_step": [{"type": "一般判定"}],
                         "deal_damage": [{"type": "角色傷害", "role_damage_base": 0, "role_bonus_type": "魂點", "trigger_rate": 0.0}],
                         "on_reverse": [{"type": "普通傷害", "damage": 2, "trigger_rate": 0.0}],
                         "post_attack": []
@@ -444,7 +444,7 @@ class CustomCardsDialog(ctk.CTkToplevel):
                 font=FONT_GLOBAL,
                 anchor="w",
                 height=30,
-                corner_radius=6,
+                corner_radius=RADIUS["sm"],
                 fg_color=PALETTE["primary"] if is_selected else PALETTE["secondary"],
                 hover_color=PALETTE["primary_hover"] if is_selected else PALETTE["secondary_hover"],
                 text_color=("#FFFFFF", "#0B0F19") if is_selected else PALETTE["text_main"],
@@ -648,7 +648,7 @@ class CustomCardsDialog(ctk.CTkToplevel):
         if phase_key == "attack_type":
             default_type = "攻擊方式"
         elif phase_key == "trigger_step":
-            default_type = "工況判定"
+            default_type = "一般判定"
         elif phase_key == "deal_damage":
             default_type = "角色傷害"
 

@@ -241,7 +241,7 @@ class BatchStatisticsDialog(ctk.CTkToplevel):
             sim_times = self.app.middle_col.adv_sim_times.get()
             execution_plan, roles_params = self.app._get_advanced_execution_plan()
             ops_params = None
-        else:  # 工況模式
+        else:  # 殘局模式
             sim_times = self.app.middle_col.cond_sim_times.get()
             execution_plan, roles_params = self.app._get_condition_execution_plan()
             ops_params = None

@@ -9,7 +9,7 @@ import tkinter as tk
 import customtkinter as ctk
 from typing import Any, List, Optional
 
-from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
+from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD, BORDER_THIN
 
 
 class InitStateCard(ctk.CTkFrame):
@@ -35,7 +35,7 @@ class InitStateCard(ctk.CTkFrame):
             master=master,
             fg_color=PALETTE["card_bg"],
             corner_radius=12,
-            border_width=2,
+            border_width=BORDER_THIN,
             border_color=PALETTE["card_border"],
             **ctk_kwargs
         )

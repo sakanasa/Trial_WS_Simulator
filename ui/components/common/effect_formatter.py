@@ -44,11 +44,10 @@ def _fmt_cancel_damage(p: dict) -> str:
 
 
 def _fmt_role_damage(p: dict) -> str:
+    # 🌟 此格式化函式僅用於殘局模式的自定義卡片預覽，該模式下觸發率不生效（見 _exec_role_damage），故不顯示
     base = p.get("role_damage_base", 0)
     bonus = p.get("role_bonus_type", "魂點")
-    trig = p.get("trigger_rate", 30.0)
-    extra = f" (觸發率{trig:.0f}%)" if trig > 0 else ""
-    return f"角色傷害: 基礎{base}+{bonus}{extra}"
+    return f"角色傷害: 基礎{base}+{bonus}"
 
 
 def _fmt_attack_type(p: dict) -> str:
@@ -142,7 +141,7 @@ def _fmt_ice_armor(p: dict) -> str:
 
 
 def _fmt_condition_check(p: dict) -> str:
-    return "工況判定"
+    return "一般判定"
 
 
 def _fmt_top_check_burn(p: dict) -> str:
@@ -231,7 +230,7 @@ FORMATTERS = {
     "特殊聯動": _fmt_special_linkage,
     "減魂": _fmt_reduce_soul,
     "吃傷看頂": _fmt_ice_armor,
-    "工況判定": _fmt_condition_check,
+    "一般判定": _fmt_condition_check,
     "翻頂燒": _fmt_top_check_burn,
     "推頂燒": _fmt_top_push_burn,
     "羽未(決策用)": _fmt_look_reorder,

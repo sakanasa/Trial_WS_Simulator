@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 角色卡片組件與管理器 (Role Card & Role List Manager)
-統一管理高級模式與工況模式下的角色卡片（角色1、角色2...）的 UI 掛載、控制按鈕綁定、初始魂點輸入與操作列表渲染。
+統一管理高級模式與殘局模式下的角色卡片（角色1、角色2...）的 UI 掛載、控制按鈕綁定、初始魂點輸入與操作列表渲染。
 """
 
 import tkinter as tk
@@ -10,7 +10,7 @@ from typing import Any, List, Optional, Callable
 
 from ui.components.common.ops_list_builder import OpsListBuilder
 from ui.components.app_dropdown import CTkControlButtons
-from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
+from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD, RADIUS, SPACING, BORDER_THIN
 
 
 class RoleListManager:
@@ -39,7 +39,7 @@ class RoleListManager:
                 valid_containers.add(role_card)
 
                 role_card.pack_forget()  # 🌟 解包確保物理重排
-                role_card.pack(fill=tk.X, pady=4, padx=4)
+                role_card.pack(fill=tk.X, pady=SPACING["xs"], padx=SPACING["xs"])
 
                 if "title_label" in role and role["title_label"].winfo_exists():
                     if role["title_label"].cget("text") != role_name:
@@ -60,17 +60,17 @@ class RoleListManager:
             else:
                 # 構建全新的角色卡片
                 role_card = ctk.CTkFrame(
-                    container, 
+                    container,
                     fg_color=PALETTE["card_bg"],
-                    corner_radius=12, 
-                    border_width=2, 
+                    corner_radius=RADIUS["md"],
+                    border_width=BORDER_THIN,
                     border_color=PALETTE["card_border"]
                 )
-                role_card.pack(fill=tk.X, pady=4, padx=4)
+                role_card.pack(fill=tk.X, pady=SPACING["xs"], padx=SPACING["xs"])
                 role["role_card"] = role_card
 
                 top_row = ctk.CTkFrame(role_card, fg_color="transparent")
-                top_row.pack(fill=tk.X, padx=6, pady=4)
+                top_row.pack(fill=tk.X, padx=SPACING["sm"], pady=SPACING["xs"])
 
                 # 控制按鈕 [- + ▲ ▼]
                 ctrl_group = CTkControlButtons(
@@ -96,7 +96,7 @@ class RoleListManager:
                 ).pack(side=tk.LEFT, padx=2)
 
                 ops_container = ctk.CTkFrame(role_card, fg_color="transparent")
-                ops_container.pack(fill=tk.X, expand=True, padx=4, pady=(2, 6))
+                ops_container.pack(fill=tk.X, expand=True, padx=SPACING["xs"], pady=(2, SPACING["sm"]))
                 role["ops_frame"] = ops_container
 
                 valid_containers.add(role_card)

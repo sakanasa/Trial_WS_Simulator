@@ -9,7 +9,7 @@ import customtkinter as ctk
 from typing import Any, List, Optional, Callable
 
 from utils.registry import registry
-from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
+from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD, RADIUS, BORDER_THIN
 from ui.components.common.ops_list_builder import OpsListBuilder
 
 class CharSimCard(ctk.CTkFrame):
@@ -34,8 +34,8 @@ class CharSimCard(ctk.CTkFrame):
         super().__init__(
             master=master,
             fg_color=PALETTE["card_bg"],
-            corner_radius=12,
-            border_width=2,
+            corner_radius=RADIUS["md"],
+            border_width=BORDER_THIN,
             border_color=PALETTE["card_border"],
             **valid_kwargs
         )

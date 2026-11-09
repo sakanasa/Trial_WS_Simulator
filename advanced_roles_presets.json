@@ -1,54 +1,4 @@
 {
-  "三路燒3打3": [
-    {
-      "soul": 3,
-      "ops": [
-        {
-          "type": "普通傷害",
-          "damage": 3,
-          "trigger_rate": 0.0
-        },
-        {
-          "type": "角色傷害",
-          "role_damage_base": 3,
-          "role_bonus_type": "魂點",
-          "trigger_rate": 30.0
-        }
-      ]
-    },
-    {
-      "soul": 3,
-      "ops": [
-        {
-          "type": "普通傷害",
-          "damage": 3,
-          "trigger_rate": 0.0
-        },
-        {
-          "type": "角色傷害",
-          "role_damage_base": 3,
-          "role_bonus_type": "魂點",
-          "trigger_rate": 30.0
-        }
-      ]
-    },
-    {
-      "soul": 3,
-      "ops": [
-        {
-          "type": "普通傷害",
-          "damage": 3,
-          "trigger_rate": 0.0
-        },
-        {
-          "type": "角色傷害",
-          "role_damage_base": 3,
-          "role_bonus_type": "魂點",
-          "trigger_rate": 30.0
-        }
-      ]
-    }
-  ],
   "2千束1瀧奈": [
     {
       "soul": 3,
@@ -271,6 +221,68 @@
         {
           "type": "角色傷害",
           "role_damage_base": 2,
+          "role_bonus_type": "魂點",
+          "trigger_rate": 30.0
+        }
+      ]
+    }
+  ],
+  "三路黑櫻": [
+    {
+      "soul": 3,
+      "ops": [
+        {
+          "type": "拔底聯動",
+          "X": 6,
+          "linkage_type": "潮數",
+          "base_damage": 0,
+          "damage_bonus": "潮數",
+          "base_times": 1,
+          "times_bonus": "0"
+        },
+        {
+          "type": "角色傷害",
+          "role_damage_base": 3,
+          "role_bonus_type": "魂點",
+          "trigger_rate": 30.0
+        }
+      ]
+    },
+    {
+      "soul": 3,
+      "ops": [
+        {
+          "type": "拔底聯動",
+          "X": 6,
+          "linkage_type": "潮數",
+          "base_damage": 0,
+          "damage_bonus": "潮數",
+          "base_times": 1,
+          "times_bonus": "0"
+        },
+        {
+          "type": "角色傷害",
+          "role_damage_base": 3,
+          "role_bonus_type": "魂點",
+          "trigger_rate": 30.0
+        }
+      ]
+    },
+    {
+      "soul": 3,
+      "ops": [
+        {
+          "type": "拔底聯動",
+          "X": 6,
+          "linkage_type": "潮數",
+          "base_damage": 0,
+          "damage_bonus": "潮數",
+          "base_times": 1,
+          "times_bonus": "0"
+        },
+        {
+          "type": "角色傷害",
+          "role_damage_base": 3,
           "role_bonus_type": "魂點",
           "trigger_rate": 30.0
         }

@@ -399,7 +399,7 @@ def _exec_special_linkage(deck, control, stock, level, clock, op, stabilize_func
     elif char == "藍頭盔":
         condition_deck = kwargs.get("condition_deck")
         if condition_deck is None or not condition_deck:
-            return False, "藍頭盔: 缺少工況數據", {"total_damage": 0}
+            return False, "藍頭盔: 缺少殘局數據", {"total_damage": 0}
 
         top_card = condition_deck[-1]
         is_r0 = (get_card_kind(top_card) == "角色" and get_card_level(top_card) == 0)
@@ -425,18 +425,18 @@ def _exec_special_linkage(deck, control, stock, level, clock, op, stabilize_func
         return game_over, desc, {"total_damage": total_damage}
 
     elif char == "泳裝瀧奈":
-        # 簡化規則：推自己工況牌組頂1張（工具無敵方牌組資料），
+        # 簡化規則：推自己殘局牌組頂1張（工具無敵方牌組資料），
         # 該牌等級<=0（含名場面，因名場面預設視為0級）則造成1點傷害，否則無事發生。
         condition_deck = kwargs.get("condition_deck")
         app = kwargs.get("app")
 
         if condition_deck is None:
-            return False, "泳裝瀧奈: 缺少工況數據", {"total_damage": 0}
+            return False, "泳裝瀧奈: 缺少殘局數據", {"total_damage": 0}
 
         if not condition_deck and app:
             app._refresh_condition_deck()
         if not condition_deck:
-            return False, "泳裝瀧奈: 工況牌組已空，跳過推牌", {"total_damage": 0}
+            return False, "泳裝瀧奈: 殘局牌組已空，跳過推牌", {"total_damage": 0}
 
         top_card = condition_deck.pop()
         card_kind = get_card_kind(top_card)
@@ -458,7 +458,7 @@ def _exec_special_linkage(deck, control, stock, level, clock, op, stabilize_func
         if app and app.stabilize_condition():
             game_over = True
 
-        desc = f"泳裝瀧奈: 推工況牌組頂1張[{card_kind} Lv.{card_lvl}]，" + \
+        desc = f"泳裝瀧奈: 推殘局牌組頂1張[{card_kind} Lv.{card_lvl}]，" + \
             ("等級<=0，造成1點傷害" if is_low_level else "等級>0，無事發生")
         return game_over, desc, {"total_damage": total_damage}
 

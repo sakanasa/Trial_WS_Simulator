@@ -8,7 +8,7 @@ import tkinter as tk
 import customtkinter as ctk
 from typing import Any, Optional, Callable
 
-from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
+from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD, RADIUS
 
 
 class SimBottomBar(ctk.CTkFrame):
@@ -60,19 +60,20 @@ class SimBottomBar(ctk.CTkFrame):
 
         # 2. 模擬按鈕
         ctk.CTkButton(
-            self, 
-            text="多次傷害模擬", 
+            self,
+            text="多次傷害模擬",
             command=self._handle_run_sim,
-            fg_color=PALETTE["primary"], 
-            hover_color=PALETTE["primary_hover"], 
+            fg_color=PALETTE["primary"],
+            hover_color=PALETTE["primary_hover"],
             text_color=("#FFFFFF", "#0B0F19"),
             font=FONT_GLOBAL_BOLD,
-            height=30
-        ).pack(pady=6, fill=tk.X)
+            corner_radius=RADIUS["sm"],
+            height=34
+        ).pack(pady=8, fill=tk.X)
 
         # 3. 進度條與百分比
-        self.progress_bar = ctk.CTkProgressBar(self, progress_color=PALETTE["primary"], height=8)
-        self.progress_bar.pack(fill=tk.X, pady=2)
+        self.progress_bar = ctk.CTkProgressBar(self, progress_color=PALETTE["primary"], height=8, corner_radius=RADIUS["sm"])
+        self.progress_bar.pack(fill=tk.X, pady=4)
         self.progress_bar.set(0.0)
 
         self.progress_label = ctk.CTkLabel(self, text="0%", text_color=PALETTE["text_sub"], font=FONT_GLOBAL)

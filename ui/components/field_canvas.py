@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-工況模式戰場畫布組件 (ConditionFieldCanvas) - 極致緊湊收攏版
+殘局模式戰場畫布組件 (ConditionFieldCanvas) - 極致緊湊收攏版
 包含規則：
 1. 畫布水平寬度收攏至牌組右邊緣；
 2. 底部平臺縮略為“我方”，按鈕縮略為“手牌”和“概覽”；
@@ -12,11 +12,11 @@ import tkinter as tk
 import customtkinter as ctk
 from typing import Dict, Callable, Optional, Any
 from ui.components.app_dropdown import AppDropdown
-from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
+from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD, RADIUS
 from core.models import get_card_level, get_card_trigger_soul, get_card_base_soul
 
 class ConditionFieldCanvas(ctk.CTkFrame):
-    """工況模式可視化網格畫布（極致緊湊收攏 WS 正統戰場）"""
+    """殘局模式可視化網格畫布（極致緊湊收攏 WS 正統戰場）"""
 
     def _set_appearance_mode(self, mode_string):
         """當主題改變時，同步強制刷新 Canvas 及內部控件的底色"""
@@ -130,7 +130,7 @@ class ConditionFieldCanvas(ctk.CTkFrame):
         )
 
         self.hand_btn = ctk.CTkButton(
-            self.hand_bottom_frame, text="手牌", width=60, height=26, corner_radius=6,
+            self.hand_bottom_frame, text="手牌", width=60, height=26, corner_radius=RADIUS["sm"],
             font=bold_font,
             fg_color=PALETTE["primary"], text_color=("#FFFFFF", "#0B0F19"), hover_color=PALETTE["primary_hover"],
             command=lambda: self.on_zone_click("手牌")
@@ -141,7 +141,7 @@ class ConditionFieldCanvas(ctk.CTkFrame):
         self.bottom_label.pack(side=tk.LEFT, expand=True, padx=4)
 
         self.overview_btn = ctk.CTkButton(
-            self.hand_bottom_frame, text="概覽", width=60, height=26, corner_radius=6,
+            self.hand_bottom_frame, text="概覽", width=60, height=26, corner_radius=RADIUS["sm"],
             font=bold_font,
             fg_color=PALETTE["primary"], text_color=("#FFFFFF", "#0B0F19"), hover_color=PALETTE["primary_hover"],
             command=self.on_overview_click

@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 主界面中欄面板視圖 (Middle Column View) - 統一淺色高顏值適配版
-包含了多次模擬配置、模式切換（常規/高級/工況）、動態角色管理、計劃列表與執行控制。
+包含了多次模擬配置、模式切換（常規/高級/殘局）、動態角色管理、計劃列表與執行控制。
 """
 
 import tkinter as tk
@@ -10,10 +10,10 @@ import customtkinter as ctk
 from typing import Any, List, Dict
 
 from utils.registry import registry
-from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
+from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD, RADIUS, SPACING, BORDER_THIN
 from ui.components.middle_column.reg_sim_tab import RegSimTab
 from ui.components.middle_column.adv_sim_tab import AdvSimTab
-from ui.components.middle_column.cond_sim_tab import CondSimTab  # 🌟 1. 引入工況模式組件
+from ui.components.middle_column.cond_sim_tab import CondSimTab  # 🌟 1. 引入殘局模式組件
 
 
 class MiddleColumnView(ctk.CTkFrame):
@@ -41,7 +41,7 @@ class MiddleColumnView(ctk.CTkFrame):
     @property
     def plan_list_frame(self): return self.adv_tab.plan_list_frame
 
-    # 🌟 2. 工況模式透傳屬性
+    # 🌟 2. 殘局模式透傳屬性
     @property
     def cond_sim_times(self): return self.cond_tab.cond_sim_times
     @property
@@ -79,7 +79,8 @@ class MiddleColumnView(ctk.CTkFrame):
             "fg_color": PALETTE["secondary"],
             "text_color": PALETTE["text_main"],
             "hover_color": PALETTE["secondary_hover"],
-            "height": 26
+            "height": 26,
+            "corner_radius": RADIUS["sm"]
         }
 
         self.batch_btn = ctk.CTkButton(
@@ -103,25 +104,25 @@ class MiddleColumnView(ctk.CTkFrame):
         self.mode_btn_frame.pack(side=tk.RIGHT)
 
         tab_opts = {
-            "font": FONT_GLOBAL,
-            "width": 60,
-            "height": 26,
-            "corner_radius": 6
+            "font": FONT_GLOBAL_BOLD,
+            "width": 64,
+            "height": 28,
+            "corner_radius": RADIUS["sm"]
         }
 
         self.btn_reg = ctk.CTkButton(self.mode_btn_frame, text="常規", command=lambda: self.select_mode("常規"), **tab_opts)
-        self.btn_reg.pack(side=tk.LEFT, padx=1)
+        self.btn_reg.pack(side=tk.LEFT, padx=2)
 
         self.btn_adv = ctk.CTkButton(self.mode_btn_frame, text="高級", command=lambda: self.select_mode("高級"), **tab_opts)
-        self.btn_adv.pack(side=tk.LEFT, padx=1)
+        self.btn_adv.pack(side=tk.LEFT, padx=2)
 
-        self.btn_cond = ctk.CTkButton(self.mode_btn_frame, text="工況", command=lambda: self.select_mode("工況"), **tab_opts)
-        self.btn_cond.pack(side=tk.LEFT, padx=1)
+        self.btn_cond = ctk.CTkButton(self.mode_btn_frame, text="殘局", command=lambda: self.select_mode("殘局"), **tab_opts)
+        self.btn_cond.pack(side=tk.LEFT, padx=2)
 
         self.mode_buttons_dict = {
             "常規": self.btn_reg,
             "高級": self.btn_adv,
-            "工況": self.btn_cond
+            "殘局": self.btn_cond
         }
 
         # 1. 常規模式子容器
@@ -150,7 +151,7 @@ class MiddleColumnView(ctk.CTkFrame):
         )
         self.adv_tab.pack(fill=tk.BOTH, expand=True)
 
-        # 3. 🌟 工況模式子容器：實例化 CondSimTab
+        # 3. 🌟 殘局模式子容器：實例化 CondSimTab
         self.condition_frame = ctk.CTkFrame(multi_frame, fg_color="transparent")
         self.condition_frame.pack(fill=tk.BOTH, expand=True)
         self.condition_frame.pack_forget()
@@ -184,7 +185,7 @@ class MiddleColumnView(ctk.CTkFrame):
             self.regular_frame.pack(fill=tk.BOTH, expand=True)
         elif mode_name == "高級":
             self.advanced_frame.pack(fill=tk.BOTH, expand=True)
-        elif mode_name == "工況":
+        elif mode_name == "殘局":
             self.condition_frame.pack(fill=tk.BOTH, expand=True)
             self.dt_btn.pack(side=tk.LEFT, padx=4)
 
@@ -203,7 +204,7 @@ class MiddleColumnView(ctk.CTkFrame):
                 )
 
     def toggle_multi_mode(self):
-        modes = ["常規", "高級", "工況"]
+        modes = ["常規", "高級", "殘局"]
         current = self.multi_mode_var.get()
         next_mode = modes[(modes.index(current) + 1) % len(modes)]
         self.select_mode(next_mode)

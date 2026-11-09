@@ -10,7 +10,7 @@ from typing import Any, Optional, Callable
 
 from utils.registry import registry
 from ui.components.common.ops_list_builder import OpsListBuilder
-from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
+from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD, RADIUS, BORDER_THIN
 
 
 class SingleOpCard(ctk.CTkFrame):
@@ -34,8 +34,8 @@ class SingleOpCard(ctk.CTkFrame):
         super().__init__(
             master=master,
             fg_color=PALETTE["card_bg"],
-            corner_radius=12,
-            border_width=2,
+            corner_radius=RADIUS["md"],
+            border_width=BORDER_THIN,
             border_color=PALETTE["card_border"],
             **ctk_kwargs
         )

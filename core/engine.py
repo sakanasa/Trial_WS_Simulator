@@ -28,7 +28,7 @@ def add_cards_to_clock(
     control: List[Any],
     stabilize_func: Callable[[], bool]
 ) -> bool:
-    """自適應將卡牌放入傷害區（支持列表形式與工況字典形式）"""
+    """自適應將卡牌放入傷害區（支持列表形式與殘局字典形式）"""
     if isinstance(clock, list):
         clock.extend(cards)
     elif isinstance(clock, dict):

@@ -144,12 +144,14 @@ class OperationRegistry:
             values = p.get("values", None)
 
             if label_text:
-                ctk.CTkLabel(
-                    params_frame, 
-                    text=label_text, 
+                label_widget = ctk.CTkLabel(
+                    params_frame,
+                    text=label_text,
                     text_color=PALETTE["text_main"],
                     font=FONT_GLOBAL
-                ).pack(side=tk.LEFT, padx=2)
+                )
+                label_widget.pack(side=tk.LEFT, padx=2)
+                op["controls"][name + "_label"] = label_widget
 
             if widget_type == "entry":
                 entry = ctk.CTkEntry(

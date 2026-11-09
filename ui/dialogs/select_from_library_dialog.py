@@ -15,7 +15,7 @@ from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
 
 
 class SelectFromLibraryDialog(ctk.CTkToplevel):
-    """程序內部自定義卡庫選擇對話框類（供工況網格與編輯器導入卡牌使用）"""
+    """程序內部自定義卡庫選擇對話框類（供殘局網格與編輯器導入卡牌使用）"""
 
     def __init__(self, parent: tk.Widget, app_controller: Any, on_select: Callable[[dict], None], **kwargs):
         super().__init__(parent, **kwargs)

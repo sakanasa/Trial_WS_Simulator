@@ -36,7 +36,8 @@ def _flatten_matrix(data: dict):
                 values.append(matrix[i][j])
             except (IndexError, TypeError):
                 values.append(None)
-    return labels, values
+    # 🌟 X 軸改成反序顯示（例如 3-6~2-0 的矩陣顯示成 2-0~3-6）
+    return labels[::-1], values[::-1]
 
 
 class KillRateChartDialog(ctk.CTkToplevel):

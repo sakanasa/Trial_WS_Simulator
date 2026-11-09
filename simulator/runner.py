@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
 模擬執行器 (Simulation Runner) - 觸發架構重構版
-負責常規模式、高級模式、工況模式以及批量矩陣統計的多線程後臺計算。
+負責常規模式、高級模式、殘局模式以及批量矩陣統計的多線程後臺計算。
 引入 TriggerQueueManager，實現我方優先(My Priority)、隊列化平鋪與規則優先機制。
 支持自定義卡牌 7 步攻擊流水線 (1)~(7) 與敵方前列擊倒比對。
 """
@@ -23,7 +23,7 @@ from simulator.statistics import calc_winrate, calc_avg_damage
 
 
 class TrialConditionHelper:
-    """單次模擬獨立的線程安全工況助手（代表我方場上狀態）"""
+    """單次模擬獨立的線程安全殘局助手（代表我方場上狀態）"""
 
     def __init__(self, cond_deck: list, cond_control: list, cond_stock: list, cond_level: Any, cond_clock: Any):
         self.cond_deck = cond_deck
@@ -44,7 +44,7 @@ class TrialConditionHelper:
                 add_cards_to_clock(self.cond_clock, [top], self.cond_level, self.cond_control, lambda: False)
 
     def stabilize_condition(self) -> bool:
-        """檢查我方工況區域是否敗北（我方 Level 4 或無牌）"""
+        """檢查我方殘局區域是否敗北（我方 Level 4 或無牌）"""
         res = stabilize(self.cond_deck, self.cond_control, self.cond_level, self.cond_clock)
         if res:
             self.failed = True

@@ -19,6 +19,14 @@ def _build_role_damage_extra(op, params_frame, linkage_frame, cancel_detail_fram
     if combo and hasattr(combo, "configure"):
         combo.configure(values=bonus_values)
 
+    # 🌟 殘局模式下，角色傷害的「觸發率」機率加魂完全不會生效（見 _exec_role_damage 對 condition_deck 的判斷，
+    # 殘局模式一律改由「一般判定」實際翻牌決定），與其讓玩家誤以為調整有作用，直接把這個欄位藏起來
+    if mode == "condition":
+        for key in ("trigger_rate_label", "trigger_rate_entry", "trigger_rate_suffix_label"):
+            widget = op["controls"].get(key)
+            if widget:
+                widget.pack_forget()
+
 
 def _build_shoot_extra(op, params_frame, linkage_frame, cancel_detail_frame, mode, steps_frame):
     mode_var = op["params"]["shoot_mode_var"]

@@ -10,7 +10,7 @@ from typing import Dict, Any, Callable
 
 from utils.registry import registry
 from ui.components.app_dropdown import AppDropdown
-from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
+from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD, RADIUS, SPACING, BORDER_THIN
 from ui.components.left_column.char_sim_card import CharSimCard
 from ui.components.left_column.single_op_card import SingleOpCard
 
@@ -43,16 +43,16 @@ class LeftColumnView(ctk.CTkFrame):
         self.clock_vars = [tk.StringVar(value="肉" if i < 4 else "無") for i in range(6)]
 
     def _create_card_frame(self, parent: Any, title_text: str) -> ctk.CTkFrame:
-        card = ctk.CTkFrame(parent, fg_color=PALETTE["card_bg"], corner_radius=12, border_width=2, border_color=PALETTE["card_border"])
-        card.pack(fill=tk.X, pady=6, padx=6)
+        card = ctk.CTkFrame(parent, fg_color=PALETTE["card_bg"], corner_radius=RADIUS["md"], border_width=BORDER_THIN, border_color=PALETTE["card_border"])
+        card.pack(fill=tk.X, pady=SPACING["sm"], padx=SPACING["sm"])
 
         title_lbl = ctk.CTkLabel(
-            card, 
-            text=title_text, 
-            font=FONT_GLOBAL_BOLD, 
+            card,
+            text=title_text,
+            font=FONT_GLOBAL_BOLD,
             text_color=PALETTE["text_main"]
         )
-        title_lbl.pack(anchor="w", padx=10, pady=(8, 4))
+        title_lbl.pack(anchor="w", padx=SPACING["md"], pady=(SPACING["sm"], SPACING["xs"]))
         return card
 
     def _move_control_to_deck(self):
@@ -166,18 +166,18 @@ class LeftColumnView(ctk.CTkFrame):
         grid_frame.pack(fill=tk.X, padx=10, pady=(0, 8))
 
         level_box = ctk.CTkFrame(
-            grid_frame, 
-            fg_color="transparent", 
-            corner_radius=6, 
+            grid_frame,
+            fg_color="transparent",
+            corner_radius=RADIUS["sm"],
             border_width=1.5,
             border_color=PALETTE["input_border"]
         )
         level_box.grid(row=0, column=0, rowspan=4, columnspan=1, padx=(0, 4), pady=(0, 6), sticky="nw")
 
         clock_box = ctk.CTkFrame(
-            grid_frame, 
-            fg_color="transparent", 
-            corner_radius=6, 
+            grid_frame,
+            fg_color="transparent",
+            corner_radius=RADIUS["sm"],
             border_width=1.5,
             border_color=PALETTE["input_border"]
         )

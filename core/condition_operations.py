@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-工況模式專屬算卡操作 (Condition Operations) - 核心純計算層
-包含專門在工況模式下生效的特有操作（工況判定、翻頂燒、推頂燒、羽未）。
+殘局模式專屬算卡操作 (Condition Operations) - 核心純計算層
+包含專門在殘局模式下生效的特有操作（一般判定、翻頂燒、推頂燒、羽未）。
 完全不依賴 customtkinter/tkinter GUI 庫。
 """
 
@@ -23,7 +23,7 @@ def _exec_condition_trigger_check(deck, control, stock, level, clock, op, stabil
     soul_points = kwargs.get("soul_points", 0)
 
     if condition_deck is None:
-        return False, "非工況環境，跳過工況判定", {"total_damage": 0, "soul_points": soul_points}
+        return False, "非殘局環境，跳過一般判定", {"total_damage": 0, "soul_points": soul_points}
 
     if not condition_deck:
         if app:
@@ -52,7 +52,7 @@ def _exec_condition_trigger_check(deck, control, stock, level, clock, op, stabil
     if app and app.stabilize_condition():
         return True, "我方觸發敗北條件，操作強制截斷", {"total_damage": 0, "soul_points": new_soul}
 
-    desc = f"工況判定: 翻頂牌[{get_card_kind(top_card)}]，觸發魂+{soul_bonus}，移入能量區"
+    desc = f"一般判定: 翻頂牌[{get_card_kind(top_card)}]，觸發魂+{soul_bonus}，移入能量區"
     return False, desc, {"total_damage": 0, "soul_points": new_soul}
 
 
@@ -336,9 +336,9 @@ def _exec_look_select(deck, control, stock, level, clock, op, stabilize_func, **
     return False, desc, {"total_damage": 0}
 
 def register_condition_operations():
-    """註冊工況專屬算卡算法"""
+    """註冊殘局專屬算卡算法"""
     registry.register(
-        "工況判定",
+        "一般判定",
         params_def=[],
         modes=["condition"],
         execute=_exec_condition_trigger_check

@@ -82,7 +82,7 @@ class CustomCardsService:
                 "pre_attack": [],
                 "attack_type": [{"type": "攻擊方式", "attack_type": "正面"}],
                 "on_attack": [{"type": "摩卡", "mocha_mode": "原位", "mocha_count": 2}],
-                "trigger_step": [{"type": "工況判定"}],
+                "trigger_step": [{"type": "一般判定"}],
                 "deal_damage": [{"type": "角色傷害", "role_damage_base": 0, "role_bonus_type": "魂點", "trigger_rate": 0.0}],
                 "on_reverse": [{"type": "普通傷害", "damage": 2, "trigger_rate": 0.0}],
                 "post_attack": []

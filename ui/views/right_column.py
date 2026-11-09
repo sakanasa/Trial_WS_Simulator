@@ -14,7 +14,7 @@ from ui.components.right_column.single_op_tab import SingleOpTab
 from ui.components.right_column.char_eval_tab import CharEvalTab
 from ui.components.right_column.single_test_tab import SingleTestTab
 from ui.components.right_column.multi_sim_tab import MultiSimTab
-from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
+from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD, BORDER_THIN
 
 
 def _render_step_card(
@@ -31,7 +31,7 @@ def _render_step_card(
         parent_frame,
         fg_color=PALETTE["card_bg"],
         corner_radius=12,
-        border_width=2,
+        border_width=BORDER_THIN,
         border_color=PALETTE["card_border"]
     )
     card_frame.pack(fill=tk.X, pady=4, padx=2)
@@ -196,7 +196,7 @@ class RightColumnView(ctk.CTkFrame):
             self.single_tab.result_frame, 
             fg_color=PALETTE["card_bg"], 
             corner_radius=12, 
-            border_width=2, 
+            border_width=BORDER_THIN, 
             border_color=PALETTE["card_border"]
         )
         result_card.pack(fill=tk.X, pady=(2, 6), padx=2)

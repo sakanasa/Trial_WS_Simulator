@@ -15,7 +15,7 @@ import customtkinter as ctk
 from typing import Any, Dict, Optional
 
 from simulator.decision_tree import build_full_decision_tree, TreeNode, get_registered_operations_info
-from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
+from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD, FONT_FAMILY
 
 
 class DecisionTreeDialog(ctk.CTkToplevel):
@@ -24,7 +24,7 @@ class DecisionTreeDialog(ctk.CTkToplevel):
     def __init__(self, parent: tk.Widget, app_controller: Any, **kwargs):
         super().__init__(parent, **kwargs)
         self.app = app_controller
-        self.title("工況模式決策樹分析 ver.1.5")
+        self.title("殘局模式決策樹分析 ver.1.5")
         self.geometry("1280x820+80+60")
         self.minsize(1050, 650)
 
@@ -114,7 +114,7 @@ class DecisionTreeDialog(ctk.CTkToplevel):
         
         style.configure(
             "Treeview", 
-            font=("微軟雅黑", tree_font_size), 
+            font=(FONT_FAMILY, tree_font_size), 
             rowheight=tree_row_height, 
             background=bg_card[mode_idx], 
             fieldbackground=bg_card[mode_idx], 
@@ -125,7 +125,7 @@ class DecisionTreeDialog(ctk.CTkToplevel):
         
         style.configure(
             "Treeview.Heading", 
-            font=("微軟雅黑", tree_header_size, "bold"), 
+            font=(FONT_FAMILY, tree_header_size, "bold"), 
             background=sec_color[mode_idx], 
             foreground=text_main[mode_idx],
             relief="flat",
@@ -143,7 +143,7 @@ class DecisionTreeDialog(ctk.CTkToplevel):
 
         self.tree = ttk.Treeview(tree_inner, columns=cols, selectmode="browse")
 
-        self.tree.tag_configure("optimal", foreground=PALETTE["optimal"][mode_idx], font=("微軟雅黑", tree_font_size, "bold"))
+        self.tree.tag_configure("optimal", foreground=PALETTE["optimal"][mode_idx], font=(FONT_FAMILY, tree_font_size, "bold"))
         self.tree.tag_configure("win", foreground=PALETTE["success"][mode_idx])
         self.tree.tag_configure("fail", foreground=PALETTE["danger"][mode_idx])
 

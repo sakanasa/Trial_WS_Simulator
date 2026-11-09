@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-工況局勢數據與 JSON 存檔服務 (Condition State Service)
-負責工況模式下我方/敵方各個卡區數據管理、容量上限配置以及局勢配置的 JSON 導出與導入。
+殘局局勢數據與 JSON 存檔服務 (Condition State Service)
+負責殘局模式下我方/敵方各個卡區數據管理、容量上限配置以及局勢配置的 JSON 導出與導入。
 """
 
 import tkinter as tk
@@ -38,7 +38,7 @@ def clean_zone_cards(zone_data: Any) -> Any:
 
 
 class ConditionStateService:
-    """工況局勢狀態與存檔服務類（單例服務）"""
+    """殘局局勢狀態與存檔服務類（單例服務）"""
 
     _instance = None
 
@@ -55,7 +55,7 @@ class ConditionStateService:
         self.init_state()
 
     def init_state(self):
-        """初始化/重置所有工況卡區列表與上限配置"""
+        """初始化/重置所有殘局卡區列表與上限配置"""
         self.deck_cards: List[Any] = []
         self.control_cards: List[Any] = []
         self.memory_cards: List[Any] = []
@@ -100,7 +100,7 @@ class ConditionStateService:
         roles_serialized: list, 
         plan_serialized: list
     ) -> dict:
-        """序列化工況局勢為字典（自動清洗剔除 UI 控件對象，確保 JSON 序列化無報錯）"""
+        """序列化殘局局勢為字典（自動清洗剔除 UI 控件對象，確保 JSON 序列化無報錯）"""
         return {
             "deck": clean_zone_cards(self.deck_cards),
             "control": clean_zone_cards(self.control_cards),

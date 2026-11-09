@@ -8,7 +8,7 @@ import tkinter as tk
 import customtkinter as ctk
 from typing import Any, Optional, Callable
 
-from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
+from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD, RADIUS, SPACING, BORDER_THIN
 
 
 class CollapsibleCard(ctk.CTkFrame):
@@ -32,8 +32,8 @@ class CollapsibleCard(ctk.CTkFrame):
         super().__init__(
             master=master,
             fg_color=PALETTE["card_bg"],
-            corner_radius=12,
-            border_width=2,
+            corner_radius=RADIUS["md"],
+            border_width=BORDER_THIN,
             border_color=PALETTE["card_border"],
             **ctk_kwargs
         )
@@ -50,7 +50,7 @@ class CollapsibleCard(ctk.CTkFrame):
 
     def _build_header(self):
         self.header_frame = ctk.CTkFrame(self, fg_color="transparent", height=1)
-        self.header_frame.pack(side=tk.TOP, fill=tk.X, padx=8, pady=(6, 4))
+        self.header_frame.pack(side=tk.TOP, fill=tk.X, padx=SPACING["md"], pady=(SPACING["sm"], SPACING["xs"]))
 
         self.title_label = ctk.CTkLabel(
             self.header_frame, 
@@ -79,7 +79,7 @@ class CollapsibleCard(ctk.CTkFrame):
     def _build_content(self):
         # 🌟 核心修復：內部內容容器同樣顯式設置 height=1
         self.content_frame = ctk.CTkFrame(self, fg_color="transparent", height=1)
-        self.content_frame.pack(side=tk.TOP, fill=tk.X, anchor="n", padx=4, pady=(0, 6))
+        self.content_frame.pack(side=tk.TOP, fill=tk.X, anchor="n", padx=SPACING["xs"], pady=(0, SPACING["sm"]))
 
     def toggle(self):
         """摺疊/展開邏輯切換"""
@@ -88,7 +88,7 @@ class CollapsibleCard(ctk.CTkFrame):
             self.arrow_btn.configure(text="▲")
             self.is_expanded = False
         else:
-            self.content_frame.pack(side=tk.TOP, fill=tk.X, anchor="n", padx=4, pady=(0, 6))
+            self.content_frame.pack(side=tk.TOP, fill=tk.X, anchor="n", padx=SPACING["xs"], pady=(0, SPACING["sm"]))
             self.arrow_btn.configure(text="▼")
             self.is_expanded = True
 
@@ -99,7 +99,7 @@ class CollapsibleCard(ctk.CTkFrame):
             text=text,
             width=width,
             height=24,
-            corner_radius=4,
+            corner_radius=RADIUS["sm"],
             font=font,
             fg_color=PALETTE["secondary"],
             text_color=PALETTE["text_main"],

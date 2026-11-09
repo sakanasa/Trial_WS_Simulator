@@ -9,7 +9,7 @@ import tkinter as tk
 from typing import Union
 import customtkinter as ctk
 
-from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
+from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD, FONT_FAMILY, RADIUS
 
 # =====================================================================
 # 1. 動態修補 (Monkey Patch) 繪圖引擎，在底層無縫繪製高精度實心三角形
@@ -81,7 +81,7 @@ class AppDropdown(ctk.CTkOptionMenu):
         "dropdown_text_color": PALETTE["text_main"],        # 🌟 彈出菜單文字色
         "text_color": PALETTE["text_main"],                 # 選中文字色
         "font": FONT_GLOBAL,
-        "corner_radius": 6,
+        "corner_radius": RADIUS["sm"],
         "height": 28,
         "dynamic_resizing": False
     }
@@ -118,8 +118,8 @@ class CTkControlButtons(ctk.CTkFrame):
         btn_opts = {
             "width": 24,
             "height": 24,
-            "corner_radius": 4,
-            "font": ("微軟雅黑", -12, "bold"),
+            "corner_radius": RADIUS["sm"],
+            "font": (FONT_FAMILY, -12, "bold"),
             "fg_color": PALETTE["secondary"],
             "text_color": PALETTE["text_main"],
             "hover_color": PALETTE["secondary_hover"],

@@ -13,7 +13,7 @@ from core.models import card_is_normal, card_is_climax
 from ui.components.app_dropdown import AppDropdown
 from ui.dialogs.select_from_library_dialog import SelectFromLibraryDialog
 from ui.components.common.animations import animate_widget_bg, animate_delete_red_glow  # 🌟 引入通用動畫
-from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
+from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD, RADIUS
 
 
 class CardTableDialog(ctk.CTkToplevel):
@@ -100,7 +100,7 @@ class CardTableDialog(ctk.CTkToplevel):
             for h_text, h_width in headers:
                 ctk.CTkLabel(
                     header_frame, text=h_text, width=h_width, font=FONT_GLOBAL_BOLD,
-                    text_color=PALETTE["text_main"], fg_color=PALETTE["secondary"], corner_radius=4, height=28
+                    text_color=PALETTE["text_main"], fg_color=PALETTE["secondary"], corner_radius=RADIUS["sm"], height=28
                 ).pack(side=tk.LEFT, padx=1)
 
             list_container = ctk.CTkFrame(scrollable_frame, fg_color="transparent")
@@ -239,7 +239,7 @@ class CardTableDialog(ctk.CTkToplevel):
         ops_box.pack(side=tk.LEFT, padx=1)
 
         btn_delete = ctk.CTkButton(
-            ops_box, text="-", width=24, height=26, corner_radius=4, font=header_font,
+            ops_box, text="-", width=24, height=26, corner_radius=RADIUS["sm"], font=header_font,
             fg_color=PALETTE["secondary"], text_color=PALETTE["text_main"], hover_color=PALETTE["secondary_hover"],
             command=lambda c=card: self._delete_card(c, parent)
         )
@@ -250,7 +250,7 @@ class CardTableDialog(ctk.CTkToplevel):
         card["copy_var"] = copy_var
 
         btn_add = ctk.CTkButton(
-            ops_box, text="複製", width=38, height=26, corner_radius=4, font=header_font,
+            ops_box, text="複製", width=38, height=26, corner_radius=RADIUS["sm"], font=header_font,
             fg_color=PALETTE["primary"], text_color=("#FFFFFF", "#0B0F19"), hover_color=PALETTE["primary_hover"],
             command=lambda c=card, cv=copy_var: self._copy_card(c, cv.get(), parent)
         )
@@ -268,11 +268,11 @@ class CardTableDialog(ctk.CTkToplevel):
         card["btn_import"] = btn_import
 
         if self.max_cards is None:
-            btn_up = ctk.CTkButton(ops_box, text="▲", width=24, height=26, corner_radius=4, font=header_font, fg_color=PALETTE["secondary"], text_color=PALETTE["text_main"], hover_color=PALETTE["secondary_hover"], command=lambda i=orig_idx: self._move_card_up(i, parent))
+            btn_up = ctk.CTkButton(ops_box, text="▲", width=24, height=26, corner_radius=RADIUS["sm"], font=header_font, fg_color=PALETTE["secondary"], text_color=PALETTE["text_main"], hover_color=PALETTE["secondary_hover"], command=lambda i=orig_idx: self._move_card_up(i, parent))
             btn_up.pack(side=tk.LEFT, padx=1)
             card["btn_up"] = btn_up
 
-            btn_down = ctk.CTkButton(ops_box, text="▼", width=24, height=26, corner_radius=4, font=header_font, fg_color=PALETTE["secondary"], text_color=PALETTE["text_main"], hover_color=PALETTE["secondary_hover"], command=lambda i=orig_idx: self._move_card_down(i, parent))
+            btn_down = ctk.CTkButton(ops_box, text="▼", width=24, height=26, corner_radius=RADIUS["sm"], font=header_font, fg_color=PALETTE["secondary"], text_color=PALETTE["text_main"], hover_color=PALETTE["secondary_hover"], command=lambda i=orig_idx: self._move_card_down(i, parent))
             btn_down.pack(side=tk.LEFT, padx=1)
             card["btn_down"] = btn_down
         else:
@@ -305,7 +305,7 @@ class CardTableDialog(ctk.CTkToplevel):
 
         eff_summary = self._get_card_effects_summary(card)
         if eff_summary:
-            desc_box = ctk.CTkFrame(card_container, fg_color=PALETTE["card_bg"], corner_radius=6, border_width=1, border_color=PALETTE["card_border"])
+            desc_box = ctk.CTkFrame(card_container, fg_color=PALETTE["card_bg"], corner_radius=RADIUS["sm"], border_width=1, border_color=PALETTE["card_border"])
             desc_box.pack(fill=tk.X, padx=2, pady=(2, 4))
             ctk.CTkLabel(desc_box, text=f"卡牌詳細能力 ({card.get('name', '自定義卡片')}): {eff_summary}", font=label_font, text_color=PALETTE["primary"], justify="left").pack(anchor="w", padx=6, pady=2)
 

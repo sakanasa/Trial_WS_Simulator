@@ -751,7 +751,7 @@ class App:
                 0, lambda: self._on_sim_done(winrate, avg_dmg, elapsed, sim_times)
             ),
             on_error=lambda err: self.root.after(
-                0, lambda: messagebox.showerror("模擬異常", f"工況模式模擬錯誤:\n{err}")
+                0, lambda: messagebox.showerror("模擬異常", f"殘局模式模擬錯誤:\n{err}")
             )
         )
 
@@ -795,7 +795,7 @@ class App:
         cond_helper = TrialConditionHelper(cond_deck, cond_control, cond_stock, cond_level, cond_clock)
 
         if cond_helper.stabilize_condition():
-            self._show_single_test_log_window("工況模式單次測試日誌", [], game_over=False, our_failed=True)
+            self._show_single_test_log_window("殘局模式單次測試日誌", [], game_over=False, our_failed=True)
             return
 
         execution_plan, roles_params = self._get_condition_execution_plan()
@@ -843,10 +843,10 @@ class App:
                     all_steps.extend(c_steps)
                     if c_over: game_over = True
 
-        self._show_single_test_log_window("工況模式單次測試日誌", all_steps, game_over, our_failed=cond_helper.failed)
+        self._show_single_test_log_window("殘局模式單次測試日誌", all_steps, game_over, our_failed=cond_helper.failed)
 
     def _show_single_test_log_window(self, title: str, steps_info: list, game_over: bool, our_failed: bool = False):
-        test_type = "高級" if "高級" in title else ("工況" if "工況" in title else "常規")
+        test_type = "高級" if "高級" in title else ("殘局" if "殘局" in title else "常規")
         fixed = self._get_fixed_state_params()
         deck, control, stock, level, clock = self._build_initial_state(fixed)
         b_lines = self._format_zone_state(deck, control, stock, level, clock)
@@ -904,7 +904,7 @@ class App:
             try:
                 with open(file_path, "w", encoding="utf-8") as f:
                     json.dump(data, f, ensure_ascii=False, indent=2)
-                messagebox.showinfo("保存成功", "場上情況與工況配置已成功保存至 JSON 文件。")
+                messagebox.showinfo("保存成功", "場上情況與殘局配置已成功保存至 JSON 文件。")
             except Exception as e:
                 messagebox.showerror("保存失敗", f"保存 JSON 文件失敗：\n{e}")
 
@@ -959,7 +959,7 @@ class App:
 
             self.middle_col.field_component.canvas.event_generate("<Configure>")
             self.refresh_field_canvas_stats()
-            messagebox.showinfo("導入成功", "場上情況與工況配置已成功導入。")
+            messagebox.showinfo("導入成功", "場上情況與殘局配置已成功導入。")
         except Exception as e:
             messagebox.showerror("導入失敗", f"讀取 JSON 文件失敗：\n{e}")
 

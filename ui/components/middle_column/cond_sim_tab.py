@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """
-工況模式模擬面板組件 (Condition Simulation Tab Component)
-獨立封裝中間列“工況模式”的戰場畫布、角色定義、執行計劃、存檔/自定義卡片控制與多次模擬。
+殘局模式模擬面板組件 (Condition Simulation Tab Component)
+獨立封裝中間列“殘局模式”的戰場畫布、角色定義、執行計劃、存檔/自定義卡片控制與多次模擬。
 """
 
 import tkinter as tk
@@ -11,11 +11,11 @@ from typing import Any, Optional, Callable
 from ui.components.common.collapsible_card import CollapsibleCard
 from ui.components.common.sim_bottom_bar import SimBottomBar
 from ui.components.field_canvas import ConditionFieldCanvas
-from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD
+from ui.theme import PALETTE, FONT_GLOBAL, FONT_GLOBAL_BOLD, RADIUS
 
 
 class CondSimTab(ctk.CTkFrame):
-    """工況模式獨立 UI 面板組件"""
+    """殘局模式獨立 UI 面板組件"""
 
     def __init__(
         self, 
@@ -59,7 +59,8 @@ class CondSimTab(ctk.CTkFrame):
                 "fg_color": PALETTE["secondary"],
                 "text_color": PALETTE["text_main"],
                 "hover_color": PALETTE["secondary_hover"],
-                "height": 26
+                "height": 26,
+                "corner_radius": RADIUS["sm"]
             }
             ctk.CTkButton(sim_row, text="單次測試", command=self._handle_single_test, width=65, **btn_aux_opts).pack(side=tk.LEFT, padx=2)
             ctk.CTkLabel(sim_row, text="存檔:", text_color=PALETTE["text_main"], font=FONT_GLOBAL).pack(side=tk.LEFT, padx=(4, 2))
